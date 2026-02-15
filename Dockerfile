@@ -19,3 +19,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
+
+# ⚠️ ADD THESE NEW LINES HERE ⚠️
+# Copy application files
+COPY . .
+
+# Install PHP dependencies
+RUN composer install --no-interaction
+
+# Create .env file if it doesn't exist
+RUN if [ ! -f .env ]; then cp .env.example .env; fi
+
+# Generate application key
+RUN php artisan key:generate
+
+# Set permissions
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
