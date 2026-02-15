@@ -1,5 +1,4 @@
-﻿version: '3.8'
-services:
+﻿services:
   backend:
     build:
       context: .
@@ -12,10 +11,12 @@ services:
   mysql:
     image: mysql:8
     ports:
-      - "3306:3306"
+      - "3307:3306" # Changed to 3307
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: crm_db
+    volumes:
+      - mysql-data:/var/lib/mysql
 
   frontend:
     image: node:18
@@ -24,4 +25,7 @@ services:
     volumes:
       - ./frontend:/app
     working_dir: /app
-    command: cmd /c "npx create-react-app . --template typescript && npm start"
+    command: sh -c "if [ -d node_modules ]; then npm start; else npx create-react-app . --template typescript && npm start; fi"
+
+volumes:
+  mysql-data:
