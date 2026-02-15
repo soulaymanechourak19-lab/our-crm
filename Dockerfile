@@ -4,10 +4,8 @@
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    curl
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql
+    curl \
+    && docker-php-ext-install pdo_mysql
 
 # Enable Apache modules
 RUN a2enmod rewrite
@@ -15,14 +13,14 @@ RUN a2enmod rewrite
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Fix Apache document root
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
-
+# Set working directory
 WORKDIR /var/www/html
 
-# ⚠️ ADD THESE NEW LINES HERE ⚠️
-# Copy application files
-COPY . .
+# Copy application files (THIS MUST COME AFTER WORKDIR)
+COPY backend/ /var/www/html/
+
+# Fix Apache document root to point to public folder
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 # Install PHP dependencies
 RUN composer install --no-interaction
