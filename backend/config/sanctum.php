@@ -15,12 +15,11 @@ return [
     |
     */
 
-    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
-        '%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
-        Sanctum::currentApplicationUrlWithPort(),
-        // Sanctum::currentRequestHost(),
-    ))),
+    // This app uses Sanctum Bearer token auth, NOT cookie/session-based SPA auth.
+    // Stateful domains must be empty — setting any domain here causes Sanctum to
+    // inject web middleware (including CSRF) into API requests from that origin,
+    // which breaks Bearer token login with a 419 CSRF token mismatch error.
+    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', '')),
 
     /*
     |--------------------------------------------------------------------------

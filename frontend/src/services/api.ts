@@ -8,9 +8,12 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
+  // NOTE: withCredentials is intentionally NOT set.
+  // This app uses Sanctum token auth (Bearer tokens), not cookie sessions.
+  // Setting withCredentials would cause unnecessary CORS preflight issues.
 });
 
-// Attach auth token to every request automatically
+// Attach Bearer token to every request automatically
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -28,7 +31,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      // AuthContext fetchUser will set user to null → PrivateRoute redirects to login
     }
     return Promise.reject(error);
   }
