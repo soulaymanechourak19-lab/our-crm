@@ -58,24 +58,24 @@ interface CRMContextType {
     leadsPagination: PaginationMeta;
     leadsLoading: boolean;
     fetchLeads: (page?: number, filters?: { status?: string; search?: string }) => Promise<void>;
-    addLead: (lead: Partial<Lead>) => Promise<void>;
-    updateLead: (id: number, lead: Partial<Lead>) => Promise<void>;
-    updateLeadStatus: (id: number, status: string) => Promise<void>;
-    deleteLead: (id: number) => Promise<void>;
-    convertLead: (id: number) => Promise<void>;
+    addLead: (lead: Partial<Lead>) => Promise<boolean>;
+    updateLead: (id: number, lead: Partial<Lead>) => Promise<boolean>;
+    updateLeadStatus: (id: number, status: string) => Promise<boolean>;
+    deleteLead: (id: number) => Promise<boolean>;
+    convertLead: (id: number) => Promise<boolean>;
     // Customers
     customers: Customer[];
     customersPagination: PaginationMeta;
     customersLoading: boolean;
     fetchCustomers: (page?: number, filters?: { search?: string; tier?: string }) => Promise<void>;
-    addCustomer: (customer: Partial<Customer>) => Promise<void>;
-    updateCustomer: (id: number, customer: Partial<Customer>) => Promise<void>;
-    deleteCustomer: (id: number) => Promise<void>;
+    addCustomer: (customer: Partial<Customer>) => Promise<boolean>;
+    updateCustomer: (id: number, customer: Partial<Customer>) => Promise<boolean>;
+    deleteCustomer: (id: number) => Promise<boolean>;
     // Customer detail
     selectedCustomer: Customer | null;
     fetchCustomerDetail: (id: number) => Promise<void>;
     // Interactions
-    addInteraction: (customerId: number, interaction: Interaction) => Promise<void>;
+    addInteraction: (customerId: number, interaction: Interaction) => Promise<boolean>;
     fetchInteractions: (customerId: number, page?: number) => Promise<{ data: Interaction[]; meta: PaginationMeta }>;
     // UI
     error: string | null;
@@ -112,81 +112,84 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const fetchLeads = useCallback(async (page = 1, filters: { status?: string; search?: string } = {}) => {
         setLeadsLoading(true);
         setError(null);
-        try {
-            const params = new URLSearchParams();
-            params.set('page', String(page));
-            if (filters.status) params.set('status', filters.status);
-            if (filters.search) params.set('search', filters.search);
+        const params = new URLSearchParams();
+        params.set('page', String(page));
+        if (filters.status) params.set('status', filters.status);
+        if (filters.search) params.set('search', filters.search);
 
-            const data = await apiRequest<any>(`/leads?${params.toString()}`);
-            setLeads(data.data || []);
+        const result = await apiRequest<any>(`/leads?${params.toString()}`);
+        if (result.ok && result.data) {
+            setLeads(result.data.data || []);
             setLeadsPagination({
-                current_page: data.current_page || 1,
-                last_page: data.last_page || 1,
-                per_page: data.per_page || 15,
-                total: data.total || 0,
+                current_page: result.data.current_page || 1,
+                last_page: result.data.last_page || 1,
+                per_page: result.data.per_page || 15,
+                total: result.data.total || 0,
             });
-        } catch (err: any) {
-            setError(err.message);
-            // Fallback to empty if forbidden (agent_sav)
+        } else {
+            setError(result.error);
             setLeads([]);
-        } finally {
-            setLeadsLoading(false);
         }
+        setLeadsLoading(false);
     }, []);
 
     const addLead = async (lead: Partial<Lead>) => {
-        try {
-            await apiRequest('/leads', { method: 'POST', body: lead });
+        const result = await apiRequest('/leads', { method: 'POST', body: lead });
+        if (result.ok) {
             showToast('Lead created successfully', 'success');
             await fetchLeads();
-        } catch (err: any) {
-            showToast(err.message, 'error');
-            throw err;
+            return true;
+        } else {
+            showToast(result.error || 'Failed to create lead', 'error');
+            return false;
         }
     };
 
     const updateLead = async (id: number, data: Partial<Lead>) => {
-        try {
-            await apiRequest(`/leads/${id}`, { method: 'PUT', body: data });
+        const result = await apiRequest(`/leads/${id}`, { method: 'PUT', body: data });
+        if (result.ok) {
             showToast('Lead updated successfully', 'success');
             await fetchLeads(leadsPagination.current_page);
-        } catch (err: any) {
-            showToast(err.message, 'error');
-            throw err;
+            return true;
+        } else {
+            showToast(result.error || 'Failed to update lead', 'error');
+            return false;
         }
     };
 
     const updateLeadStatus = async (id: number, status: string) => {
-        try {
-            await apiRequest(`/leads/${id}/status`, { method: 'PUT', body: { status } });
+        const result = await apiRequest(`/leads/${id}/status`, { method: 'PUT', body: { status } });
+        if (result.ok) {
             showToast('Lead status updated', 'success');
             await fetchLeads(leadsPagination.current_page);
-        } catch (err: any) {
-            showToast(err.message, 'error');
-            throw err;
+            return true;
+        } else {
+            showToast(result.error || 'Failed to update status', 'error');
+            return false;
         }
     };
 
     const deleteLead = async (id: number) => {
-        try {
-            await apiRequest(`/leads/${id}`, { method: 'DELETE' });
+        const result = await apiRequest(`/leads/${id}`, { method: 'DELETE' });
+        if (result.ok) {
             showToast('Lead deleted', 'success');
             await fetchLeads(leadsPagination.current_page);
-        } catch (err: any) {
-            showToast(err.message, 'error');
-            throw err;
+            return true;
+        } else {
+            showToast(result.error || 'Failed to delete lead', 'error');
+            return false;
         }
     };
 
     const convertLead = async (id: number) => {
-        try {
-            await apiRequest(`/leads/${id}/convert`, { method: 'POST' });
+        const result = await apiRequest(`/leads/${id}/convert`, { method: 'POST' });
+        if (result.ok) {
             showToast('Lead converted to customer!', 'success');
             await fetchLeads(leadsPagination.current_page);
-        } catch (err: any) {
-            showToast(err.message, 'error');
-            throw err;
+            return true;
+        } else {
+            showToast(result.error || 'Failed to convert lead', 'error');
+            return false;
         }
     };
 
@@ -195,109 +198,113 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const fetchCustomers = useCallback(async (page = 1, filters: { search?: string; tier?: string } = {}) => {
         setCustomersLoading(true);
         setError(null);
-        try {
-            const params = new URLSearchParams();
-            params.set('page', String(page));
-            if (filters.search) params.set('search', filters.search);
-            if (filters.tier) params.set('tier', filters.tier);
+        const params = new URLSearchParams();
+        params.set('page', String(page));
+        if (filters.search) params.set('search', filters.search);
+        if (filters.tier) params.set('tier', filters.tier);
 
-            const data = await apiRequest<any>(`/customers?${params.toString()}`);
-            setCustomers(data.data || []);
+        const result = await apiRequest<any>(`/customers?${params.toString()}`);
+        if (result.ok && result.data) {
+            setCustomers(result.data.data || []);
             setCustomersPagination({
-                current_page: data.current_page || 1,
-                last_page: data.last_page || 1,
-                per_page: data.per_page || 15,
-                total: data.total || 0,
+                current_page: result.data.current_page || 1,
+                last_page: result.data.last_page || 1,
+                per_page: result.data.per_page || 15,
+                total: result.data.total || 0,
             });
-        } catch (err: any) {
-            setError(err.message);
+        } else {
+            setError(result.error);
             setCustomers([]);
-        } finally {
-            setCustomersLoading(false);
         }
+        setCustomersLoading(false);
     }, []);
 
     const addCustomer = async (customer: Partial<Customer>) => {
-        try {
-            await apiRequest('/customers', { method: 'POST', body: customer });
+        const result = await apiRequest('/customers', { method: 'POST', body: customer });
+        if (result.ok) {
             showToast('Customer created successfully', 'success');
             await fetchCustomers();
-        } catch (err: any) {
-            showToast(err.message, 'error');
-            throw err;
+            return true;
+        } else {
+            showToast(result.error || 'Failed to create customer', 'error');
+            return false;
         }
     };
 
     const updateCustomer = async (id: number, data: Partial<Customer>) => {
-        try {
-            await apiRequest(`/customers/${id}`, { method: 'PUT', body: data });
+        const result = await apiRequest(`/customers/${id}`, { method: 'PUT', body: data });
+        if (result.ok) {
             showToast('Customer updated successfully', 'success');
             await fetchCustomers(customersPagination.current_page);
-        } catch (err: any) {
-            showToast(err.message, 'error');
-            throw err;
+            return true;
+        } else {
+            showToast(result.error || 'Failed to update customer', 'error');
+            return false;
         }
     };
 
     const deleteCustomer = async (id: number) => {
-        try {
-            await apiRequest(`/customers/${id}`, { method: 'DELETE' });
+        const result = await apiRequest(`/customers/${id}`, { method: 'DELETE' });
+        if (result.ok) {
             showToast('Customer deleted', 'success');
             await fetchCustomers(customersPagination.current_page);
-        } catch (err: any) {
-            showToast(err.message, 'error');
-            throw err;
+            return true;
+        } else {
+            showToast(result.error || 'Failed to delete customer', 'error');
+            return false;
         }
     };
 
     const fetchCustomerDetail = async (id: number) => {
-        try {
-            const data = await apiRequest<Customer>(`/customers/${id}`);
-            setSelectedCustomer(data);
-        } catch (err: any) {
-            setError(err.message);
+        const result = await apiRequest<Customer>(`/customers/${id}`);
+        if (result.ok && result.data) {
+            setSelectedCustomer(result.data);
+        } else {
+            setError(result.error);
         }
     };
 
     // ─── Interactions ────────────────────────────────────────────────
 
     const addInteraction = async (customerId: number, interaction: Interaction) => {
-        try {
-            await apiRequest(`/customers/${customerId}/interactions`, {
-                method: 'POST',
-                body: interaction,
-            });
+        const result = await apiRequest(`/customers/${customerId}/interactions`, {
+            method: 'POST',
+            body: interaction,
+        });
+        if (result.ok) {
             showToast('Interaction logged successfully', 'success');
             // Refresh customer detail to get updated loyalty score
             await fetchCustomerDetail(customerId);
-        } catch (err: any) {
-            showToast(err.message, 'error');
-            throw err;
+            return true;
+        } else {
+            showToast(result.error || 'Failed to log interaction', 'error');
+            return false;
         }
     };
 
     const fetchInteractions = async (customerId: number, page = 1) => {
-        const data = await apiRequest<any>(`/customers/${customerId}/interactions?page=${page}`);
-        return {
-            data: data.data || [],
-            meta: {
-                current_page: data.current_page || 1,
-                last_page: data.last_page || 1,
-                per_page: data.per_page || 10,
-                total: data.total || 0,
-            },
-        };
+        const result = await apiRequest<any>(`/customers/${customerId}/interactions?page=${page}`);
+        if (result.ok && result.data) {
+            return {
+                data: result.data.data || [],
+                meta: {
+                    current_page: result.data.current_page || 1,
+                    last_page: result.data.last_page || 1,
+                    per_page: result.data.per_page || 10,
+                    total: result.data.total || 0,
+                },
+            };
+        }
+        return { data: [], meta: defaultPagination };
     };
 
     // ─── Load user on mount ──────────────────────────────────────────
 
     useEffect(() => {
         const loadUser = async () => {
-            try {
-                const user = await apiRequest<User>('/user');
-                setCurrentUser(user);
-            } catch {
-                // Not authenticated
+            const result = await apiRequest<User>('/user');
+            if (result.ok && result.data) {
+                setCurrentUser(result.data);
             }
         };
         loadUser();

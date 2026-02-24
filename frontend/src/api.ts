@@ -12,7 +12,14 @@ async function getCsrfCookie(): Promise<void> {
     });
 }
 
-export async function apiRequest<T = any>(endpoint: string, options: ApiOptions = {}): Promise<T> {
+export interface ApiResult<T> {
+    data: T | null;
+    error: string | null;
+    ok: boolean;
+    status: number;
+}
+
+export async function apiRequest<T = any>(endpoint: string, options: ApiOptions = {}): Promise<ApiResult<T>> {
     const { method = 'GET', body, headers = {} } = options;
 
     const token = localStorage.getItem('auth_token');
@@ -32,36 +39,40 @@ export async function apiRequest<T = any>(endpoint: string, options: ApiOptions 
         config.body = JSON.stringify(body);
     }
 
-    const response = await fetch(`${API_URL}/api${endpoint}`, config);
+    try {
+        const response = await fetch(`${API_URL}/api${endpoint}`, config);
+        const status = response.status;
 
-    if (response.status === 401) {
-        // Token expired or invalid
-        localStorage.removeItem('auth_token');
-        window.location.hash = '#/login';
-        throw new Error('Unauthorized');
+        if (status === 401) {
+            localStorage.removeItem('auth_token');
+            window.location.hash = '#/login';
+            return { data: null, error: 'Unauthorized', ok: false, status };
+        }
+
+        let data: any = null;
+        if (status !== 204) {
+            data = await response.json().catch(() => null);
+        }
+
+        if (response.ok) {
+            return { data: data as T, error: null, ok: true, status };
+        }
+
+        // Handle errors without throwing
+        let errorMsg = 'An unexpected error occurred';
+        if (status === 422 && data) {
+            errorMsg = data.message || (data.errors ? JSON.stringify(data.errors) : 'Validation failed');
+        } else if (data && data.message) {
+            errorMsg = data.message;
+        } else {
+            errorMsg = `Request failed with status ${status}`;
+        }
+
+        return { data: data as T, error: errorMsg, ok: false, status };
+    } catch (err: any) {
+        // Network errors or other fetch failures
+        return { data: null, error: err.message || 'Network error', ok: false, status: 0 };
     }
-
-    if (response.status === 403) {
-        const data = await response.json();
-        throw new Error(data.message || 'Forbidden');
-    }
-
-    if (response.status === 422) {
-        const data = await response.json();
-        throw new Error(JSON.stringify(data.errors || data.message));
-    }
-
-    if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.message || `Request failed with status ${response.status}`);
-    }
-
-    // Handle 204 No Content
-    if (response.status === 204) {
-        return {} as T;
-    }
-
-    return response.json();
 }
 
 export { getCsrfCookie, API_URL };

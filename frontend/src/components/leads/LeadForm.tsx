@@ -22,21 +22,19 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onClose }) => {
         e.preventDefault();
         setErrors({});
         setSubmitting(true);
-        try {
-            if (isEdit && lead) {
-                await updateLead(lead.id, formData);
-            } else {
-                await addLead(formData);
-            }
-            onClose();
-        } catch (err: any) {
-            try {
-                const parsed = JSON.parse(err.message);
-                setErrors(parsed);
-            } catch {
-                setErrors({ general: err.message });
-            }
+        let success = false;
+        if (isEdit && lead) {
+            success = await updateLead(lead.id, formData);
+        } else {
+            success = await addLead(formData);
         }
+
+        if (success) {
+            onClose();
+        }
+        // If fail, errors are already shown via toast
+        // Optional: you could still parse validation errors if backend returns them in a specific format
+        // for inline display, but for now we focus on keeping the form open.
         setSubmitting(false);
     };
 

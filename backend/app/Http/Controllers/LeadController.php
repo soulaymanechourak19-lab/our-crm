@@ -7,6 +7,8 @@ use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 class LeadController extends Controller
 {
@@ -157,18 +159,28 @@ class LeadController extends Controller
             return response()->json(['message' => 'Lead must be qualified before conversion'], 400);
         }
 
-        $customer = Customer::create([
-            'name' => $lead->contact_name,
-            'email' => $lead->email,
-            'phone' => $lead->phone,
-            'converted_from_lead_id' => $lead->id,
-            'loyalty_score' => 0,
-        ]);
+        try {
+            $customer = Customer::create([
+                'name' => $lead->contact_name,
+                'email' => $lead->email,
+                'phone' => $lead->phone,
+                'converted_from_lead_id' => $lead->id,
+                'loyalty_score' => 0,
+            ]);
 
-        $lead->update(['status' => 'converted']);
+            $lead->update(['status' => 'converted']);
 
-        $customer->tier = $customer->getLoyaltyTier();
+            $customer->tier = $customer->getLoyaltyTier();
 
-        return response()->json($customer, 201);
+            return response()->json($customer, 201);
+        } catch (QueryException $e) {
+            if ($e->getCode() == '23000' && str_contains($e->getMessage(), 'customers_email_unique')) {
+                return response()->json([
+                    'message' => 'This email address is already registered. Please use a different email or login to your existing account.'
+                ], 422);
+            }
+            Log::error('Lead conversion failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

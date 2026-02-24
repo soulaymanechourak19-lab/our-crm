@@ -49,15 +49,19 @@ const Leads: React.FC = () => {
 
     const handleDelete = async () => {
         if (confirmAction?.lead) {
-            await deleteLead(confirmAction.lead.id);
-            setConfirmAction(null);
+            const success = await deleteLead(confirmAction.lead.id);
+            if (success) {
+                setConfirmAction(null);
+            }
         }
     };
 
     const handleConvert = async () => {
         if (confirmAction?.lead) {
-            await convertLead(confirmAction.lead.id);
-            setConfirmAction(null);
+            const success = await convertLead(confirmAction.lead.id);
+            if (success) {
+                setConfirmAction(null);
+            }
         }
     };
 

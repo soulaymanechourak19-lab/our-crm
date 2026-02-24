@@ -29,17 +29,19 @@ const Customers: React.FC = () => {
 
     const handleAddCustomer = async (e: React.FormEvent) => {
         e.preventDefault();
-        try {
-            await addCustomer(newCustomer);
+        const success = await addCustomer(newCustomer);
+        if (success) {
             setShowAddForm(false);
             setNewCustomer({ name: '', email: '', phone: '', address: '' });
-        } catch { }
+        }
     };
 
     const handleDelete = async () => {
         if (confirmDelete) {
-            await deleteCustomer(confirmDelete);
-            setConfirmDelete(null);
+            const success = await deleteCustomer(confirmDelete);
+            if (success) {
+                setConfirmDelete(null);
+            }
         }
     };
 

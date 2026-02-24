@@ -7,6 +7,8 @@ use App\Models\Interaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
@@ -66,15 +68,27 @@ class CustomerController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:customers,email|max:255',
+            'email' => 'required|email|max:255', // Removed unique here to catch it in try-catch for custom message
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string',
+        ], [
+            'email.unique' => 'This email address is already registered. Please use a different email or login to your existing account.'
         ]);
 
-        $customer = Customer::create($validated);
-        $customer->tier = $customer->getLoyaltyTier();
+        try {
+            $customer = Customer::create($validated);
+            $customer->tier = $customer->getLoyaltyTier();
 
-        return response()->json($customer, 201);
+            return response()->json($customer, 201);
+        } catch (QueryException $e) {
+            if ($e->getCode() == '23000' && str_contains($e->getMessage(), 'customers_email_unique')) {
+                return response()->json([
+                    'message' => 'This email address is already registered. Please use a different email or login to your existing account.'
+                ], 422);
+            }
+            Log::error('Customer creation failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function show(Customer $customer)
@@ -102,15 +116,27 @@ class CustomerController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:customers,email,' . $customer->id . '|max:255',
+            'email' => 'required|email|max:255', // Removed unique here as well
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string',
+        ], [
+            'email.unique' => 'This email address is already registered. Please use a different email or login to your existing account.'
         ]);
 
-        $customer->update($validated);
-        $customer->tier = $customer->getLoyaltyTier();
+        try {
+            $customer->update($validated);
+            $customer->tier = $customer->getLoyaltyTier();
 
-        return response()->json($customer);
+            return response()->json($customer);
+        } catch (QueryException $e) {
+            if ($e->getCode() == '23000' && str_contains($e->getMessage(), 'customers_email_unique')) {
+                return response()->json([
+                    'message' => 'This email address is already registered. Please use a different email or login to your existing account.'
+                ], 422);
+            }
+            Log::error('Customer update failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function destroy(Customer $customer)

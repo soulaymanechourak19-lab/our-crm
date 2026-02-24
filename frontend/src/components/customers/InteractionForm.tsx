@@ -22,14 +22,14 @@ const InteractionForm: React.FC<InteractionFormProps> = ({ customerId, onClose }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitting(true);
-        try {
-            await addInteraction(customerId, {
-                type: type as 'call' | 'email' | 'meeting',
-                notes,
-                date: new Date(date).toISOString(),
-            });
+        const success = await addInteraction(customerId, {
+            type: type as 'call' | 'email' | 'meeting',
+            notes,
+            date: new Date(date).toISOString(),
+        });
+        if (success) {
             onClose();
-        } catch { }
+        }
         setSubmitting(false);
     };
 

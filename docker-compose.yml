@@ -7,11 +7,21 @@
       - "8000:80"
     volumes:
       - ./backend:/var/www/html
+      - backend-vendor:/var/www/html/vendor
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=crm_db
+      - DB_USERNAME=laravel
+      - DB_PASSWORD=secret
 
   mysql:
     image: mysql:8
     ports:
-      - "3307:3306" # Changed to 3307
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: crm_db
@@ -19,6 +29,12 @@
       MYSQL_PASSWORD: secret
     volumes:
       - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   frontend:
     image: node:18
@@ -31,3 +47,4 @@
 
 volumes:
   mysql-data:
+  backend-vendor:

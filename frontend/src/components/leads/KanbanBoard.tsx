@@ -35,10 +35,10 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ leads }) => {
         setDragOverColumn(null);
     };
 
-    const onDrop = (e: React.DragEvent, status: string) => {
+    const onDrop = async (e: React.DragEvent, status: string) => {
         e.preventDefault();
         const id = e.dataTransfer.getData('id');
-        updateLeadStatus(parseInt(id), status);
+        await updateLeadStatus(parseInt(id), status);
         setDragOverColumn(null);
     };
 
