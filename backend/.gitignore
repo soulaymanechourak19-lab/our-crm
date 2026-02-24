@@ -22,3 +22,5 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+# Never commit SQLite — always use MySQL via Docker
+/database/*.sqlite

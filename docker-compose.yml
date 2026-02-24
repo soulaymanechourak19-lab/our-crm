@@ -1,4 +1,20 @@
 ﻿services:
+  mysql:
+    image: mysql:8
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: crm_db
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
   backend:
     build:
       context: .
@@ -7,25 +23,47 @@
       - "8000:80"
     volumes:
       - ./backend:/var/www/html
-
-  mysql:
-    image: mysql:8
-    ports:
-      - "3307:3306" # Changed to 3307
+      - vendor-cache:/var/www/html/vendor
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: crm_db
-    volumes:
-      - mysql-data:/var/lib/mysql
+      APP_NAME: "CRM"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost:8000"
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: crm_db
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      SESSION_DRIVER: database
+      SESSION_DOMAIN: localhost
+      SESSION_SAME_SITE: lax
+      CACHE_DRIVER: file
+      QUEUE_CONNECTION: sync
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   frontend:
-    image: node:18
+    image: node:18-alpine
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
     working_dir: /app
-    command: sh -c "if [ -d node_modules ]; then npm start; else npx create-react-app . --template typescript && npm start; fi"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - HOST=0.0.0.0
+      - WDS_SOCKET_PORT=0
+      - REACT_APP_API_URL=http://localhost:8000/api
+    # Install deps on first run (only if node_modules is empty), then start
+    command: sh -c "[ -d node_modules/.bin ] || npm install && npm start"
+    depends_on:
+      - backend
 
 volumes:
   mysql-data:
+  vendor-cache:
+  frontend-node-modules:
