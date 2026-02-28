@@ -115,87 +115,64 @@ const Users: React.FC = () => {
     if (!currentUser) return null;
 
     return (
-        <div className="dashboard-layout">
-            {/* Sidebar */}
-            <aside className="sidebar">
-                <div className="sidebar-brand">
-                    <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-                        <rect width="40" height="40" rx="10" fill="url(#adminGrad)" />
-                        <text x="50%" y="55%" textAnchor="middle" dominantBaseline="middle" fill="#fff" fontSize="18" fontWeight="700">C</text>
-                        <defs><linearGradient id="adminGrad" x1="0" y1="0" x2="40" y2="40"><stop stopColor="#6366f1" /><stop offset="1" stopColor="#8b5cf6" /></linearGradient></defs>
-                    </svg>
-                    <span>CRM</span>
+        <div style={{ padding: '32px 40px', height: '100%', overflowY: 'auto' }}>
+            <header className="top-bar">
+                <h2>User Management</h2>
+                <div className="user-badge">
+                    <span className={`role-pill role-${currentUser.role}`}>{roleLabelMap[currentUser.role]}</span>
+                    <span className="user-name">{currentUser.name}</span>
                 </div>
-                <nav className="sidebar-nav">
-                    <Link to="/dashboard" className="nav-item"><span className="nav-icon">🏠</span> Dashboard</Link>
-                    <Link to="/admin/users" className="nav-item active"><span className="nav-icon">👥</span> Users</Link>
-                    <Link to="/profile" className="nav-item"><span className="nav-icon">⚙️</span> Profile</Link>
-                </nav>
-                <div className="sidebar-footer">
-                    <button className="btn btn-ghost btn-block" onClick={logout}>🚪 Sign out</button>
-                </div>
-            </aside>
+            </header>
 
-            {/* Main */}
-            <main className="main-content">
-                <header className="top-bar">
-                    <h2>User Management</h2>
-                    <div className="user-badge">
-                        <span className={`role-pill role-${currentUser.role}`}>{roleLabelMap[currentUser.role]}</span>
-                        <span className="user-name">{currentUser.name}</span>
-                    </div>
-                </header>
+            <div className="table-toolbar">
+                <p className="table-count">{users?.total ?? 0} users total</p>
+                <button className="btn btn-primary" onClick={openCreate}>+ Add User</button>
+            </div>
 
-                <div className="table-toolbar">
-                    <p className="table-count">{users?.total ?? 0} users total</p>
-                    <button className="btn btn-primary" onClick={openCreate}>+ Add User</button>
-                </div>
-
-                {loading ? (
-                    <div className="loading-screen"><div className="spinner" /><p>Loading users…</p></div>
-                ) : (
-                    <>
-                        <div className="table-wrapper">
-                            <table className="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Created</th>
-                                        <th>Actions</th>
+            {loading ? (
+                <div className="loading-screen"><div className="spinner" /><p>Loading users…</p></div>
+            ) : (
+                <>
+                    <div className="table-wrapper">
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {users?.data.map((u) => (
+                                    <tr key={u.id}>
+                                        <td>{u.id}</td>
+                                        <td>{u.name}</td>
+                                        <td>{u.email}</td>
+                                        <td><span className={`role-pill role-${u.role}`}>{roleLabelMap[u.role]}</span></td>
+                                        <td>{new Date(u.created_at).toLocaleDateString()}</td>
+                                        <td className="actions-cell">
+                                            <button className="btn btn-sm btn-outline" onClick={() => openEdit(u)}>Edit</button>
+                                            <button className="btn btn-sm btn-danger" onClick={() => setDeleteTarget(u)}>Delete</button>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {users?.data.map((u) => (
-                                        <tr key={u.id}>
-                                            <td>{u.id}</td>
-                                            <td>{u.name}</td>
-                                            <td>{u.email}</td>
-                                            <td><span className={`role-pill role-${u.role}`}>{roleLabelMap[u.role]}</span></td>
-                                            <td>{new Date(u.created_at).toLocaleDateString()}</td>
-                                            <td className="actions-cell">
-                                                <button className="btn btn-sm btn-outline" onClick={() => openEdit(u)}>Edit</button>
-                                                <button className="btn btn-sm btn-danger" onClick={() => setDeleteTarget(u)}>Delete</button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
-                        {/* Pagination */}
-                        {users && users.last_page > 1 && (
-                            <div className="pagination">
-                                <button className="btn btn-sm btn-outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>← Prev</button>
-                                <span className="page-info">Page {users.current_page} of {users.last_page}</span>
-                                <button className="btn btn-sm btn-outline" disabled={page >= users.last_page} onClick={() => setPage(page + 1)}>Next →</button>
-                            </div>
-                        )}
-                    </>
-                )}
-            </main>
+                    {/* Pagination */}
+                    {users && users.last_page > 1 && (
+                        <div className="pagination">
+                            <button className="btn btn-sm btn-outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>← Prev</button>
+                            <span className="page-info">Page {users.current_page} of {users.last_page}</span>
+                            <button className="btn btn-sm btn-outline" disabled={page >= users.last_page} onClick={() => setPage(page + 1)}>Next →</button>
+                        </div>
+                    )}
+                </>
+            )}
 
             {/* ── Create / Edit Modal ── */}
             {showModal && (
