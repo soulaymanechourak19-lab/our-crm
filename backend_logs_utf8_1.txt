@@ -1,0 +1,36 @@
+﻿backend-1  | ΓÅ│ Waiting for MySQL to be ready...
+backend-1  | Γ£à MySQL is ready.
+backend-1  | ≡ƒôª Installing Composer dependencies...
+backend-1  | Installing dependencies from lock file (including require-dev)
+backend-1  | Verifying lock file contents can be installed on current platform.
+backend-1  | Nothing to install, update or remove
+backend-1  | Generating optimized autoload files
+backend-1  | Class Modules\User\Database\Seeders\UserDatabaseSeeder located in ./Modules/User/database/seeders/UserDatabaseSeeder.php does not comply with psr-4 autoloading standard (rule: Modules\ => ./Modules). Skipping.
+backend-1  | > Illuminate\Foundation\ComposerScripts::postAutoloadDump
+backend-1  | > @php artisan package:discover --ansi
+backend-1  | 
+backend-1  | In AuthServiceProvider.php line 3:
+backend-1  |                                                                                
+backend-1  |   Namespace declaration statement has to be the very first statement or after  
+backend-1  |    any declare call in the script                                              
+backend-1  |                                                                                
+backend-1  | 
+backend-1  | Script @php artisan package:discover --ansi handling the post-autoload-dump event returned with error code 255
+backend-1  | ΓÅ│ Waiting for MySQL to be ready...
+backend-1  | Γ£à MySQL is ready.
+backend-1  | ≡ƒôª Installing Composer dependencies...
+backend-1  | Installing dependencies from lock file (including require-dev)
+backend-1  | Verifying lock file contents can be installed on current platform.
+backend-1  | Nothing to install, update or remove
+backend-1  | Generating optimized autoload files
+backend-1  | Class Modules\User\Database\Seeders\UserDatabaseSeeder located in ./Modules/User/database/seeders/UserDatabaseSeeder.php does not comply with psr-4 autoloading standard (rule: Modules\ => ./Modules). Skipping.
+backend-1  | > Illuminate\Foundation\ComposerScripts::postAutoloadDump
+backend-1  | > @php artisan package:discover --ansi
+backend-1  | 
+backend-1  | In AuthServiceProvider.php line 3:
+backend-1  |                                                                                
+backend-1  |   Namespace declaration statement has to be the very first statement or after  
+backend-1  |    any declare call in the script                                              
+backend-1  |                                                                                
+backend-1  | 
+backend-1  | Script @php artisan package:discover --ansi handling the post-autoload-dump event returned with error code 255

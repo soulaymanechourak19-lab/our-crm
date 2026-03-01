@@ -1,0 +1,11 @@
+﻿backend-1  | ΓÅ│ Waiting for MySQL to be ready...
+backend-1  | Γ£à MySQL is ready.
+backend-1  | ≡ƒöº Running migrations...
+backend-1  | 
+backend-1  |    INFO  Nothing to migrate.  
+backend-1  | 
+backend-1  | 
+backend-1  |    ERROR  There are no commands defined in the "module" namespace. Did you mean one of these?  
+backend-1  | 
+backend-1  |   Γçé model  
+backend-1  | 
