@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ═══════════════════════════════════════════════════════
    CRM User Module — Component Styles
    ═══════════════════════════════════════════════════════ */
@@ -549,3 +550,6 @@
     grid-template-columns: 1fr;
   }
 }
+=======
+/* Minimal App.css — all styles moved to index.css design system */
+>>>>>>> feature/crm-module

@@ -25,6 +25,11 @@ class User extends Authenticatable
         'role',
     ];
 
+    // Role constants
+    const ROLE_ADMIN = 'admin';
+    const ROLE_AGENT_COMMERCIAL = 'agent_commercial';
+    const ROLE_AGENT_SAV = 'agent_sav';
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -53,7 +58,7 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === self::ROLE_ADMIN;
     }
 
     /**
@@ -61,7 +66,7 @@ class User extends Authenticatable
      */
     public function isAgentCommercial(): bool
     {
-        return $this->role === 'agent_commercial';
+        return $this->role === self::ROLE_AGENT_COMMERCIAL;
     }
 
     /**
@@ -69,6 +74,6 @@ class User extends Authenticatable
      */
     public function isAgentSav(): bool
     {
-        return $this->role === 'agent_sav';
+        return $this->role === self::ROLE_AGENT_SAV;
     }
 }
