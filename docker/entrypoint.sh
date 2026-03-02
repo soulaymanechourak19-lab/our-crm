@@ -7,7 +7,7 @@ MYSQL_PORT="${DB_PORT:-3306}"
 MAX_RETRIES=30
 RETRY_COUNT=0
 
-until mysqladmin ping -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"${DB_USERNAME:-root}" -p"${DB_PASSWORD:-root}" --silent 2>/dev/null; do
+until (echo > /dev/tcp/"$MYSQL_HOST"/"$MYSQL_PORT") >/dev/null 2>&1; do
     RETRY_COUNT=$((RETRY_COUNT + 1))
     if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
         echo "❌ MySQL did not become ready after $MAX_RETRIES attempts. Exiting."
