@@ -4,8 +4,16 @@ set -e
 echo "⏳ Waiting for MySQL to be ready..."
 MYSQL_HOST="${DB_HOST:-mysql}"
 MYSQL_PORT="${DB_PORT:-3306}"
+MAX_RETRIES=30
+RETRY_COUNT=0
+
 until (echo > /dev/tcp/"$MYSQL_HOST"/"$MYSQL_PORT") >/dev/null 2>&1; do
-    echo "   MySQL not ready yet — retrying in 2s..."
+    RETRY_COUNT=$((RETRY_COUNT + 1))
+    if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
+        echo "❌ MySQL did not become ready after $MAX_RETRIES attempts. Exiting."
+        exit 1
+    fi
+    echo "   MySQL not ready yet (attempt $RETRY_COUNT/$MAX_RETRIES) — retrying in 2s..."
     sleep 2
 done
 echo "✅ MySQL is ready."
