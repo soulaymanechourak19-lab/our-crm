@@ -1,31 +1,71 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ToastProvider } from './components/common/Toast';
-import Layout from './components/Layout';
-import Dashboard from './pages/Dashboard';
-import Products from './pages/Products';
+import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+import './App.css';
 
+// ── Lazy-loaded routes (code splitting — smaller initial bundle) ──
+const Login = lazy(() => import('./components/auth/Login'));
+const Register = lazy(() => import('./components/auth/Register'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Users = lazy(() => import('./pages/admin/Users'));
 
-function App() {
+// Simple full-page loading fallback
+const PageLoader: React.FC = () => (
+  <div style={{
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    height: '100vh', background: '#0a0e1a', color: '#a0aec0', fontSize: 16
+  }}>
+    Loading…
+  </div>
+);
+
+const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <ToastProvider>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/leads" element={<div className="p-10 text-center text-dark-400">Leads Module Coming Soon</div>} />
-            <Route path="/customers" element={<div className="p-10 text-center text-dark-400">Customers Module Coming Soon</div>} />
-            <Route path="/settings" element={<div className="p-10 text-center text-dark-400">Settings Module Coming Soon</div>} />
-          </Route>
+      <AuthProvider>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          {/* Catch all */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </ToastProvider>
+            {/* Protected routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+
+            {/* Admin-only routes */}
+            <Route
+              path="/admin/users"
+              element={
+                <PrivateRoute adminOnly>
+                  <Users />
+                </PrivateRoute>
+              }
+            />
+
+            {/* Default redirect */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </Suspense>
+      </AuthProvider>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

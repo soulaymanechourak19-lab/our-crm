@@ -2,39 +2,47 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Modules\User\Entities\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
+     *
+     * Uses firstOrCreate so this is safe to run multiple times (idempotent).
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         // Admin User
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('password'),
-            'role' => 'admin',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name'     => 'Admin User',
+                'password' => Hash::make('password'),
+                'role'     => 'admin',
+            ]
+        );
 
-        // Commercial Agent
-        User::factory()->create([
-            'name' => 'Agent Commercial',
-            'email' => 'agent@example.com',
-            'password' => bcrypt('password'),
-            'role' => 'agent_commercial',
-        ]);
+        // Commercial Agent User
+        User::firstOrCreate(
+            ['email' => 'agent@example.com'],
+            [
+                'name'     => 'Commercial Agent',
+                'password' => Hash::make('password'),
+                'role'     => 'agent_commercial',
+            ]
+        );
 
-        $this->call([
-            CategorySeeder::class,
-        ]);
+        // SAV Agent User
+        User::firstOrCreate(
+            ['email' => 'sav@example.com'],
+            [
+                'name'     => 'SAV Agent',
+                'password' => Hash::make('password'),
+                'role'     => 'agent_sav',
+            ]
+        );
     }
 }

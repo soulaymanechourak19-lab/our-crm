@@ -1,0 +1,50 @@
+﻿Installing 
+dependencies from lock 
+file (including 
+require-dev)
+Verifying lock file 
+contents can be 
+installed on current 
+platform.
+Nothing to install, 
+update or remove
+Generating optimized 
+autoload files
+Class Modules\User\Data
+base\Seeders\UserDataba
+seSeeder located in ./M
+odules/User/database/se
+eders/UserDatabaseSeede
+r.php does not comply 
+with psr-4 autoloading 
+standard (rule: 
+Modules\ => 
+./Modules). Skipping.
+> Illuminate\Foundation
+\ComposerScripts::postA
+utoloadDump
+> @php artisan 
+package:discover --ansi
+Script @php artisan 
+package:discover 
+--ansi handling the 
+post-autoload-dump 
+event returned with 
+error code 255
+Installing 
+dependencies from lock 
+file (including 
+require-dev)
+Verifying lock file 
+contents can be 
+installed on current 
+platform.
+Nothing to install, 
+update or remove
+Generating optimized 
+autoload files
+> Illuminate\Foundation
+\ComposerScripts::postA
+utoloadDump
+> @php artisan 
+package:discover --ansi

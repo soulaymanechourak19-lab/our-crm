@@ -1,0 +1,128 @@
+﻿backend-1  | ΓÅ│ Waiting for MySQL to be ready...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  |    MySQL not ready yet ΓÇö retrying in 2s...
+backend-1  | Γ£à MySQL is ready.
+backend-1  | ≡ƒôª Installing Composer dependencies...
+backend-1  | Installing dependencies from lock file (including require-dev)
+backend-1  | Verifying lock file contents can be installed on current platform.
+backend-1  | Package operations: 35 installs, 0 updates, 0 removals
+backend-1  |   - Downloading fakerphp/faker (v1.24.1)
+backend-1  |   - Downloading laravel/pail (v1.2.6)
+backend-1  |   - Downloading laravel/pint (v1.27.1)
+backend-1  |   - Downloading symfony/yaml (v7.4.1)
+backend-1  |   - Downloading laravel/sail (v1.53.0)
+backend-1  |   - Downloading hamcrest/hamcrest-php (v2.1.1)
+backend-1  |   - Downloading mockery/mockery (1.6.12)
+backend-1  |   - Downloading filp/whoops (2.18.4)
+backend-1  |   - Downloading nunomaduro/collision (v8.8.3)
+backend-1  |   - Downloading staabm/side-effects-detector (1.0.5)
+backend-1  |   - Downloading sebastian/version (5.0.2)
+backend-1  |   - Downloading sebastian/type (5.1.3)
+backend-1  |   - Downloading sebastian/recursion-context (6.0.3)
+backend-1  |   - Downloading sebastian/object-reflector (4.0.1)
+backend-1  |   - Downloading sebastian/object-enumerator (6.0.1)
+backend-1  |   - Downloading sebastian/global-state (7.0.2)
+backend-1  |   - Downloading sebastian/exporter (6.3.2)
+backend-1  |   - Downloading sebastian/environment (7.2.1)
+backend-1  |   - Downloading sebastian/diff (6.0.2)
+backend-1  |   - Downloading sebastian/comparator (6.3.3)
+backend-1  |   - Downloading sebastian/code-unit (3.0.3)
+backend-1  |   - Downloading sebastian/cli-parser (3.0.2)
+backend-1  |   - Downloading phpunit/php-timer (7.0.1)
+backend-1  |   - Downloading phpunit/php-text-template (4.0.1)
+backend-1  |   - Downloading phpunit/php-invoker (5.0.1)
+backend-1  |   - Downloading phpunit/php-file-iterator (5.1.1)
+backend-1  |   - Downloading theseer/tokenizer (1.3.1)
+backend-1  |   - Downloading sebastian/lines-of-code (3.0.1)
+backend-1  |   - Downloading sebastian/complexity (4.0.1)
+backend-1  |   - Downloading sebastian/code-unit-reverse-lookup (4.0.1)
+backend-1  |   - Downloading phpunit/php-code-coverage (11.0.12)
+backend-1  |   - Downloading phar-io/version (3.2.1)
+backend-1  |   - Downloading phar-io/manifest (2.0.4)
+backend-1  |   - Downloading myclabs/deep-copy (1.13.4)
+backend-1  |   - Downloading phpunit/phpunit (11.5.53)
+backend-1  |   0/35 [>---------------------------]   0%
+backend-1  |   2/35 [=>--------------------------]   5%
+backend-1  |   4/35 [===>------------------------]  11%
+backend-1  |   8/35 [======>---------------------]  22%
+backend-1  |  11/35 [========>-------------------]  31%
+backend-1  |  14/35 [===========>----------------]  40%
+backend-1  |  18/35 [==============>-------------]  51%
+backend-1  |  21/35 [================>-----------]  60%
+backend-1  |  25/35 [====================>-------]  71%
+backend-1  |  28/35 [======================>-----]  80%
+backend-1  |  31/35 [========================>---]  88%
+backend-1  |  32/35 [=========================>--]  91%
+backend-1  |  33/35 [==========================>-]  94%
+backend-1  |  34/35 [===========================>]  97%
+backend-1  |  35/35 [============================] 100%
+backend-1  |   - Installing fakerphp/faker (v1.24.1): Extracting archive
+backend-1  |   - Installing laravel/pail (v1.2.6): Extracting archive
+backend-1  |   - Installing laravel/pint (v1.27.1): Extracting archive
+backend-1  |   - Installing symfony/yaml (v7.4.1): Extracting archive
+backend-1  |   - Installing laravel/sail (v1.53.0): Extracting archive
+backend-1  |   - Installing hamcrest/hamcrest-php (v2.1.1): Extracting archive
+backend-1  |   - Installing mockery/mockery (1.6.12): Extracting archive
+backend-1  |   - Installing filp/whoops (2.18.4): Extracting archive
+backend-1  |   - Installing nunomaduro/collision (v8.8.3): Extracting archive
+backend-1  |   - Installing staabm/side-effects-detector (1.0.5): Extracting archive
+backend-1  |   - Installing sebastian/version (5.0.2): Extracting archive
+backend-1  |   - Installing sebastian/type (5.1.3): Extracting archive
+backend-1  |   - Installing sebastian/recursion-context (6.0.3): Extracting archive
+backend-1  |   - Installing sebastian/object-reflector (4.0.1): Extracting archive
+backend-1  |   - Installing sebastian/object-enumerator (6.0.1): Extracting archive
+backend-1  |   - Installing sebastian/global-state (7.0.2): Extracting archive
+backend-1  |   - Installing sebastian/exporter (6.3.2): Extracting archive
+backend-1  |   - Installing sebastian/environment (7.2.1): Extracting archive
+backend-1  |   - Installing sebastian/diff (6.0.2): Extracting archive
+backend-1  |   - Installing sebastian/comparator (6.3.3): Extracting archive
+backend-1  |   - Installing sebastian/code-unit (3.0.3): Extracting archive
+backend-1  |   - Installing sebastian/cli-parser (3.0.2): Extracting archive
+backend-1  |   - Installing phpunit/php-timer (7.0.1): Extracting archive
+backend-1  |   - Installing phpunit/php-text-template (4.0.1): Extracting archive
+backend-1  |   - Installing phpunit/php-invoker (5.0.1): Extracting archive
+backend-1  |   - Installing phpunit/php-file-iterator (5.1.1): Extracting archive
+backend-1  |   - Installing theseer/tokenizer (1.3.1): Extracting archive
+backend-1  |   - Installing sebastian/lines-of-code (3.0.1): Extracting archive
+backend-1  |   - Installing sebastian/complexity (4.0.1): Extracting archive
+backend-1  |   - Installing sebastian/code-unit-reverse-lookup (4.0.1): Extracting archive
+backend-1  |   - Installing phpunit/php-code-coverage (11.0.12): Extracting archive
+backend-1  |   - Installing phar-io/version (3.2.1): Extracting archive
+backend-1  |   - Installing phar-io/manifest (2.0.4): Extracting archive
+backend-1  |   - Installing myclabs/deep-copy (1.13.4): Extracting archive
+backend-1  |   - Installing phpunit/phpunit (11.5.53): Extracting archive
+backend-1  |   0/35 [>---------------------------]   0%
+backend-1  |   8/35 [======>---------------------]  22%
+backend-1  |  17/35 [=============>--------------]  48%
+backend-1  |  20/35 [================>-----------]  57%
+backend-1  |  27/35 [=====================>------]  77%
+backend-1  |  30/35 [========================>---]  85%
+backend-1  |  33/35 [==========================>-]  94%
+backend-1  |  35/35 [============================] 100%
+backend-1  | Generating optimized autoload files
+backend-1  | Class Modules\User\Database\Seeders\UserDatabaseSeeder located in ./Modules/User/database/seeders/UserDatabaseSeeder.php does not comply with psr-4 autoloading standard (rule: Modules\ => ./Modules). Skipping.
+backend-1  | Class AuthController located in ./Modules/User/Http/Controllers/AuthController.php does not comply with psr-4 autoloading standard (rule: Modules\ => ./Modules). Skipping.
+backend-1  | > Illuminate\Foundation\ComposerScripts::postAutoloadDump
+backend-1  | > @php artisan package:discover --ansi
+backend-1  | 
+backend-1  | In AuthServiceProvider.php line 10:
+backend-1  |                                                           
+backend-1  |   syntax error, unexpected token "\", expecting variable  
+backend-1  |                                                           
+backend-1  | 
+backend-1  | Script @php artisan package:discover --ansi handling the post-autoload-dump event returned with error code 1

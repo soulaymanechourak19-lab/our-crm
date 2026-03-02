@@ -1,96 +1,109 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, login as loginApi, register as registerApi, logout as logoutApi, getProfile } from '../services/auth';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import api from '../services/api';
+
+// ── Types ──────────────────────────────────────────────
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    role: 'admin' | 'agent_commercial' | 'agent_sav';
+    created_at: string;
+    updated_at: string;
+}
 
 interface AuthContextType {
     user: User | null;
     token: string | null;
-    isLoading: boolean;
-    isAuthenticated: boolean;
+    loading: boolean;
     login: (email: string, password: string) => Promise<void>;
-    register: (name: string, email: string, password: string, passwordConfirmation: string) => Promise<void>;
+    register: (name: string, email: string, password: string, password_confirmation: string) => Promise<void>;
     logout: () => Promise<void>;
+    updateProfile: (data: Record<string, string>) => Promise<void>;
 }
 
+// ── Context ────────────────────────────────────────────
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+export const useAuth = (): AuthContextType => {
+    const ctx = useContext(AuthContext);
+    if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
+    return ctx;
+};
+
+// ── Provider ───────────────────────────────────────────
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-    const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        const loadUser = async () => {
-            if (token) {
-                try {
-                    const profile = await getProfile();
-                    setUser(profile);
-                } catch {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    setToken(null);
-                    setUser(null);
-                }
-            }
-            setIsLoading(false);
-        };
-        loadUser();
+    const fetchUser = useCallback(async () => {
+        if (!token) {
+            setLoading(false);
+            return;
+        }
+        try {
+            const { data } = await api.get('/user');
+            setUser(data);
+        } catch {
+            localStorage.removeItem('token');
+            setToken(null);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
     }, [token]);
 
+    useEffect(() => {
+        fetchUser();
+    }, [fetchUser]);
+
+    // ── Login (pure Bearer token — no CSRF needed) ──
     const login = async (email: string, password: string) => {
-        const response = await loginApi({ email, password });
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        setToken(response.token);
-        setUser(response.user);
+        const { data } = await api.post('/login', { email, password });
+        localStorage.setItem('token', data.token);
+        setToken(data.token);
+        setUser(data.user);
     };
 
-    const register = async (name: string, email: string, password: string, passwordConfirmation: string) => {
-        const response = await registerApi({
+    // ── Register ──
+    const register = async (
+        name: string,
+        email: string,
+        password: string,
+        password_confirmation: string
+    ) => {
+        const { data } = await api.post('/register', {
             name,
             email,
             password,
-            password_confirmation: passwordConfirmation,
+            password_confirmation,
         });
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        setToken(response.token);
-        setUser(response.user);
+        localStorage.setItem('token', data.token);
+        setToken(data.token);
+        setUser(data.user);
     };
 
+    // ── Logout ──
     const logout = async () => {
         try {
-            await logoutApi();
+            await api.post('/logout');
         } catch {
-            // Token might be expired already
-        } finally {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            setToken(null);
-            setUser(null);
+            // token might already be invalid — proceed anyway
         }
+        localStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
+    };
+
+    // ── Update profile ──
+    const updateProfile = async (profileData: Record<string, string>) => {
+        const { data } = await api.put('/profile', profileData);
+        setUser(data.user);
     };
 
     return (
-        <AuthContext.Provider
-            value={{
-                user,
-                token,
-                isLoading,
-                isAuthenticated: !!user && !!token,
-                login,
-                register,
-                logout,
-            }}
-        >
+        <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateProfile }}>
             {children}
         </AuthContext.Provider>
     );
-};
-
-export const useAuth = (): AuthContextType => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
 };

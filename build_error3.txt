@@ -1,0 +1,53 @@
+﻿docker-compose : 
+--progress is a global 
+compose flag, better 
+use `docker compose 
+--progress xx build ...
+At line:1 char:1
++ docker-compose build 
+--progress=plain 
+backend 2> 
+build_error2.txt; Ge 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (--progress is   
+  a...ss xx build .    
+..:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+ Image our-crm-backend 
+Building 
+Dockerfile:50
+
+--------------------
+
+  48 |     
+
+  49 |     # Generate 
+application key
+
+  50 | >>> RUN php 
+artisan key:generate
+
+  51 |     
+
+  52 |     # Fix 
+ownership and 
+permissions
+
+--------------------
+
+failed to solve: 
+process "/bin/sh -c 
+php artisan 
+key:generate" did not 
+complete successfully: 
+exit code: 255
+

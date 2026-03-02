@@ -1,0 +1,15 @@
+# Docker ignore
+backend/vendor
+backend/node_modules
+backend/bootstrap/cache/*.php
+!backend/bootstrap/cache/.gitignore
+backend/public/build
+backend/storage/*.key
+backend/.env
+frontend/node_modules
+frontend/dist
+.git
+.gitignore
+*.md
+docker-compose.yml
+Dockerfile

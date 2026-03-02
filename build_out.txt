@@ -1,0 +1,301 @@
+﻿docker : #0 building 
+with "desktop-linux" 
+instance using docker 
+driver
+At line:1 char:1
++ docker build -f 
+Dockerfile 
+--progress=plain . > 
+build_out.tmp 2>&1; G 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (#0 building w   
+ it...g docker driv    
+er:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+
+#1 [internal] load 
+build definition from 
+Dockerfile
+#1 transferring 
+dockerfile: 1.99kB 
+0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load 
+metadata for docker.io/
+library/composer:latest
+#2 DONE 0.2s
+
+#3 [internal] load 
+metadata for docker.io/
+library/php:8.4-apache
+#3 DONE 2.7s
+
+#4 [internal] load 
+.dockerignore
+#4 transferring 
+context: 2B 0.0s done
+#4 DONE 0.1s
+
+#5 [internal] load 
+build context
+#5 DONE 0.0s
+
+#6 FROM docker.io/libra
+ry/composer:latest@sha2
+56:52e157261f5e691b13c0
+a49af08a8c4485c4053d807
+7e73f70cad3389b54dc02
+#6 resolve docker.io/li
+brary/composer:latest@s
+ha256:52e157261f5e691b1
+3c0a49af08a8c4485c4053d
+8077e73f70cad3389b54dc0
+2
+#6 resolve docker.io/li
+brary/composer:latest@s
+ha256:52e157261f5e691b1
+3c0a49af08a8c4485c4053d
+8077e73f70cad3389b54dc0
+2 0.3s done
+#6 DONE 0.4s
+
+#7 [stage-0  1/16] 
+FROM docker.io/library/
+php:8.4-apache@sha256:1
+c00a1253beff44e81cdb2dd
+7168404dd58b5f8278e198d
+afd991cbb2972835b
+#7 resolve docker.io/li
+brary/php:8.4-apache@sh
+a256:1c00a1253beff44e81
+cdb2dd7168404dd58b5f827
+8e198dafd991cbb2972835b
+ 0.3s done
+#7 DONE 0.4s
+
+#5 [internal] load 
+build context
+#5 transferring 
+context: 597.88kB 4.1s
+#5 transferring 
+context: 866.52kB 5.4s 
+done
+#5 DONE 6.8s
+
+#8 [stage-0  4/16] RUN 
+a2enmod rewrite
+#8 CACHED
+
+#9 [stage-0  9/16] 
+COPY 
+backend/composer.json 
+backend/composer.lock 
+./
+#9 CACHED
+
+#10 [stage-0 10/16] 
+RUN composer install 
+--no-dev 
+--optimize-autoloader 
+--no-scripts 
+--no-interaction
+#10 CACHED
+
+#11 [stage-0  5/16] 
+RUN {     echo 
+'opcache.enable=1';    
+ echo 'opcache.memory_c
+onsumption=128';     
+echo 'opcache.interned_
+strings_buffer=8';     
+echo 'opcache.max_accel
+erated_files=10000';   
+  echo 'opcache.revalid
+ate_freq=0';     echo '
+opcache.validate_timest
+amps=0';     echo 'opca
+che.fast_shutdown=1';  
+   } > /usr/local/etc/p
+hp/conf.d/opcache.ini
+#11 CACHED
+
+#12 [stage-0  6/16] 
+COPY 
+--from=composer:latest 
+/usr/bin/composer 
+/usr/bin/composer
+#12 CACHED
+
+#13 [stage-0  8/16] 
+WORKDIR /var/www/html
+#13 CACHED
+
+#14 [stage-0  2/16] 
+RUN apt-get update && 
+apt-get install -y     
+git     unzip     curl 
+    
+default-mysql-client   
+  && rm -rf 
+/var/lib/apt/lists/*
+#14 CACHED
+
+#15 [stage-0  3/16] 
+RUN 
+docker-php-ext-install 
+pdo_mysql opcache
+#15 CACHED
+
+#16 [stage-0  7/16] 
+RUN sed -i 's|/var/www/
+html|/var/www/html/publ
+ic|g' /etc/apache2/site
+s-available/000-default
+.conf
+#16 CACHED
+
+#17 [stage-0 11/16] 
+COPY backend/ ./
+#17 CACHED
+
+#18 [stage-0 12/16] 
+RUN if [ ! -f .env ]; 
+then cp .env.example 
+.env; fi
+#18 CACHED
+
+#19 [stage-0 13/16] 
+RUN php artisan 
+key:generate
+#19 9.829 
+#19 9.829    Symfony\Co
+mponent\ErrorHandler\Er
+ror\FatalError 
+#19 9.829 
+#19 9.829   Trait "Nwid
+art\Modules\Traits\Path
+Namespace" not found
+#19 9.829 
+#19 9.829   at Modules/
+User/Providers/UserServ
+iceProvider.php:11
+#19 9.851       7Γûò 
+use Nwidart\Modules\Tra
+its\PathNamespace;
+#19 9.851       8Γûò 
+use RecursiveDirectoryI
+terator;
+#19 9.851       9Γûò 
+use RecursiveIteratorIt
+erator;
+#19 9.851      10Γûò 
+#19 9.851   Γ₧£  11Γûò 
+class 
+UserServiceProvider 
+extends ServiceProvider
+#19 9.851      12Γûò {
+#19 9.851      13Γûò   
+  use PathNamespace;
+#19 9.851      14Γûò 
+#19 9.851      15Γûò   
+  protected string 
+$name = 'User';
+#19 9.851 
+#19 9.853 
+#19 9.853    Whoops\Exc
+eption\ErrorException 
+#19 9.853 
+#19 9.853   Trait "Nwid
+art\Modules\Traits\Path
+Namespace" not found
+#19 9.853 
+#19 9.853   at Modules/
+User/Providers/UserServ
+iceProvider.php:11
+#19 9.857       7Γûò 
+use Nwidart\Modules\Tra
+its\PathNamespace;
+#19 9.857       8Γûò 
+use RecursiveDirectoryI
+terator;
+#19 9.857       9Γûò 
+use RecursiveIteratorIt
+erator;
+#19 9.857      10Γûò 
+#19 9.857   Γ₧£  11Γûò 
+class 
+UserServiceProvider 
+extends ServiceProvider
+#19 9.857      12Γûò {
+#19 9.857      13Γûò   
+  use PathNamespace;
+#19 9.857      14Γûò 
+#19 9.857      15Γûò   
+  protected string 
+$name = 'User';
+#19 9.857 
+#19 9.857       [2m+1 
+vendor frames [22m
+#19 9.857 
+#19 9.858   2   
+[internal]:0
+#19 9.858       Whoops\
+Run::handleShutdown()
+#19 9.858 
+#19 ERROR: process 
+"/bin/sh -c php 
+artisan key:generate" 
+did not complete 
+successfully: exit 
+code: 255
+------
+ > [stage-0 13/16] RUN 
+php artisan 
+key:generate:
+9.857      12Γûò {
+9.857      13Γûò     
+use PathNamespace;
+9.857      14Γûò 
+9.857      15Γûò     
+protected string $name 
+= 'User';
+9.857 
+9.857       [2m+1 
+vendor frames [22m
+9.857 
+9.858   2   
+[internal]:0
+9.858       Whoops\Run:
+:handleShutdown()
+9.858 
+------
+Dockerfile:50
+--------------------
+  48 |     
+  49 |     # Generate 
+application key
+  50 | >>> RUN php 
+artisan key:generate
+  51 |     
+  52 |     # Fix 
+ownership and 
+permissions
+--------------------
+ERROR: failed to 
+build: failed to 
+solve: process 
+"/bin/sh -c php 
+artisan key:generate" 
+did not complete 
+successfully: exit 
+code: 255
