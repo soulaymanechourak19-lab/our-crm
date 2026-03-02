@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Modules\CRM\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,7 +25,7 @@ class Lead extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(\Modules\User\Entities\User::class, 'created_by');
     }
 
     public function customer(): HasOne

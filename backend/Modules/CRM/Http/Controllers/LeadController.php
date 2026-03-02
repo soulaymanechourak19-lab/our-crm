@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\CRM\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Lead;
-use App\Models\User;
+use Modules\CRM\Entities\Customer;
+use Modules\CRM\Entities\Lead;
+use Modules\User\Entities\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
