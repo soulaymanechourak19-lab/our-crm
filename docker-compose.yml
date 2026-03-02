@@ -1,4 +1,4 @@
-﻿services:
+services:
   backend:
     build:
       context: .
@@ -7,11 +7,20 @@
       - "8000:80"
     volumes:
       - ./backend:/var/www/html
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=crm_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:8
     ports:
-      - "3307:3306" # Changed to 3307
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: crm_db
@@ -24,8 +33,9 @@
       - "3000:3000"
     volumes:
       - ./frontend:/app
+      - /app/node_modules  
     working_dir: /app
-    command: sh -c "if [ -d node_modules ]; then npm start; else npx create-react-app . --template typescript && npm start; fi"
+    command: sh -c "npm install && npm start"
 
 volumes:
   mysql-data:

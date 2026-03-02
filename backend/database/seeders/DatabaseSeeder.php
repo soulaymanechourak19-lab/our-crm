@@ -17,9 +17,24 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        // Admin User
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+        ]);
+
+        // Commercial Agent
+        User::factory()->create([
+            'name' => 'Agent Commercial',
+            'email' => 'agent@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'agent_commercial',
+        ]);
+
+        $this->call([
+            CategorySeeder::class,
         ]);
     }
 }

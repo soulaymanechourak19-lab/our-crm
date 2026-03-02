@@ -1,25 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastProvider } from './components/common/Toast';
+import Layout from './components/Layout';
+import Dashboard from './pages/Dashboard';
+import Products from './pages/Products';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <ToastProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/leads" element={<div className="p-10 text-center text-dark-400">Leads Module Coming Soon</div>} />
+            <Route path="/customers" element={<div className="p-10 text-center text-dark-400">Customers Module Coming Soon</div>} />
+            <Route path="/settings" element={<div className="p-10 text-center text-dark-400">Settings Module Coming Soon</div>} />
+          </Route>
+
+          {/* Catch all */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </ToastProvider>
+    </BrowserRouter>
   );
 }
 
