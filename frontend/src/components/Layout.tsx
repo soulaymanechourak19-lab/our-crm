@@ -56,11 +56,10 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
                     )}
 
                     {(user.role === 'admin' || user.role === 'agent_commercial') && (
-                        <div className="nav-item opacity-40 cursor-not-allowed group">
+                        <Link to="/products" className={`nav-item ${isActive('/products') ? 'active' : ''}`}>
                             <span className="nav-icon text-lg">📦</span>
                             <span>Products</span>
-                            <small className="ml-auto text-[9px] uppercase font-bold tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Soon</small>
-                        </div>
+                        </Link>
                     )}
 
                     {(user.role === 'admin' || user.role === 'agent_sav') && (

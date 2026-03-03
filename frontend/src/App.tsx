@@ -15,6 +15,7 @@ const Users = lazy(() => import('./pages/admin/Users'));
 const Leads = lazy(() => import('./pages/Leads'));
 const Customers = lazy(() => import('./pages/Customers'));
 const CustomerDetail = lazy(() => import('./pages/CustomerDetail'));
+const Products = lazy(() => import('./pages/Products'));
 
 // Simple full-page loading fallback
 const PageLoader: React.FC = () => (
@@ -89,6 +90,18 @@ const App: React.FC = () => {
                   <PrivateRoute>
                     <Layout title="Customer Details" subtitle="Detailed view of client information">
                       <CustomerDetail />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+
+              {/* Sales routes */}
+              <Route
+                path="/products"
+                element={
+                  <PrivateRoute>
+                    <Layout title="Products" subtitle="Manage your inventory and product catalog">
+                      <Products />
                     </Layout>
                   </PrivateRoute>
                 }

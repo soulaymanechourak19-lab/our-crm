@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { apiRequest } from '../api';
+import api from '../services/api';
 
 // Types
 export interface User {
@@ -117,78 +117,78 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (filters.status) params.set('status', filters.status);
         if (filters.search) params.set('search', filters.search);
 
-        const result = await apiRequest<any>(`/leads?${params.toString()}`);
-        if (result.ok && result.data) {
-            setLeads(result.data.data || []);
+        try {
+            const { data } = await api.get(`/leads?${params.toString()}`);
+            setLeads(data.data || []);
             setLeadsPagination({
-                current_page: result.data.current_page || 1,
-                last_page: result.data.last_page || 1,
-                per_page: result.data.per_page || 15,
-                total: result.data.total || 0,
+                current_page: data.current_page || 1,
+                last_page: data.last_page || 1,
+                per_page: data.per_page || 15,
+                total: data.total || 0,
             });
-        } else {
-            setError(result.error);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to fetch leads');
             setLeads([]);
         }
         setLeadsLoading(false);
     }, []);
 
     const addLead = async (lead: Partial<Lead>) => {
-        const result = await apiRequest('/leads', { method: 'POST', body: lead });
-        if (result.ok) {
+        try {
+            await api.post('/leads', lead);
             showToast('Lead created successfully', 'success');
             await fetchLeads();
             return true;
-        } else {
-            showToast(result.error || 'Failed to create lead', 'error');
+        } catch (err: any) {
+            showToast(err.response?.data?.message || 'Failed to create lead', 'error');
             return false;
         }
     };
 
     const updateLead = async (id: number, data: Partial<Lead>) => {
-        const result = await apiRequest(`/leads/${id}`, { method: 'PUT', body: data });
-        if (result.ok) {
+        try {
+            await api.put(`/leads/${id}`, data);
             showToast('Lead updated successfully', 'success');
             await fetchLeads(leadsPagination.current_page);
             return true;
-        } else {
-            showToast(result.error || 'Failed to update lead', 'error');
+        } catch (err: any) {
+            showToast(err.response?.data?.message || 'Failed to update lead', 'error');
             return false;
         }
     };
 
     const updateLeadStatus = async (id: number, status: string) => {
-        const result = await apiRequest(`/leads/${id}/status`, { method: 'PUT', body: { status } });
-        if (result.ok) {
+        try {
+            await api.put(`/leads/${id}/status`, { status });
             showToast('Lead status updated', 'success');
             await fetchLeads(leadsPagination.current_page);
             return true;
-        } else {
-            showToast(result.error || 'Failed to update status', 'error');
+        } catch (err: any) {
+            showToast(err.response?.data?.message || 'Failed to update status', 'error');
             return false;
         }
     };
 
     const deleteLead = async (id: number) => {
-        const result = await apiRequest(`/leads/${id}`, { method: 'DELETE' });
-        if (result.ok) {
+        try {
+            await api.delete(`/leads/${id}`);
             showToast('Lead deleted', 'success');
             await fetchLeads(leadsPagination.current_page);
             return true;
-        } else {
-            showToast(result.error || 'Failed to delete lead', 'error');
+        } catch (err: any) {
+            showToast(err.response?.data?.message || 'Failed to delete lead', 'error');
             return false;
         }
     };
 
     const convertLead = async (id: number) => {
-        const result = await apiRequest(`/leads/${id}/convert`, { method: 'POST' });
-        if (result.ok) {
+        try {
+            await api.post(`/leads/${id}/convert`);
             showToast('Lead converted to customer!', 'success');
             await fetchLeads(leadsPagination.current_page);
             return true;
-        } else {
-            showToast(result.error || 'Failed to convert lead', 'error');
+        } catch (err: any) {
+            showToast(err.response?.data?.message || 'Failed to convert lead', 'error');
             return false;
         }
     };
@@ -203,108 +203,107 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (filters.search) params.set('search', filters.search);
         if (filters.tier) params.set('tier', filters.tier);
 
-        const result = await apiRequest<any>(`/customers?${params.toString()}`);
-        if (result.ok && result.data) {
-            setCustomers(result.data.data || []);
+        try {
+            const { data } = await api.get(`/customers?${params.toString()}`);
+            setCustomers(data.data || []);
             setCustomersPagination({
-                current_page: result.data.current_page || 1,
-                last_page: result.data.last_page || 1,
-                per_page: result.data.per_page || 15,
-                total: result.data.total || 0,
+                current_page: data.current_page || 1,
+                last_page: data.last_page || 1,
+                per_page: data.per_page || 15,
+                total: data.total || 0,
             });
-        } else {
-            setError(result.error);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to fetch customers');
             setCustomers([]);
         }
         setCustomersLoading(false);
     }, []);
 
     const addCustomer = async (customer: Partial<Customer>) => {
-        const result = await apiRequest('/customers', { method: 'POST', body: customer });
-        if (result.ok) {
+        try {
+            await api.post('/customers', customer);
             showToast('Customer created successfully', 'success');
             await fetchCustomers();
             return true;
-        } else {
-            showToast(result.error || 'Failed to create customer', 'error');
+        } catch (err: any) {
+            showToast(err.response?.data?.message || 'Failed to create customer', 'error');
             return false;
         }
     };
 
     const updateCustomer = async (id: number, data: Partial<Customer>) => {
-        const result = await apiRequest(`/customers/${id}`, { method: 'PUT', body: data });
-        if (result.ok) {
+        try {
+            await api.put(`/customers/${id}`, data);
             showToast('Customer updated successfully', 'success');
             await fetchCustomers(customersPagination.current_page);
             return true;
-        } else {
-            showToast(result.error || 'Failed to update customer', 'error');
+        } catch (err: any) {
+            showToast(err.response?.data?.message || 'Failed to update customer', 'error');
             return false;
         }
     };
 
     const deleteCustomer = async (id: number) => {
-        const result = await apiRequest(`/customers/${id}`, { method: 'DELETE' });
-        if (result.ok) {
+        try {
+            await api.delete(`/customers/${id}`);
             showToast('Customer deleted', 'success');
             await fetchCustomers(customersPagination.current_page);
             return true;
-        } else {
-            showToast(result.error || 'Failed to delete customer', 'error');
+        } catch (err: any) {
+            showToast(err.response?.data?.message || 'Failed to delete customer', 'error');
             return false;
         }
     };
 
     const fetchCustomerDetail = async (id: number) => {
-        const result = await apiRequest<Customer>(`/customers/${id}`);
-        if (result.ok && result.data) {
-            setSelectedCustomer(result.data);
-        } else {
-            setError(result.error);
+        try {
+            const { data } = await api.get(`/customers/${id}`);
+            setSelectedCustomer(data);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to fetch customer details');
         }
     };
 
     // ─── Interactions ────────────────────────────────────────────────
 
     const addInteraction = async (customerId: number, interaction: Interaction) => {
-        const result = await apiRequest(`/customers/${customerId}/interactions`, {
-            method: 'POST',
-            body: interaction,
-        });
-        if (result.ok) {
+        try {
+            await api.post(`/customers/${customerId}/interactions`, interaction);
             showToast('Interaction logged successfully', 'success');
-            // Refresh customer detail to get updated loyalty score
             await fetchCustomerDetail(customerId);
             return true;
-        } else {
-            showToast(result.error || 'Failed to log interaction', 'error');
+        } catch (err: any) {
+            showToast(err.response?.data?.message || 'Failed to log interaction', 'error');
             return false;
         }
     };
 
     const fetchInteractions = async (customerId: number, page = 1) => {
-        const result = await apiRequest<any>(`/customers/${customerId}/interactions?page=${page}`);
-        if (result.ok && result.data) {
+        try {
+            const { data } = await api.get(`/customers/${customerId}/interactions?page=${page}`);
             return {
-                data: result.data.data || [],
+                data: data.data || [],
                 meta: {
-                    current_page: result.data.current_page || 1,
-                    last_page: result.data.last_page || 1,
-                    per_page: result.data.per_page || 10,
-                    total: result.data.total || 0,
+                    current_page: data.current_page || 1,
+                    last_page: data.last_page || 1,
+                    per_page: data.per_page || 10,
+                    total: data.total || 0,
                 },
             };
+        } catch {
+            return { data: [], meta: defaultPagination };
         }
-        return { data: [], meta: defaultPagination };
     };
 
     // ─── Load user on mount ──────────────────────────────────────────
 
     useEffect(() => {
         const loadUser = async () => {
-            const result = await apiRequest<User>('/user');
-            if (result.ok && result.data) {
-                setCurrentUser(result.data);
+            try {
+                const { data } = await api.get('/user');
+                setCurrentUser(data);
+            } catch {
+                // Not logged in or session expired
             }
         };
         loadUser();

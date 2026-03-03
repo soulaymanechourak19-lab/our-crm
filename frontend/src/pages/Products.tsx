@@ -1,0 +1,163 @@
+import React, { useEffect, useState, useCallback } from 'react';
+import Card from '../components/common/Card';
+import Input from '../components/common/Input';
+import Button from '../components/common/Button';
+import Pagination from '../components/common/Pagination';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import ProductCard from '../components/products/ProductCard';
+import ProductForm from '../components/products/ProductForm';
+import StockUpdate from '../components/products/StockUpdate';
+import CategoryManager from '../components/products/CategoryManager';
+import ConfirmationDialog from '../components/common/ConfirmationDialog';
+import { Product, getProducts, deleteProduct } from '../services/products';
+import { useToast } from '../components/common/Toast';
+
+
+const Products: React.FC = () => {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [search, setSearch] = useState('');
+    const [category, setCategory] = useState('');
+    const [page, setPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
+    const [isProductFormOpen, setIsProductFormOpen] = useState(false);
+    const [isStockUpdateOpen, setIsStockUpdateOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const { showToast } = useToast();
+
+
+    // Fetch products
+    const fetchProducts = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const response = await getProducts({ page, search, category });
+            setProducts(response.data);
+            setLastPage(response.last_page);
+        } catch (error) {
+            showToast('Failed to load products', 'error');
+        } finally {
+            setIsLoading(false);
+        }
+    }, [page, search, category, showToast]);
+
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
+
+    // Handlers
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setSearch(e.target.value);
+        setPage(1); // Reset to first page on search
+    };
+
+    const handleCategorySelect = (cat: string) => {
+        setCategory(cat === category ? '' : cat);
+        setPage(1);
+    };
+
+    const handleDelete = async () => {
+        if (!selectedProduct) return;
+        try {
+            await deleteProduct(selectedProduct.id);
+            showToast('Product deleted successfully', 'success');
+            fetchProducts();
+            setIsDeleteOpen(false);
+        } catch {
+            showToast('Failed to delete product', 'error');
+        }
+    };
+
+    const openEdit = (product: Product) => {
+        setSelectedProduct(product);
+        setIsProductFormOpen(true);
+    };
+
+    const openStock = (product: Product) => {
+        setSelectedProduct(product);
+        setIsStockUpdateOpen(true);
+    };
+
+    const openDelete = (product: Product) => {
+        setSelectedProduct(product);
+        setIsDeleteOpen(true);
+    };
+
+    return (
+        <div className="space-y-6">
+            {/* Filters */}
+            <Card className="flex flex-col md:flex-row gap-4 items-center">
+                <div className="w-full md:w-64">
+                    <Input
+                        value={search}
+                        onChange={handleSearch}
+                        placeholder="Search products..."
+                        className="bg-dark-900 border-dark-700"
+                    />
+                </div>
+
+                <div className="flex-1 overflow-x-auto">
+                    <CategoryManager onSelectCategory={handleCategorySelect} selectedCategory={category} />
+                </div>
+
+                <div className="flex-shrink-0">
+                    <Button onClick={() => { setSelectedProduct(null); setIsProductFormOpen(true); }}>
+                        + Add Product
+                    </Button>
+                </div>
+            </Card>
+
+            {/* Product Grid */}
+            {isLoading ? (
+                <div className="flex justify-center py-20">
+                    <LoadingSpinner size="lg" />
+                </div>
+            ) : products.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {products.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            onEdit={openEdit}
+                            onDelete={openDelete}
+                            onStockUpdate={openStock}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center py-20 text-dark-400">
+                    No products found. Try adjusting your filters.
+                </div>
+            )}
+
+            {/* Pagination */}
+            <Pagination currentPage={page} lastPage={lastPage} onPageChange={setPage} />
+
+            {/* Modals */}
+            <ProductForm
+                isOpen={isProductFormOpen}
+                onClose={() => setIsProductFormOpen(false)}
+                product={selectedProduct}
+                onSuccess={fetchProducts}
+            />
+
+            <StockUpdate
+                isOpen={isStockUpdateOpen}
+                onClose={() => setIsStockUpdateOpen(false)}
+                product={selectedProduct}
+                onSuccess={fetchProducts}
+            />
+
+            <ConfirmationDialog
+                isOpen={isDeleteOpen}
+                onClose={() => setIsDeleteOpen(false)}
+                onConfirm={handleDelete}
+                title="Delete Product"
+                message={`Are you sure you want to delete "${selectedProduct?.name}"? This action cannot be undone.`}
+                confirmText="Delete Product"
+            />
+        </div>
+    );
+};
+
+export default Products;
