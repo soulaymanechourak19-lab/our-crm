@@ -71,7 +71,6 @@ const Leads: React.FC = () => {
     };
 
     return (
-    return (
         <div className="animate-fade-in">
             {/* Toolbar */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -234,22 +233,22 @@ const Leads: React.FC = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
                     <div className="glass-card p-6 w-full max-w-sm mx-4 animate-slide-in">
                         <h3 className="text-lg font-bold text-white mb-2">
-                            {confirmAction.type === 'delete' ? 'Delete Lead' : 'Convert Lead'}
+                            {confirmAction?.type === 'delete' ? 'Delete Lead' : 'Convert Lead'}
                         </h3>
                         <p className="text-sm text-slate-400 mb-6">
-                            {confirmAction.type === 'delete'
-                                ? `Are you sure you want to delete "${confirmAction.lead.company_name}"? This action can be undone.`
-                                : `Convert "${confirmAction.lead.company_name}" to a customer? This will create a new customer record.`}
+                            {confirmAction?.type === 'delete'
+                                ? `Are you sure you want to delete "${confirmAction?.lead.company_name}"? This action can be undone.`
+                                : `Convert "${confirmAction?.lead.company_name}" to a customer? This will create a new customer record.`}
                         </p>
                         <div className="flex justify-end space-x-3">
                             <button onClick={() => setConfirmAction(null)}
                                 className="px-4 py-2 text-sm font-medium text-slate-400 rounded-xl hover:text-white hover:bg-white/5 transition-all">
                                 Cancel
                             </button>
-                            <button onClick={confirmAction.type === 'delete' ? handleDelete : handleConvert}
+                            <button onClick={confirmAction?.type === 'delete' ? handleDelete : handleConvert}
                                 className="px-4 py-2 text-sm font-semibold text-white rounded-xl transition-all"
-                                style={{ background: confirmAction.type === 'delete' ? '#ef4444' : 'linear-gradient(135deg, #10b981, #059669)' }}>
-                                {confirmAction.type === 'delete' ? 'Delete' : 'Convert'}
+                                style={{ background: confirmAction?.type === 'delete' ? '#ef4444' : 'linear-gradient(135deg, #10b981, #059669)' }}>
+                                {confirmAction?.type === 'delete' ? 'Delete' : 'Convert'}
                             </button>
                         </div>
                     </div>

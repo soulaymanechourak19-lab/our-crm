@@ -46,7 +46,6 @@ const Customers: React.FC = () => {
     };
 
     return (
-    return (
         <div className="animate-fade-in">
             {/* Toolbar */}
             <div className="flex justify-end mb-6">
