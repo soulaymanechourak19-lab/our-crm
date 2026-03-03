@@ -35,7 +35,7 @@ services:
       DB_DATABASE: crm_db
       DB_USERNAME: root
       DB_PASSWORD: root
-      SESSION_DRIVER: database
+      SESSION_DRIVER: file
       SESSION_DOMAIN: localhost
       SESSION_SAME_SITE: lax
       CACHE_DRIVER: file
@@ -57,7 +57,7 @@ services:
       - WATCHPACK_POLLING=true
       - HOST=0.0.0.0
       - WDS_SOCKET_PORT=0
-      - REACT_APP_API_URL=http://localhost:8000/api
+      - REACT_APP_API_URL=http://127.0.0.1:8000/api
     # Install deps on first run (only if node_modules is empty), then start
     command: sh -c "[ -d node_modules/.bin ] || npm install && npm start"
     depends_on:
