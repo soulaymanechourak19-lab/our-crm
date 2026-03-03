@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import Layout from './components/Layout';
 import './App.css';
 
 // ── Lazy-loaded routes (code splitting — smaller initial bundle) ──
@@ -39,7 +40,9 @@ const App: React.FC = () => {
               path="/dashboard"
               element={
                 <PrivateRoute>
-                  <Dashboard />
+                  <Layout title="Dashboard">
+                    <Dashboard />
+                  </Layout>
                 </PrivateRoute>
               }
             />
@@ -47,7 +50,9 @@ const App: React.FC = () => {
               path="/profile"
               element={
                 <PrivateRoute>
-                  <Profile />
+                  <Layout title="User Profile">
+                    <Profile />
+                  </Layout>
                 </PrivateRoute>
               }
             />
@@ -57,7 +62,9 @@ const App: React.FC = () => {
               path="/leads"
               element={
                 <PrivateRoute>
-                  <Leads />
+                  <Layout title="Leads">
+                    <Leads />
+                  </Layout>
                 </PrivateRoute>
               }
             />
@@ -65,7 +72,9 @@ const App: React.FC = () => {
               path="/customers"
               element={
                 <PrivateRoute>
-                  <Customers />
+                  <Layout title="Customers">
+                    <Customers />
+                  </Layout>
                 </PrivateRoute>
               }
             />
@@ -73,7 +82,9 @@ const App: React.FC = () => {
               path="/customers/:id"
               element={
                 <PrivateRoute>
-                  <CustomerDetail />
+                  <Layout title="Customer Details">
+                    <CustomerDetail />
+                  </Layout>
                 </PrivateRoute>
               }
             />
@@ -83,7 +94,9 @@ const App: React.FC = () => {
               path="/admin/users"
               element={
                 <PrivateRoute adminOnly>
-                  <Users />
+                  <Layout title="User Management">
+                    <Users />
+                  </Layout>
                 </PrivateRoute>
               }
             />

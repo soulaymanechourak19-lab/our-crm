@@ -47,13 +47,13 @@ const Layout: React.FC<LayoutProps> = ({ children, title }) => {
                     </Link>
 
                     {(user.role === 'admin' || user.role === 'agent_commercial') && (
-                        <Link to="/dashboard" className="nav-item">
+                        <Link to="/leads" className={`nav-item ${isActive('/leads') ? 'active' : ''}`}>
                             <span className="nav-icon">🎯</span> Leads
                         </Link>
                     )}
 
                     {(user.role === 'admin' || user.role === 'agent_commercial' || user.role === 'agent_sav') && (
-                        <Link to="/dashboard" className="nav-item">
+                        <Link to="/customers" className={`nav-item ${isActive('/customers') || location.pathname.startsWith('/customers/') ? 'active' : ''}`}>
                             <span className="nav-icon">🤝</span> Customers
                         </Link>
                     )}

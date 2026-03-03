@@ -115,14 +115,7 @@ const Users: React.FC = () => {
     if (!currentUser) return null;
 
     return (
-        <div style={{ padding: '32px 40px', height: '100%', overflowY: 'auto' }}>
-            <header className="top-bar">
-                <h2>User Management</h2>
-                <div className="user-badge">
-                    <span className={`role-pill role-${currentUser.role}`}>{roleLabelMap[currentUser.role]}</span>
-                    <span className="user-name">{currentUser.name}</span>
-                </div>
-            </header>
+        <div style={{ height: '100%', overflowY: 'auto' }}>
 
             <div className="table-toolbar">
                 <p className="table-count">{users?.total ?? 0} users total</p>
