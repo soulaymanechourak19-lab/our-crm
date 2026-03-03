@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 interface LayoutProps {
     children: ReactNode;
     title?: string;
+    subtitle?: string;
 }
 
 const roleLabelMap: Record<string, string> = {
@@ -13,7 +14,7 @@ const roleLabelMap: Record<string, string> = {
     agent_sav: 'Support Agent',
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, title }) => {
+const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
     const { user, logout } = useAuth();
     const location = useLocation();
 
@@ -28,62 +29,77 @@ const Layout: React.FC<LayoutProps> = ({ children, title }) => {
             {/* ── Sidebar ── */}
             <aside className="sidebar">
                 <div className="sidebar-brand">
-                    <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-                        <rect width="40" height="40" rx="10" fill="url(#sidebarGrad)" />
-                        <text x="50%" y="55%" textAnchor="middle" dominantBaseline="middle" fill="#fff" fontSize="18" fontWeight="700">C</text>
-                        <defs>
-                            <linearGradient id="sidebarGrad" x1="0" y1="0" x2="40" y2="40">
-                                <stop stopColor="#6366f1" />
-                                <stop offset="1" stopColor="#8b5cf6" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                    <span>CRM</span>
+                    <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center mr-2 shadow-lg shadow-indigo-500/20">
+                        <span className="text-white font-bold text-lg">C</span>
+                    </div>
+                    <span className="text-xl font-extrabold tracking-tight text-white">OurCRM</span>
                 </div>
 
                 <nav className="sidebar-nav">
                     <Link to="/dashboard" className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}>
-                        <span className="nav-icon">🏠</span> Dashboard
+                        <span className="nav-icon text-lg">🏠</span>
+                        <span>Dashboard</span>
                     </Link>
 
                     {(user.role === 'admin' || user.role === 'agent_commercial') && (
                         <Link to="/leads" className={`nav-item ${isActive('/leads') ? 'active' : ''}`}>
-                            <span className="nav-icon">🎯</span> Leads
+                            <span className="nav-icon text-lg">🎯</span>
+                            <span>Leads</span>
                         </Link>
                     )}
 
                     {(user.role === 'admin' || user.role === 'agent_commercial' || user.role === 'agent_sav') && (
                         <Link to="/customers" className={`nav-item ${isActive('/customers') || location.pathname.startsWith('/customers/') ? 'active' : ''}`}>
-                            <span className="nav-icon">🤝</span> Customers
+                            <span className="nav-icon text-lg">🤝</span>
+                            <span>Customers</span>
                         </Link>
                     )}
 
                     {(user.role === 'admin' || user.role === 'agent_commercial') && (
-                        <div className="nav-item opacity-50 cursor-not-allowed" title="Coming Soon">
-                            <span className="nav-icon">📦</span> Products <small className="ml-auto text-[10px] uppercase tracking-wider opacity-60">Soon</small>
+                        <div className="nav-item opacity-40 cursor-not-allowed group">
+                            <span className="nav-icon text-lg">📦</span>
+                            <span>Products</span>
+                            <small className="ml-auto text-[9px] uppercase font-bold tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Soon</small>
                         </div>
                     )}
 
                     {(user.role === 'admin' || user.role === 'agent_sav') && (
-                        <div className="nav-item opacity-50 cursor-not-allowed" title="Coming Soon">
-                            <span className="nav-icon">🎫</span> Tickets <small className="ml-auto text-[10px] uppercase tracking-wider opacity-60">Soon</small>
+                        <div className="nav-item opacity-40 cursor-not-allowed group">
+                            <span className="nav-icon text-lg">🎫</span>
+                            <span>Tickets</span>
+                            <small className="ml-auto text-[9px] uppercase font-bold tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Soon</small>
                         </div>
                     )}
 
+                    <div className="mt-8 mb-2 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Settings</div>
+
                     {user.role === 'admin' && (
                         <Link to="/admin/users" className={`nav-item ${isActive('/admin/users') ? 'active' : ''}`}>
-                            <span className="nav-icon">👥</span> Users
+                            <span className="nav-icon text-lg">👥</span>
+                            <span>Users</span>
                         </Link>
                     )}
 
                     <Link to="/profile" className={`nav-item ${isActive('/profile') ? 'active' : ''}`}>
-                        <span className="nav-icon">⚙️</span> Profile
+                        <span className="nav-icon text-lg">👤</span>
+                        <span>Profile</span>
                     </Link>
                 </nav>
 
                 <div className="sidebar-footer">
-                    <button className="btn btn-ghost btn-block" onClick={logout}>
-                        🚪 Sign out
+                    <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.05] mb-4 mx-2">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-inner">
+                                {user.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="flex-1 overflow-hidden">
+                                <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                                <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{roleLabel}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button className="nav-item w-full text-left font-semibold text-red-400 hover:text-red-300 hover:bg-red-500/10 mb-2" onClick={logout}>
+                        <span className="nav-icon text-lg">🚪</span> Sign out
                     </button>
                 </div>
             </aside>
@@ -91,10 +107,15 @@ const Layout: React.FC<LayoutProps> = ({ children, title }) => {
             {/* ── Main Content ── */}
             <main className="main-content">
                 <header className="top-bar">
-                    <h2>{title}</h2>
-                    <div className="user-badge">
-                        <span className={`role-pill role-${user.role}`}>{roleLabel}</span>
-                        <span className="user-name">{user.name}</span>
+                    <div className="flex flex-col">
+                        <h2 className="text-2xl font-extrabold text-white tracking-tight">{title}</h2>
+                        {subtitle && <p className="text-sm text-slate-400 font-medium mt-1">{subtitle}</p>}
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        <button className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+                            <span className="text-xl">🔔</span>
+                        </button>
                     </div>
                 </header>
                 <div className="layout-children">

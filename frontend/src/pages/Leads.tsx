@@ -4,10 +4,10 @@ import KanbanBoard from '../components/leads/KanbanBoard';
 import LeadForm from '../components/leads/LeadForm';
 
 const statusColors: Record<string, { bg: string; text: string; dot: string }> = {
-    new: { bg: 'rgba(59, 130, 246, 0.15)', text: '#60a5fa', dot: '#3b82f6' },
-    contacted: { bg: 'rgba(245, 158, 11, 0.15)', text: '#fbbf24', dot: '#f59e0b' },
-    qualified: { bg: 'rgba(139, 92, 246, 0.15)', text: '#a78bfa', dot: '#8b5cf6' },
-    converted: { bg: 'rgba(16, 185, 129, 0.15)', text: '#34d399', dot: '#10b981' },
+    new: { bg: 'rgba(59, 130, 246, 0.1)', text: '#60a5fa', dot: '#3b82f6' },
+    contacted: { bg: 'rgba(245, 158, 11, 0.1)', text: '#fbbf24', dot: '#f59e0b' },
+    qualified: { bg: 'rgba(139, 92, 246, 0.1)', text: '#a78bfa', dot: '#8b5cf6' },
+    converted: { bg: 'rgba(16, 185, 129, 0.1)', text: '#34d399', dot: '#10b981' },
 };
 
 const Leads: React.FC = () => {

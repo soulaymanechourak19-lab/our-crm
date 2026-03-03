@@ -6,10 +6,10 @@ interface KanbanBoardProps {
 }
 
 const columnConfig = [
-    { key: 'new', label: 'New', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.08)' },
-    { key: 'contacted', label: 'Contacted', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.08)' },
-    { key: 'qualified', label: 'Qualified', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.08)' },
-    { key: 'converted', label: 'Converted', color: '#10b981', bg: 'rgba(16, 185, 129, 0.08)' },
+    { key: 'new', label: 'New', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.05)' },
+    { key: 'contacted', label: 'Contacted', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.05)' },
+    { key: 'qualified', label: 'Qualified', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.05)' },
+    { key: 'converted', label: 'Converted', color: '#10b981', bg: 'rgba(16, 185, 129, 0.05)' },
 ];
 
 const KanbanBoard: React.FC<KanbanBoardProps> = ({ leads }) => {

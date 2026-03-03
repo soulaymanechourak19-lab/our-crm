@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CRMProvider } from './context/CRMContext';
 import PrivateRoute from './components/PrivateRoute';
@@ -20,15 +20,18 @@ const CustomerDetail = lazy(() => import('./pages/CustomerDetail'));
 const PageLoader: React.FC = () => (
   <div style={{
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    height: '100vh', background: '#0a0e1a', color: '#a0aec0', fontSize: 16
+    height: '100vh', background: '#0a0e1a', color: '#a0aec0', fontFamily: 'Inter, sans-serif'
   }}>
-    Loading…
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+      <p className="text-sm font-medium tracking-widest uppercase opacity-50">Loading OurCRM</p>
+    </div>
   </div>
 );
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AuthProvider>
         <CRMProvider>
           <Suspense fallback={<PageLoader />}>
@@ -42,7 +45,7 @@ const App: React.FC = () => {
                 path="/dashboard"
                 element={
                   <PrivateRoute>
-                    <Layout title="Dashboard">
+                    <Layout title="Dashboard" subtitle="Overview of your business performance">
                       <Dashboard />
                     </Layout>
                   </PrivateRoute>
@@ -52,7 +55,7 @@ const App: React.FC = () => {
                 path="/profile"
                 element={
                   <PrivateRoute>
-                    <Layout title="User Profile">
+                    <Layout title="User Profile" subtitle="Manage your account settings">
                       <Profile />
                     </Layout>
                   </PrivateRoute>
@@ -64,7 +67,7 @@ const App: React.FC = () => {
                 path="/leads"
                 element={
                   <PrivateRoute>
-                    <Layout title="Leads">
+                    <Layout title="Leads" subtitle="Manage and track your sales pipeline">
                       <Leads />
                     </Layout>
                   </PrivateRoute>
@@ -74,7 +77,7 @@ const App: React.FC = () => {
                 path="/customers"
                 element={
                   <PrivateRoute>
-                    <Layout title="Customers">
+                    <Layout title="Customers" subtitle="Keep track of your client relationships">
                       <Customers />
                     </Layout>
                   </PrivateRoute>
@@ -84,7 +87,7 @@ const App: React.FC = () => {
                 path="/customers/:id"
                 element={
                   <PrivateRoute>
-                    <Layout title="Customer Details">
+                    <Layout title="Customer Details" subtitle="Detailed view of client information">
                       <CustomerDetail />
                     </Layout>
                   </PrivateRoute>
@@ -96,7 +99,7 @@ const App: React.FC = () => {
                 path="/admin/users"
                 element={
                   <PrivateRoute adminOnly>
-                    <Layout title="User Management">
+                    <Layout title="User Management" subtitle="Manage system users and permissions">
                       <Users />
                     </Layout>
                   </PrivateRoute>
@@ -109,7 +112,7 @@ const App: React.FC = () => {
           </Suspense>
         </CRMProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
