@@ -60,8 +60,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // ── Login (pure Bearer token — no CSRF needed) ──
     const login = async (email: string, password: string) => {
         const { data } = await api.post('/login', { email, password });
-        localStorage.setItem('token', data.token);
-        setToken(data.token);
+        localStorage.setItem('token', data.access_token);
+        setToken(data.access_token);
         setUser(data.user);
     };
 
@@ -78,8 +78,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             password,
             password_confirmation,
         });
-        localStorage.setItem('token', data.token);
-        setToken(data.token);
+        localStorage.setItem('token', data.access_token);
+        setToken(data.access_token);
         setUser(data.user);
     };
 
