@@ -35,10 +35,11 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 WORKDIR /var/www/html
 
 # Copy only composer files first (for better Docker layer caching)
-COPY backend/composer.json backend/composer.lock ./
+COPY backend/composer.json backend/composer.lock* ./
 
 # Install PHP dependencies at build time
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction || \
+    composer update --no-dev --optimize-autoloader --no-scripts --no-interaction
 
 # Copy the rest of the backend application code
 COPY backend/ ./

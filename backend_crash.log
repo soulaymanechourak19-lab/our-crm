@@ -1,12 +1,40 @@
-⏳ Waiting for MySQL to be ready...
-✅ MySQL is ready.
-📦 Installing Composer dependencies...
-Installing dependencies from lock file (including require-dev)
-Verifying lock file contents can be installed on current platform.
-Nothing to install, update or remove
-Generating optimized autoload files
-> Illuminate\Foundation\ComposerScripts::postAutoloadDump
-> @php artisan package:discover --ansi
+﻿ΓÅ│ Waiting for MySQL to be ready...
+docker : Installing 
+dependencies from lock 
+file (including 
+require-dev)
+At line:1 char:1
++ docker logs 
+our-crm-backend-1 2>&1 
+| Out-File -FilePath 
+backend_crash ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (Installing de   
+ pe...ng require-de    
+v):String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+Γ£à MySQL is ready.
+≡ƒôª Installing Composer dependencies...
+Verifying lock file 
+contents can be 
+installed on current 
+platform.
+Nothing to install, 
+update or remove
+Generating optimized 
+autoload files
+> Illuminate\Foundation
+\ComposerScripts::postA
+utoloadDump
+> @php artisan 
+package:discover --ansi
 
   [37;44m INFO [39;49m Discovering packages.  
 
@@ -19,9 +47,7 @@ Generating optimized autoload files
   nunomaduro/termwind [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
   nwidart/laravel-modules [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
 
-82 packages you are using are looking for funding.
-Use the `composer fund` command to find out more!
-🔧 Running migrations...
+≡ƒöº Running migrations...
 
    INFO  Running migrations.  
 
@@ -32,15 +58,15 @@ Use the `composer fund` command to find out more!
   SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'role' (Connection: mysql, Host: mysql, Port: 3306, Database: crm_db, SQL: alter table `users` add `role` enum('admin', 'agent_commercial', 'agent_sav') not null default 'agent_commercial')
 
   at vendor/laravel/framework/src/Illuminate/Database/Connection.php:838
-    834▕             $exceptionType = $this->isUniqueConstraintError($e)
-    835▕                 ? UniqueConstraintViolationException::class
-    836▕                 : QueryException::class;
-    837▕ 
-  ➜ 838▕             throw new $exceptionType(
-    839▕                 $this->getNameWithReadWriteType(),
-    840▕                 $query,
-    841▕                 $this->prepareBindings($bindings),
-    842▕                 $e,
+    834Γûò             $exceptionType = $this->isUniqueConstraintError($e)
+    835Γûò                 ? UniqueConstraintViolationException::class
+    836Γûò                 : QueryException::class;
+    837Γûò 
+  Γ₧£ 838Γûò             throw new $exceptionType(
+    839Γûò                 $this->getNameWithReadWriteType(),
+    840Γûò                 $query,
+    841Γûò                 $this->prepareBindings($bindings),
+    842Γûò                 $e,
 
       [2m+9 vendor frames [22m
 
@@ -51,3 +77,9 @@ Use the `composer fund` command to find out more!
   37  artisan:16
       Illuminate\Foundation\Application::handleCommand(Object(Symfony\Component\Console\Input\ArgvInput))
 
+82 packages you are 
+using are looking for 
+funding.
+Use the `composer 
+fund` command to find 
+out more!

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Interaction;
-use App\Models\User;
+use Modules\User\Entities\Customer;
+use Modules\User\Entities\Interaction;
+use Modules\User\Entities\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;

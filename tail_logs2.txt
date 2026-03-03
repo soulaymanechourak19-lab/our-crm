@@ -1,9 +1,10 @@
-⏳ Waiting for MySQL to be ready...
-✅ MySQL is ready.
-📦 Installing Composer dependencies...
-Installing dependencies from lock file (including require-dev)
-Verifying lock file contents can be installed on current platform.
-Nothing to install, update or remove
+  - Installing phpunit/phpunit (11.5.55): Extracting archive
+  0/35 [>---------------------------]   0%
+  8/35 [======>---------------------]  22%
+ 18/35 [==============>-------------]  51%
+ 28/35 [======================>-----]  80%
+ 33/35 [==========================>-]  94%
+ 35/35 [============================] 100%
 Generating optimized autoload files
 > Illuminate\Foundation\ComposerScripts::postAutoloadDump
 > @php artisan package:discover --ansi
@@ -23,31 +24,27 @@ Generating optimized autoload files
 Use the `composer fund` command to find out more!
 🔧 Running migrations...
 
+   INFO  Preparing database.  
+
+  Creating migration table ..................................... 510.47ms DONE
+
    INFO  Running migrations.  
 
-  2024_02_16_000001_add_role_to_users_table .................... 234.29ms FAIL
+  0001_01_01_000000_create_users_table ............................... 2s DONE
+  0001_01_01_000001_create_cache_table ......................... 597.11ms DONE
+  0001_01_01_000002_create_jobs_table ................................ 1s DONE
+  2024_02_16_000002_create_leads_table ......................... 882.90ms DONE
+  2024_02_16_000003_create_customers_table ........................... 1s DONE
+  2024_02_16_000004_create_interactions_table .................. 651.95ms DONE
+  2024_02_16_000005_add_soft_deletes_to_leads_and_customers .......... 1s DONE
+  2026_02_15_190329_create_personal_access_tokens_table ........ 561.17ms DONE
+  2026_02_22_000001_add_indexes_to_users_table ................. 210.32ms DONE
 
-   Illuminate\Database\QueryException 
+🌱 Running seeders (idempotent)...
 
-  SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'role' (Connection: mysql, Host: mysql, Port: 3306, Database: crm_db, SQL: alter table `users` add `role` enum('admin', 'agent_commercial', 'agent_sav') not null default 'agent_commercial')
+   INFO  Seeding database.  
 
-  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:838
-    834▕             $exceptionType = $this->isUniqueConstraintError($e)
-    835▕                 ? UniqueConstraintViolationException::class
-    836▕                 : QueryException::class;
-    837▕ 
-  ➜ 838▕             throw new $exceptionType(
-    839▕                 $this->getNameWithReadWriteType(),
-    840▕                 $query,
-    841▕                 $this->prepareBindings($bindings),
-    842▕                 $e,
+🚀 Caching config and routes...
 
-      [2m+9 vendor frames [22m
-
-  10  database/migrations/2024_02_16_000001_add_role_to_users_table.php:14
-      Illuminate\Support\Facades\Facade::__callStatic("table")
-      [2m+26 vendor frames [22m
-
-  37  artisan:16
-      Illuminate\Foundation\Application::handleCommand(Object(Symfony\Component\Console\Input\ArgvInput))
+   INFO  Configuration cached successfully.  
 
