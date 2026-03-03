@@ -59,15 +59,15 @@ const Layout: React.FC<LayoutProps> = ({ children, title }) => {
                     )}
 
                     {(user.role === 'admin' || user.role === 'agent_commercial') && (
-                        <Link to="/dashboard" className="nav-item">
-                            <span className="nav-icon">📦</span> Products
-                        </Link>
+                        <div className="nav-item opacity-50 cursor-not-allowed" title="Coming Soon">
+                            <span className="nav-icon">📦</span> Products <small className="ml-auto text-[10px] uppercase tracking-wider opacity-60">Soon</small>
+                        </div>
                     )}
 
                     {(user.role === 'admin' || user.role === 'agent_sav') && (
-                        <Link to="/dashboard" className="nav-item">
-                            <span className="nav-icon">🎫</span> Tickets
-                        </Link>
+                        <div className="nav-item opacity-50 cursor-not-allowed" title="Coming Soon">
+                            <span className="nav-icon">🎫</span> Tickets <small className="ml-auto text-[10px] uppercase tracking-wider opacity-60">Soon</small>
+                        </div>
                     )}
 
                     {user.role === 'admin' && (

@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
     return (
         <>
             <section className="welcome-banner">
-                <h1>Welcome back, {user.name} 👋</h1>
+                <h2>Welcome back, {user.name} 👋</h2>
                 <p>You are logged in as <strong>{roleLabel}</strong>. Here's what you can do:</p>
             </section>
 

@@ -71,13 +71,10 @@ const Leads: React.FC = () => {
     };
 
     return (
-        <div className="p-6 lg:p-8 animate-fade-in">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-white">Leads</h1>
-                    <p className="text-slate-400 mt-1">Manage and track your sales pipeline</p>
-                </div>
+    return (
+        <div className="animate-fade-in">
+            {/* Toolbar */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div className="flex items-center space-x-3">
                     {/* View toggle */}
                     <div className="flex rounded-xl overflow-hidden" style={{ border: '1px solid rgba(148, 163, 184, 0.15)' }}>
@@ -92,8 +89,11 @@ const Leads: React.FC = () => {
                             ▦ Kanban
                         </button>
                     </div>
+                </div>
+
+                <div className="flex items-center space-x-3 w-full md:w-auto">
                     <button onClick={() => { setEditingLead(null); setShowForm(true); }}
-                        className="px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25"
+                        className="px-5 py-2.5 text-sm font-semibold text-white rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25 w-full md:w-auto"
                         style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
                         + Add Lead
                     </button>
