@@ -4,9 +4,6 @@ module.exports = {
         "./src/**/*.{js,jsx,ts,tsx}",
     ],
     theme: {
-<<<<<<< HEAD
-        extend: {},
-=======
         extend: {
             colors: {
                 primary: {
@@ -40,7 +37,6 @@ module.exports = {
                 sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
             },
         },
->>>>>>> origin/feature/sales-module
     },
     plugins: [],
 }

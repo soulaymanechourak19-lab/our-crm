@@ -28,7 +28,7 @@ const Dashboard: React.FC = () => {
         cards.push(
             { title: 'My Leads', description: 'View & manage your assigned leads', icon: '🎯', link: '/leads', color: 'indigo' },
             { title: 'Customers', description: 'Convert qualified leads to customers', icon: '🤝', link: '/customers', color: 'emerald' },
-            { title: 'Products Catalog', description: 'Browse the product catalog', icon: '📦', color: 'slate' },
+            { title: 'Products Catalog', description: 'Browse the product catalog', icon: '📦', link: '/products', color: 'indigo' },
             { title: 'Performance', description: 'Your sales performance metrics', icon: '📊', color: 'slate' },
         );
     } else {
