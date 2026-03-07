@@ -3,6 +3,8 @@
 namespace Modules\Sales\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Route;
+
 
 class SalesServiceProvider extends ServiceProvider
 {
@@ -14,6 +16,9 @@ class SalesServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
-        $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
+
+        Route::middleware('api')
+            ->prefix('api')
+            ->group(__DIR__ . '/../Routes/api.php');
     }
 }
