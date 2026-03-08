@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CRMProvider } from './context/CRMContext';
+import { ToastProvider } from './components/common/Toast';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 import './App.css';
@@ -35,94 +36,96 @@ const App: React.FC = () => {
     <HashRouter>
       <AuthProvider>
         <CRMProvider>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+          <ToastProvider>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Public routes */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
-              {/* Protected routes */}
-              <Route
-                path="/dashboard"
-                element={
-                  <PrivateRoute>
-                    <Layout title="Dashboard" subtitle="Overview of your business performance">
-                      <Dashboard />
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <PrivateRoute>
-                    <Layout title="User Profile" subtitle="Manage your account settings">
-                      <Profile />
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
+                {/* Protected routes */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <PrivateRoute>
+                      <Layout title="Dashboard" subtitle="Overview of your business performance">
+                        <Dashboard />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <PrivateRoute>
+                      <Layout title="User Profile" subtitle="Manage your account settings">
+                        <Profile />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
 
-              {/* CRM routes */}
-              <Route
-                path="/leads"
-                element={
-                  <PrivateRoute>
-                    <Layout title="Leads" subtitle="Manage and track your sales pipeline">
-                      <Leads />
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/customers"
-                element={
-                  <PrivateRoute>
-                    <Layout title="Customers" subtitle="Keep track of your client relationships">
-                      <Customers />
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/customers/:id"
-                element={
-                  <PrivateRoute>
-                    <Layout title="Customer Details" subtitle="Detailed view of client information">
-                      <CustomerDetail />
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
+                {/* CRM routes */}
+                <Route
+                  path="/leads"
+                  element={
+                    <PrivateRoute>
+                      <Layout title="Leads" subtitle="Manage and track your sales pipeline">
+                        <Leads />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/customers"
+                  element={
+                    <PrivateRoute>
+                      <Layout title="Customers" subtitle="Keep track of your client relationships">
+                        <Customers />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/customers/:id"
+                  element={
+                    <PrivateRoute>
+                      <Layout title="Customer Details" subtitle="Detailed view of client information">
+                        <CustomerDetail />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
 
-              {/* Sales routes */}
-              <Route
-                path="/products"
-                element={
-                  <PrivateRoute>
-                    <Layout title="Products" subtitle="Manage your inventory and product catalog">
-                      <Products />
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
+                {/* Sales routes */}
+                <Route
+                  path="/products"
+                  element={
+                    <PrivateRoute>
+                      <Layout title="Products" subtitle="Manage your inventory and product catalog">
+                        <Products />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
 
-              {/* Admin-only routes */}
-              <Route
-                path="/admin/users"
-                element={
-                  <PrivateRoute adminOnly>
-                    <Layout title="User Management" subtitle="Manage system users and permissions">
-                      <Users />
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
+                {/* Admin-only routes */}
+                <Route
+                  path="/admin/users"
+                  element={
+                    <PrivateRoute adminOnly>
+                      <Layout title="User Management" subtitle="Manage system users and permissions">
+                        <Users />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
 
-              {/* Default redirect */}
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-          </Suspense>
+                {/* Default redirect */}
+                <Route path="*" element={<Navigate to="/login" replace />} />
+              </Routes>
+            </Suspense>
+          </ToastProvider>
         </CRMProvider>
       </AuthProvider>
     </HashRouter>
