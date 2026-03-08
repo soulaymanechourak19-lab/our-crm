@@ -1,0 +1,80 @@
+﻿backend-1  | 
+backend-1  | 82 packages you are using are looking for funding.
+backend-1  | Use the `composer fund` command to find out more!
+backend-1  | ≡ƒöº Running migrations...
+backend-1  | 
+backend-1  |    INFO  Running migrations.  
+backend-1  | 
+backend-1  |   2026_02_17_000002_add_role_to_users_table ..................... 32.64ms FAIL
+backend-1  | 
+backend-1  |    Illuminate\Database\QueryException 
+backend-1  | 
+backend-1  |   SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'role' (Connection: mysql, Host: mysql, Port: 3306, Database: crm_db, SQL: alter table `users` add `role` varchar(255) not null default 'agent_commercial' after `email`)
+backend-1  | 
+backend-1  |   at vendor/laravel/framework/src/Illuminate/Database/Connection.php:838
+backend-1  |     834Γûò             $exceptionType = $this->isUniqueConstraintError($e)
+backend-1  |     835Γûò                 ? UniqueConstraintViolationException::class
+backend-1  |     836Γûò                 : QueryException::class;
+backend-1  |     837Γûò 
+backend-1  |   Γ₧£ 838Γûò             throw new $exceptionType(
+backend-1  |     839Γûò                 $this->getNameWithReadWriteType(),
+backend-1  |     840Γûò                 $query,
+backend-1  |     841Γûò                 $this->prepareBindings($bindings),
+backend-1  |     842Γûò                 $e,
+backend-1  | 
+backend-1  |       [2m+9 vendor frames [22m
+backend-1  | 
+backend-1  |   10  database/migrations/2026_02_17_000002_add_role_to_users_table.php:13
+backend-1  |       Illuminate\Support\Facades\Facade::__callStatic("table")
+backend-1  |       [2m+26 vendor frames [22m
+backend-1  | 
+backend-1  |   37  artisan:16
+backend-1  |       Illuminate\Foundation\Application::handleCommand(Object(Symfony\Component\Console\Input\ArgvInput))
+backend-1  | 
+backend-1  | ΓÅ│ Waiting for MySQL to be ready...
+backend-1  | Γ£à MySQL is ready.
+backend-1  | ≡ƒôª Installing Composer dependencies...
+backend-1  | Installing dependencies from lock file (including require-dev)
+backend-1  | Verifying lock file contents can be installed on current platform.
+backend-1  | Nothing to install, update or remove
+backend-1  | Generating optimized autoload files
+backend-1  | > Illuminate\Foundation\ComposerScripts::postAutoloadDump
+backend-1  | > @php artisan package:discover --ansi
+backend-1  | 
+backend-1  |   [37;44m INFO [39;49m Discovering packages.  
+backend-1  | 
+backend-1  |   laravel/pail [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+backend-1  |   laravel/sail [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+backend-1  |   laravel/sanctum [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+backend-1  |   laravel/tinker [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+backend-1  |   nesbot/carbon [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+backend-1  |   nunomaduro/collision [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+backend-1  |   nunomaduro/termwind [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+backend-1  |   nwidart/laravel-modules [90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m[90m.[39m [32;1mDONE[39;22m
+backend-1  | 
+backend-1  | 82 packages you are using are looking for funding.
+backend-1  | Use the `composer fund` command to find out more!
+backend-1  | ≡ƒöº Running migrations...
+backend-1  | 
+backend-1  |    INFO  Running migrations.  
+backend-1  | 
+backend-1  |   2026_02_17_000002_add_role_to_users_table .................... 754.87ms DONE
+backend-1  |   2026_02_17_035518_create_personal_access_tokens_table ......... 10.53ms DONE
+backend-1  |   2026_02_22_000001_add_indexes_to_users_table ....................... 1s DONE
+backend-1  | 
+backend-1  | ≡ƒî▒ Running seeders (idempotent)...
+backend-1  | 
+backend-1  |    INFO  Seeding database.  
+backend-1  | 
+backend-1  | ≡ƒÜÇ Caching config and routes...
+backend-1  | 
+backend-1  |    INFO  Configuration cached successfully.  
+backend-1  | 
+backend-1  | 
+backend-1  |    INFO  Routes cached successfully.  
+backend-1  | 
+backend-1  | Γ£à Backend ready. Starting Apache...
+backend-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message
+backend-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message
+backend-1  | [Tue Mar 03 13:46:50.060051 2026] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.66 (Debian) PHP/8.4.18 configured -- resuming normal operations
+backend-1  | [Tue Mar 03 13:46:50.060325 2026] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
