@@ -15,34 +15,38 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin User
-        User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+        $users = [
             [
+                'email'    => 'admin@example.com',
                 'name'     => 'Admin User',
                 'password' => Hash::make('password'),
                 'role'     => 'admin',
-            ]
-        );
-
-        // Commercial Agent User
-        User::firstOrCreate(
-            ['email' => 'agent@example.com'],
+            ],
             [
+                'email'    => 'agent@example.com',
                 'name'     => 'Commercial Agent',
                 'password' => Hash::make('password'),
                 'role'     => 'agent_commercial',
-            ]
-        );
-
-        // SAV Agent User
-        User::firstOrCreate(
-            ['email' => 'sav@example.com'],
+            ],
             [
+                'email'    => 'sav@example.com',
                 'name'     => 'SAV Agent',
                 'password' => Hash::make('password'),
                 'role'     => 'agent_sav',
-            ]
-        );
+            ],
+        ];
+
+        foreach ($users as $userData) {
+            $user = User::withTrashed()->where('email', $userData['email'])->first();
+
+            if ($user) {
+                $user->update($userData);
+                if ($user->trashed()) {
+                    $user->restore();
+                }
+            } else {
+                User::create($userData);
+            }
+        }
     }
 }

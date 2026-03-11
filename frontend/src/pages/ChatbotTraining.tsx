@@ -1,0 +1,392 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import api from '../services/api';
+
+interface Intent {
+    id: number;
+    name: string;
+    description: string | null;
+    response: string | null;
+    example_count: number;
+}
+
+interface Example {
+    id: number;
+    intent_id: number;
+    text: string;
+}
+
+interface ModelInfo {
+    status: string;
+    trained_at?: string;
+    num_intents?: number;
+    num_examples?: number;
+    intents?: string[];
+}
+
+interface LogEntry {
+    id: number;
+    message: string;
+    predicted_intent: string | null;
+    confidence: number | null;
+    used_fallback: boolean;
+    created_at: string;
+}
+
+const ChatbotTraining: React.FC = () => {
+    const [intents, setIntents] = useState<Intent[]>([]);
+    const [selectedIntent, setSelectedIntent] = useState<Intent | null>(null);
+    const [examples, setExamples] = useState<Example[]>([]);
+    const [logs, setLogs] = useState<LogEntry[]>([]);
+    const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
+
+    const [newIntentName, setNewIntentName] = useState('');
+    const [newIntentDesc, setNewIntentDesc] = useState('');
+    const [newIntentResponse, setNewIntentResponse] = useState('');
+    const [newExampleText, setNewExampleText] = useState('');
+    const [bulkExamples, setBulkExamples] = useState('');
+
+    const [training, setTraining] = useState(false);
+    const [seeding, setSeeding] = useState(false);
+    const [trainResult, setTrainResult] = useState<any>(null);
+    const [activeTab, setActiveTab] = useState<'intents' | 'logs'>('intents');
+    const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+
+    const showToast = (msg: string, type: 'success' | 'error') => {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 3000);
+    };
+
+    // ── Data Loading ────────────────────────────────────────────────
+
+    const loadIntents = useCallback(async () => {
+        try {
+            const { data } = await api.get('/chatbot-training/intents');
+            setIntents(data);
+        } catch { /* ignore */ }
+    }, []);
+
+    const loadExamples = useCallback(async (intentId: number) => {
+        try {
+            const { data } = await api.get(`/chatbot-training/intents/${intentId}/examples`);
+            setExamples(data);
+        } catch { /* ignore */ }
+    }, []);
+
+    const loadModelInfo = useCallback(async () => {
+        try {
+            const { data } = await api.get('/chatbot-training/model-info');
+            setModelInfo(data);
+        } catch { setModelInfo({ status: 'unavailable' }); }
+    }, []);
+
+    const loadLogs = useCallback(async () => {
+        try {
+            const { data } = await api.get('/chatbot-training/logs?per_page=100');
+            setLogs(data.data || []);
+        } catch { /* ignore */ }
+    }, []);
+
+    useEffect(() => { loadIntents(); loadModelInfo(); }, [loadIntents, loadModelInfo]);
+    useEffect(() => { if (activeTab === 'logs') loadLogs(); }, [activeTab, loadLogs]);
+
+    // ── Actions ─────────────────────────────────────────────────────
+
+    const createIntent = async () => {
+        if (!newIntentName.trim()) return;
+        try {
+            await api.post('/chatbot-training/intents', {
+                name: newIntentName.trim(),
+                description: newIntentDesc.trim() || null,
+                response: newIntentResponse.trim() || null
+            });
+            setNewIntentName(''); setNewIntentDesc(''); setNewIntentResponse('');
+            showToast('Intent created!', 'success');
+            loadIntents();
+        } catch (e: any) { showToast(e.response?.data?.message || 'Failed', 'error'); }
+    };
+
+    const deleteIntent = async (id: number) => {
+        if (!window.confirm('Delete this intent and all its examples?')) return;
+        try {
+            await api.delete(`/chatbot-training/intents/${id}`);
+            if (selectedIntent?.id === id) { setSelectedIntent(null); setExamples([]); }
+            showToast('Intent deleted', 'success');
+            loadIntents();
+        } catch { showToast('Failed to delete', 'error'); }
+    };
+
+    const addExample = async () => {
+        if (!selectedIntent || !newExampleText.trim()) return;
+        try {
+            await api.post(`/chatbot-training/intents/${selectedIntent.id}/examples`, { examples: [newExampleText.trim()] });
+            setNewExampleText('');
+            showToast('Example added!', 'success');
+            loadExamples(selectedIntent.id);
+            loadIntents();
+        } catch { showToast('Failed', 'error'); }
+    };
+
+    const addBulkExamples = async () => {
+        if (!selectedIntent || !bulkExamples.trim()) return;
+        const exs = bulkExamples.split('\n').map(e => e.trim()).filter(e => e.length > 0);
+        if (exs.length === 0) return;
+        try {
+            await api.post(`/chatbot-training/intents/${selectedIntent.id}/examples`, { examples: exs });
+            setBulkExamples('');
+            showToast(`${exs.length} examples added!`, 'success');
+            loadExamples(selectedIntent.id);
+            loadIntents();
+        } catch { showToast('Failed', 'error'); }
+    };
+
+    const deleteExample = async (id: number) => {
+        try {
+            await api.delete(`/chatbot-training/examples/${id}`);
+            setExamples(prev => prev.filter(e => e.id !== id));
+            loadIntents();
+        } catch { showToast('Failed', 'error'); }
+    };
+
+    const seedData = async () => {
+        setSeeding(true);
+        try {
+            const { data } = await api.post('/chatbot-training/seed');
+            showToast(data.message, 'success');
+            loadIntents();
+        } catch { showToast('Seeding failed', 'error'); }
+        setSeeding(false);
+    };
+
+    const trainModel = async () => {
+        setTraining(true); setTrainResult(null);
+        try {
+            const { data } = await api.post('/chatbot-training/train');
+            setTrainResult(data.result);
+            showToast('Model trained successfully! 🎉', 'success');
+            loadModelInfo();
+        } catch (e: any) {
+            showToast(e.response?.data?.error || 'Training failed', 'error');
+        }
+        setTraining(false);
+    };
+
+    const selectIntent = (intent: Intent) => {
+        setSelectedIntent(intent);
+        loadExamples(intent.id);
+    };
+
+    // ── Render ──────────────────────────────────────────────────────
+
+    return (
+        <div className="p-4 sm:p-6 space-y-6">
+            {/* Toast */}
+            {toast && (
+                <div className={`fixed top-4 right-4 z-50 px-4 py-2.5 rounded-lg text-sm font-medium shadow-lg border animate-pulse ${toast.type === 'success' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-red-500/20 text-red-300 border-red-500/30'
+                    }`}>
+                    {toast.msg}
+                </div>
+            )}
+
+            {/* Header + Model Status */}
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                <div>
+                    <h1 className="text-xl font-bold text-white flex items-center gap-2">🧠 Chatbot Training</h1>
+                    <p className="text-sm text-slate-400 mt-1">Manage intents, add training examples, and train the ML model</p>
+                </div>
+                <div className="flex items-center gap-3">
+                    <button onClick={seedData} disabled={seeding}
+                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-700/50 text-slate-300 border border-slate-600/50 hover:bg-slate-700 transition disabled:opacity-50">
+                        {seeding ? 'Seeding...' : '🌱 Seed Data'}
+                    </button>
+                    <button onClick={trainModel} disabled={training}
+                        className="px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95 transition disabled:opacity-50 flex items-center gap-2">
+                        {training ? (
+                            <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Training...</>
+                        ) : '🚀 Train Model'}
+                    </button>
+                </div>
+            </div>
+
+            {/* Model Info Card */}
+            <div className="glass-card border-slate-700/50 p-4 flex flex-wrap gap-6 text-sm">
+                <div>
+                    <span className="text-slate-500">Status:</span>{' '}
+                    <span className={modelInfo?.status === 'trained' ? 'text-emerald-400 font-bold' : 'text-amber-400'}>
+                        {modelInfo?.status === 'trained' ? '🟢 Trained' : '🟡 Not trained'}
+                    </span>
+                </div>
+                {modelInfo?.num_intents && <div><span className="text-slate-500">Intents:</span> <span className="text-white font-bold">{modelInfo.num_intents}</span></div>}
+                {modelInfo?.num_examples && <div><span className="text-slate-500">Examples:</span> <span className="text-white font-bold">{modelInfo.num_examples}</span></div>}
+                {modelInfo?.trained_at && <div><span className="text-slate-500">Last trained:</span> <span className="text-slate-300">{new Date(modelInfo.trained_at).toLocaleString()}</span></div>}
+                {trainResult?.cv_accuracy && <div><span className="text-slate-500">Accuracy:</span> <span className="text-emerald-400 font-bold">{(trainResult.cv_accuracy * 100).toFixed(1)}%</span></div>}
+            </div>
+
+            {/* Tabs */}
+            <div className="flex gap-1 bg-slate-800/50 rounded-lg p-1 w-fit">
+                {(['intents', 'logs'] as const).map(tab => (
+                    <button key={tab} onClick={() => setActiveTab(tab)}
+                        className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${activeTab === tab ? 'bg-indigo-500/20 text-indigo-300' : 'text-slate-500 hover:text-slate-300'
+                            }`}>
+                        {tab === 'intents' ? '📋 Intents & Examples' : '📊 Prediction Logs'}
+                    </button>
+                ))}
+            </div>
+
+            {activeTab === 'intents' ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Left: Intents */}
+                    <div className="glass-card border-slate-700/50 p-5 space-y-4">
+                        <h2 className="text-base font-bold text-white">Intents ({intents.length})</h2>
+
+                        {/* Add Intent */}
+                        <div className="flex flex-col gap-2">
+                            <div className="flex gap-2">
+                                <input value={newIntentName} onChange={e => setNewIntentName(e.target.value)}
+                                    placeholder="intent_name" onKeyDown={e => e.key === 'Enter' && createIntent()}
+                                    className="flex-1 bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
+                                <input value={newIntentDesc} onChange={e => setNewIntentDesc(e.target.value)}
+                                    placeholder="Description (e.g. Greeting)"
+                                    className="flex-1 bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
+                            </div>
+                            <div className="flex gap-2">
+                                <input value={newIntentResponse} onChange={e => setNewIntentResponse(e.target.value)}
+                                    placeholder="Bot Response (e.g. Hello! How can I help you?)" onKeyDown={e => e.key === 'Enter' && createIntent()}
+                                    className="flex-1 bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
+                                <button onClick={createIntent}
+                                    className="px-4 py-2 rounded-lg bg-indigo-500/20 text-indigo-300 text-sm font-bold hover:bg-indigo-500/30 transition">Add Intent</button>
+                            </div>
+                        </div>
+
+                        {/* Intent List */}
+                        <div className="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
+                            {intents.map(intent => (
+                                <div key={intent.id}
+                                    onClick={() => selectIntent(intent)}
+                                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition ${selectedIntent?.id === intent.id ? 'bg-indigo-500/20 border border-indigo-500/30' : 'bg-slate-800/30 border border-transparent hover:bg-slate-800/60'
+                                        }`}>
+                                    <div>
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="text-sm font-semibold text-white">{intent.name}</span>
+                                            {intent.description && <span className="text-xs text-slate-500">{intent.description}</span>}
+                                        </div>
+                                        {intent.response && (
+                                            <div className="text-xs text-indigo-300/80 mt-1 italic truncate max-w-[200px] sm:max-w-xs block">
+                                                ↳ "{intent.response}"
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full">{intent.example_count}</span>
+                                        <button onClick={(e) => { e.stopPropagation(); deleteIntent(intent.id); }}
+                                            className="text-red-400/50 hover:text-red-400 text-xs transition">✕</button>
+                                    </div>
+                                </div>
+                            ))}
+                            {intents.length === 0 && <p className="text-sm text-slate-600 text-center py-8">No intents yet. Click "🌱 Seed Data" to get started!</p>}
+                        </div>
+                    </div>
+
+                    {/* Right: Examples */}
+                    <div className="glass-card border-slate-700/50 p-5 space-y-4">
+                        {selectedIntent ? (
+                            <>
+                                <h2 className="text-base font-bold text-white">
+                                    Examples for <span className="text-indigo-400">{selectedIntent.name}</span>
+                                    <span className="text-slate-500 font-normal text-sm ml-2">({examples.length})</span>
+                                </h2>
+
+                                {/* Add single example */}
+                                <div className="flex gap-2">
+                                    <input value={newExampleText} onChange={e => setNewExampleText(e.target.value)}
+                                        placeholder="Type an example phrase..."
+                                        onKeyDown={e => e.key === 'Enter' && addExample()}
+                                        className="flex-1 bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
+                                    <button onClick={addExample}
+                                        className="px-3 py-2 rounded-lg bg-indigo-500/20 text-indigo-300 text-sm font-bold hover:bg-indigo-500/30 transition">Add</button>
+                                </div>
+
+                                {/* Bulk add */}
+                                <details className="group">
+                                    <summary className="text-xs text-slate-500 cursor-pointer hover:text-slate-300">📝 Bulk add (one per line)</summary>
+                                    <div className="mt-2 space-y-2">
+                                        <textarea value={bulkExamples} onChange={e => setBulkExamples(e.target.value)}
+                                            placeholder="how many customers&#10;total customers&#10;customer count"
+                                            rows={4} className="w-full bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50 resize-none" />
+                                        <button onClick={addBulkExamples}
+                                            className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 text-sm font-bold hover:bg-emerald-500/30 transition">
+                                            Add All
+                                        </button>
+                                    </div>
+                                </details>
+
+                                {/* Examples List */}
+                                <div className="space-y-1 max-h-[50vh] overflow-y-auto pr-1">
+                                    {examples.map(ex => (
+                                        <div key={ex.id} className="flex items-center justify-between bg-slate-800/30 px-3 py-2 rounded-lg group">
+                                            <span className="text-sm text-slate-300">"{ex.text}"</span>
+                                            <button onClick={() => deleteExample(ex.id)}
+                                                className="text-red-400/0 group-hover:text-red-400/50 hover:!text-red-400 text-xs transition">✕</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-slate-600 text-sm py-20">
+                                ← Select an intent to manage its examples
+                            </div>
+                        )}
+                    </div>
+                </div>
+            ) : (
+                /* Logs Tab */
+                <div className="glass-card border-slate-700/50 p-5">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-base font-bold text-white">Prediction Logs ({logs.length})</h2>
+                        <button onClick={loadLogs} className="text-xs text-indigo-400 hover:text-indigo-300">🔄 Refresh</button>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead>
+                                <tr className="text-xs text-slate-500 uppercase border-b border-slate-700/50">
+                                    <th className="text-left py-2 px-2">Message</th>
+                                    <th className="text-left py-2 px-2">Intent</th>
+                                    <th className="text-left py-2 px-2">Confidence</th>
+                                    <th className="text-left py-2 px-2">Fallback</th>
+                                    <th className="text-left py-2 px-2">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {logs.map(log => (
+                                    <tr key={log.id} className="border-b border-slate-800/50 hover:bg-slate-800/30">
+                                        <td className="py-2 px-2 text-slate-300 max-w-xs truncate">{log.message}</td>
+                                        <td className="py-2 px-2">
+                                            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/15 text-indigo-300">
+                                                {log.predicted_intent || '—'}
+                                            </span>
+                                        </td>
+                                        <td className="py-2 px-2">
+                                            {log.confidence != null ? (
+                                                <span className={`font-mono text-xs ${log.confidence >= 0.7 ? 'text-emerald-400' : log.confidence >= 0.4 ? 'text-amber-400' : 'text-red-400'}`}>
+                                                    {(log.confidence * 100).toFixed(0)}%
+                                                </span>
+                                            ) : '—'}
+                                        </td>
+                                        <td className="py-2 px-2">
+                                            {log.used_fallback ? <span className="text-amber-400 text-xs">⚠ Yes</span> : <span className="text-emerald-400 text-xs">✓ ML</span>}
+                                        </td>
+                                        <td className="py-2 px-2 text-xs text-slate-500">{new Date(log.created_at).toLocaleString()}</td>
+                                    </tr>
+                                ))}
+                                {logs.length === 0 && (
+                                    <tr><td colSpan={5} className="text-center py-8 text-slate-600">No predictions logged yet. Use the chatbot first!</td></tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default ChatbotTraining;

@@ -67,7 +67,7 @@ interface CRMContextType {
     customers: Customer[];
     customersPagination: PaginationMeta;
     customersLoading: boolean;
-    fetchCustomers: (page?: number, filters?: { search?: string; tier?: string }) => Promise<void>;
+    fetchCustomers: (page?: number, filters?: { search?: string; tier?: string; per_page?: number }) => Promise<void>;
     addCustomer: (customer: Partial<Customer>) => Promise<boolean>;
     updateCustomer: (id: number, customer: Partial<Customer>) => Promise<boolean>;
     deleteCustomer: (id: number) => Promise<boolean>;
@@ -195,13 +195,14 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // ─── Customers ───────────────────────────────────────────────────
 
-    const fetchCustomers = useCallback(async (page = 1, filters: { search?: string; tier?: string } = {}) => {
+    const fetchCustomers = useCallback(async (page = 1, filters: { search?: string; tier?: string; per_page?: number } = {}) => {
         setCustomersLoading(true);
         setError(null);
         const params = new URLSearchParams();
         params.set('page', String(page));
         if (filters.search) params.set('search', filters.search);
         if (filters.tier) params.set('tier', filters.tier);
+        if (filters.per_page) params.set('per_page', String(filters.per_page));
 
         try {
             const { data } = await api.get(`/customers?${params.toString()}`);

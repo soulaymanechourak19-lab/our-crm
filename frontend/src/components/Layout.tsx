@@ -63,11 +63,11 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
                     )}
 
                     {(user.role === 'admin' || user.role === 'agent_sav') && (
-                        <div className="nav-item opacity-40 cursor-not-allowed group">
-                            <span className="nav-icon text-lg">🎫</span>
-                            <span>Tickets</span>
-                            <small className="ml-auto text-[9px] uppercase font-bold tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Soon</small>
-                        </div>
+                        <Link to="/chatbot" className={`nav-item ${isActive('/chatbot') ? 'active' : ''}`}>
+                            <span className="nav-icon text-lg">🤖</span>
+                            <span>AI Assistant</span>
+                            <small className="ml-auto text-[10px] uppercase font-bold tracking-tighter text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded-full">New</small>
+                        </Link>
                     )}
 
                     <div className="mt-8 mb-2 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Settings</div>
@@ -76,6 +76,13 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
                         <Link to="/admin/users" className={`nav-item ${isActive('/admin/users') ? 'active' : ''}`}>
                             <span className="nav-icon text-lg">👥</span>
                             <span>Users</span>
+                        </Link>
+                    )}
+
+                    {user.role === 'admin' && (
+                        <Link to="/chatbot-training" className={`nav-item ${isActive('/chatbot-training') ? 'active' : ''}`}>
+                            <span className="nav-icon text-lg">🧠</span>
+                            <span>AI Training</span>
                         </Link>
                     )}
 

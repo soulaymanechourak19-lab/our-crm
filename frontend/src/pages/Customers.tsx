@@ -2,6 +2,22 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useCRM } from '../context/CRMContext';
 import LoyaltyBadge from '../components/customers/LoyaltyBadge';
 
+const getPaginationGroup = (current: number, last: number) => {
+    const pages: (number | string)[] = [];
+    if (last <= 7) {
+        for (let i = 1; i <= last; i++) pages.push(i);
+    } else {
+        pages.push(1);
+        if (current > 3) pages.push('...');
+        const start = Math.max(2, current - 1);
+        const end = Math.min(last - 1, current + 1);
+        for (let i = start; i <= end; i++) pages.push(i);
+        if (current < last - 2) pages.push('...');
+        pages.push(last);
+    }
+    return pages;
+};
+
 const Customers: React.FC = () => {
     const {
         customers, customersPagination, customersLoading,
@@ -9,6 +25,7 @@ const Customers: React.FC = () => {
     } = useCRM();
     const [search, setSearch] = useState('');
     const [tierFilter, setTierFilter] = useState('');
+    const [pageSize, setPageSize] = useState(10);
     const [showAddForm, setShowAddForm] = useState(false);
     const [newCustomer, setNewCustomer] = useState({ name: '', email: '', phone: '', address: '' });
     const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
@@ -16,15 +33,15 @@ const Customers: React.FC = () => {
     const { addCustomer } = useCRM();
 
     const loadCustomers = useCallback(() => {
-        fetchCustomers(1, { search, tier: tierFilter });
-    }, [fetchCustomers, search, tierFilter]);
+        fetchCustomers(1, { search, tier: tierFilter, per_page: pageSize });
+    }, [fetchCustomers, search, tierFilter, pageSize]);
 
     useEffect(() => {
         loadCustomers();
     }, [loadCustomers]);
 
     const handlePageChange = (page: number) => {
-        fetchCustomers(page, { search, tier: tierFilter });
+        fetchCustomers(page, { search, tier: tierFilter, per_page: pageSize });
     };
 
     const handleAddCustomer = async (e: React.FormEvent) => {
@@ -93,94 +110,132 @@ const Customers: React.FC = () => {
             {/* Table */}
             {!customersLoading && (
                 <div className="glass-card overflow-hidden animate-slide-in">
-                    <table className="min-w-full">
-                        <thead>
-                            <tr style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.1)' }}>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Name</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Email</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Phone</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Loyalty</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Tier</th>
-                                <th className="px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {customers.map((customer, idx) => (
-                                <tr key={customer.id}
-                                    className="transition-colors hover:bg-white/[0.02]"
-                                    style={{ borderBottom: idx < customers.length - 1 ? '1px solid rgba(148, 163, 184, 0.06)' : 'none' }}>
-                                    <td className="px-6 py-4">
-                                        <div className="text-sm font-semibold text-white">{customer.name}</div>
-                                        {customer.converted_from_lead_id && (
-                                            <div className="text-xs text-slate-500 mt-0.5">From Lead #{customer.converted_from_lead_id}</div>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-slate-400">{customer.email}</td>
-                                    <td className="px-6 py-4 text-sm text-slate-400">{customer.phone || '—'}</td>
-                                    <td className="px-6 py-4">
-                                        {/* Loyalty progress bar */}
-                                        <div className="flex items-center space-x-2">
-                                            <div className="w-20 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(148, 163, 184, 0.15)' }}>
-                                                <div className="h-full rounded-full transition-all"
-                                                    style={{
-                                                        width: `${Math.min(customer.loyalty_score, 100)}%`,
-                                                        background: customer.loyalty_score >= 71 ? 'linear-gradient(90deg, #f59e0b, #eab308)'
-                                                            : customer.loyalty_score >= 31 ? 'linear-gradient(90deg, #94a3b8, #cbd5e1)'
-                                                                : 'linear-gradient(90deg, #a16207, #ca8a04)',
-                                                    }} />
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full whitespace-nowrap">
+                            <thead>
+                                <tr style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.1)' }}>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Name</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Email</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">AI Segment</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Churn Risk</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Tier</th>
+                                    <th className="px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {customers.map((customer, idx) => (
+                                    <tr key={customer.id}
+                                        className="transition-colors hover:bg-white/[0.02]"
+                                        style={{ borderBottom: idx < customers.length - 1 ? '1px solid rgba(148, 163, 184, 0.06)' : 'none' }}>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm font-semibold text-white">{customer.name}</div>
+                                            {customer.converted_from_lead_id && (
+                                                <div className="text-xs text-slate-500 mt-0.5">From Lead #{customer.converted_from_lead_id}</div>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-slate-400">{customer.email}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full ${
+                                                (customer as any).segment === 'VIP' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
+                                                (customer as any).segment === 'Nouveau' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
+                                                (customer as any).segment === 'Occasionnel' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
+                                                'bg-slate-500/10 text-slate-400 border border-slate-500/20'
+                                            }`}>
+                                                {(customer as any).segment || 'Standard'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {/* Dynamic Churn Risk mockup (since live churn is per-customer fetch, we derive a mock score proportional to loyalty/segment for the list view or use the DB segment) */}
+                                            <div className="flex items-center space-x-2">
+                                                <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(148, 163, 184, 0.15)' }}>
+                                                    <div className="h-full rounded-full transition-all"
+                                                        style={{
+                                                            width: `${Math.max(10, 100 - (customer.loyalty_score / 5))}%`,
+                                                            background: (100 - (customer.loyalty_score / 5)) >= 60 ? 'linear-gradient(90deg, #ef4444, #f87171)'
+                                                                : (100 - (customer.loyalty_score / 5)) >= 30 ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
+                                                                    : 'linear-gradient(90deg, #10b981, #34d399)',
+                                                        }} />
+                                                </div>
+                                                <span className={`text-xs font-bold ${
+                                                    (100 - (customer.loyalty_score / 5)) >= 60 ? 'text-red-400' :
+                                                    (100 - (customer.loyalty_score / 5)) >= 30 ? 'text-amber-400' : 'text-emerald-400'
+                                                }`}>
+                                                    {Math.round(Math.max(5, 100 - (customer.loyalty_score / 5)))}%
+                                                </span>
                                             </div>
-                                            <span className="text-xs text-slate-400 font-medium">{customer.loyalty_score}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <LoyaltyBadge tier={customer.tier || 'Bronze'} score={customer.loyalty_score} />
-                                    </td>
-                                    <td className="px-6 py-4 text-right space-x-2">
-                                        <a href={`#/customers/${customer.id}`}
-                                            className="px-3 py-1.5 text-xs font-medium text-indigo-400 rounded-lg transition-all hover:bg-indigo-500/10 inline-block">
-                                            View
-                                        </a>
-                                        {currentUser?.role === 'admin' && (
-                                            <button onClick={() => setConfirmDelete(customer.id)}
-                                                className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg transition-all hover:bg-red-500/10">
-                                                Delete
-                                            </button>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                            {customers.length === 0 && (
-                                <tr>
-                                    <td colSpan={6} className="px-6 py-16 text-center text-slate-500">
-                                        <div className="text-4xl mb-3">👥</div>
-                                        <p className="font-medium">No customers found</p>
-                                        <p className="text-sm mt-1">Try adjusting your search or convert a lead</p>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <LoyaltyBadge tier={customer.tier || 'Bronze'} score={customer.loyalty_score} />
+                                        </td>
+                                        <td className="px-6 py-4 text-right space-x-2">
+                                            <a href={`#/customers/${customer.id}`}
+                                                className="px-3 py-1.5 text-xs font-medium text-indigo-400 rounded-lg transition-all hover:bg-indigo-500/10 inline-block">
+                                                View
+                                            </a>
+                                            {currentUser?.role === 'admin' && (
+                                                <button onClick={() => setConfirmDelete(customer.id)}
+                                                    className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg transition-all hover:bg-red-500/10">
+                                                    Delete
+                                                </button>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                                {customers.length === 0 && (
+                                    <tr>
+                                        <td colSpan={6} className="px-6 py-16 text-center text-slate-500">
+                                            <div className="text-4xl mb-3">👥</div>
+                                            <p className="font-medium">No customers found</p>
+                                            <p className="text-sm mt-1">Try adjusting your search or convert a lead</p>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
 
             {/* Pagination */}
-            {!customersLoading && customersPagination.last_page > 1 && (
-                <div className="flex justify-between items-center mt-6">
-                    <p className="text-sm text-slate-400">
-                        Showing {customers.length} of {customersPagination.total} customers
-                    </p>
-                    <div className="flex space-x-1">
-                        {Array.from({ length: customersPagination.last_page }, (_, i) => i + 1).map(page => (
-                            <button key={page} onClick={() => handlePageChange(page)}
-                                className={`px-3 py-1.5 text-sm rounded-lg transition-all ${page === customersPagination.current_page
-                                    ? 'text-white font-semibold'
-                                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                                    }`}
-                                style={page === customersPagination.current_page ? { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' } : {}}>
-                                {page}
-                            </button>
-                        ))}
+            {!customersLoading && customersPagination.total > 0 && (
+                <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
+                    <div className="flex items-center space-x-4">
+                        <p className="text-sm text-slate-400">
+                            Showing {customers.length} of {customersPagination.total} customers
+                        </p>
+                        <div className="flex items-center space-x-2">
+                            <label className="text-sm text-slate-400">Rows per page:</label>
+                            <select
+                                className="text-sm rounded border-0 text-slate-300 outline-none cursor-pointer focus:ring-2 focus:ring-indigo-500/50 py-1 px-2"
+                                style={{ background: 'rgba(148, 163, 184, 0.1)' }}
+                                value={pageSize}
+                                onChange={e => setPageSize(Number(e.target.value))}
+                            >
+                                <option value={10}>10</option>
+                                <option value={15}>15</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
                     </div>
+                    {customersPagination.last_page > 1 && (
+                        <div className="flex items-center space-x-1">
+                            {getPaginationGroup(customersPagination.current_page, customersPagination.last_page).map((page, i) => (
+                                typeof page === 'number' ? (
+                                    <button key={i} onClick={() => handlePageChange(page)}
+                                        className={`px-3 py-1.5 text-sm rounded-lg transition-all ${page === customersPagination.current_page
+                                            ? 'text-white font-semibold'
+                                            : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                            }`}
+                                        style={page === customersPagination.current_page ? { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' } : {}}>
+                                        {page}
+                                    </button>
+                                ) : (
+                                    <span key={i} className="px-2 py-1.5 text-slate-500">...</span>
+                                )
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
 

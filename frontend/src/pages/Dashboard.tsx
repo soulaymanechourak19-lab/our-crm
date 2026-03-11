@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import Card from '../components/common/Card';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { getProducts } from '../services/products';
+import MLDashboard from '../components/ml/MLDashboard';
 
 interface Stats {
     totalProducts: number;
@@ -244,6 +245,11 @@ const Dashboard: React.FC = () => {
                         ))}
                     </div>
                 </Card>
+                
+                {/* AI / ML Global Dashboard */}
+                <div className="lg:col-span-2 mt-4">
+                    <MLDashboard />
+                </div>
             </div>
         </div>
     );

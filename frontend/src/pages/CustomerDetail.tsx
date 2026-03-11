@@ -18,10 +18,14 @@ const typeColors: Record<string, { bg: string; border: string }> = {
 const CustomerDetail: React.FC = () => {
     const { selectedCustomer, fetchCustomerDetail, fetchInteractions, currentUser } = useCRM();
     const [showInteractionForm, setShowInteractionForm] = useState(false);
-    const [activeTab, setActiveTab] = useState<'info' | 'interactions'>('info');
+    const [activeTab, setActiveTab] = useState<'info' | 'interactions' | 'ml'>('info');
     const [interactions, setInteractions] = useState<any[]>([]);
     const [interactionsPagination, setInteractionsPagination] = useState({ current_page: 1, last_page: 1, total: 0, per_page: 10 });
     const [loadingInteractions, setLoadingInteractions] = useState(false);
+
+    // ML Data State
+    const [mlInsights, setMlInsights] = useState<any>(null);
+    const [loadingML, setLoadingML] = useState(false);
 
     const id = parseInt(window.location.hash.split('/').pop() || '0');
 
@@ -46,6 +50,44 @@ const CustomerDetail: React.FC = () => {
         } catch { }
         setLoadingInteractions(false);
     };
+
+    const loadMLInsights = async (customerId: number) => {
+        setLoadingML(true);
+        try {
+            // Fetch churn and segmentation from Laravel which proxies to ml-service
+            const token = localStorage.getItem('token');
+            const headers = { Authorization: `Bearer ${token}` };
+
+            // Fire three requests in parallel using native fetch since apiCall isn't in scope
+            const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+            const [churnRes, segRes, recRes] = await Promise.all([
+                fetch(`${baseUrl}/ml/churn/${customerId}`, { method: 'POST', headers }),
+                fetch(`${baseUrl}/ml/segment/${customerId}`, { method: 'POST', headers }),
+                fetch(`${baseUrl}/ml/recommend/${customerId}`, { method: 'POST', headers })
+            ]);
+            
+            const churnData = await churnRes.json();
+            const segData = await segRes.json();
+            const recData = await recRes.json();
+            
+            setMlInsights({ 
+                churn: churnData, 
+                segment: segData,
+                recommendations: recData.recommendations || []
+            });
+        } catch (err) {
+            console.error("Failed to load ML insights:", err);
+            setMlInsights(null); // Clear insights on error
+        } finally {
+            setLoadingML(false);
+        }
+    };
+
+    useEffect(() => {
+        if (id && activeTab === 'ml') {
+            loadMLInsights(id);
+        }
+    }, [id, activeTab]);
 
     const handleInteractionAdded = () => {
         setShowInteractionForm(false);
@@ -136,6 +178,11 @@ const CustomerDetail: React.FC = () => {
                     style={activeTab === 'interactions' ? { background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.2))' } : {}}>
                     💬 Interactions
                 </button>
+                <button onClick={() => setActiveTab('ml')}
+                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'ml' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                    style={activeTab === 'ml' ? { background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.2))' } : {}}>
+                    🧠 ML Insights
+                </button>
             </div>
 
             {/* Info tab */}
@@ -222,6 +269,110 @@ const CustomerDetail: React.FC = () => {
                                     {page}
                                 </button>
                             ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* ML Insights tab */}
+            {activeTab === 'ml' && (
+                <div className="glass-card p-6 animate-slide-in" style={{ border: '1px solid rgba(168, 85, 247, 0.2)' }}>
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl bg-purple-500/20 text-purple-400">
+                            🧠
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-white">AI Assistant Insights</h2>
+                            <p className="text-xs text-slate-400">Powered by Machine Learning</p>
+                        </div>
+                    </div>
+
+                    {loadingML ? (
+                        <div className="flex justify-center py-12">
+                            <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    ) : mlInsights ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Churn Risk Card */}
+                            <div className="p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between" style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.1)' }}>
+                                <div className="absolute top-0 right-0 p-4 opacity-10 text-6xl">🏃</div>
+                                <div>
+                                    <h3 className="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Churn Probability</h3>
+                                    
+                                    <div className="flex items-end gap-3 mb-2">
+                                        <span className="text-4xl font-bold text-white">
+                                            {mlInsights.churn?.probability !== undefined 
+                                                ? Math.round(mlInsights.churn.probability * 100) 
+                                                : mlInsights.churn?.churn_risk_score !== undefined 
+                                                    ? Math.round(mlInsights.churn.churn_risk_score) 
+                                                    : 0}%
+                                        </span>
+                                        <span className={`text-sm font-medium px-2.5 py-1 rounded-lg mb-1 ${
+                                            (mlInsights.churn?.risk_level === 'high' || mlInsights.churn?.churn_risk_label === 'High') ? 'bg-red-500/20 text-red-400' :
+                                            (mlInsights.churn?.risk_level === 'medium' || mlInsights.churn?.churn_risk_label === 'Medium') ? 'bg-orange-500/20 text-orange-400' :
+                                            'bg-emerald-500/20 text-emerald-400'
+                                        }`}>
+                                            {mlInsights.churn?.risk_level || mlInsights.churn?.churn_risk_label || 'Low'} Risk
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mt-4">
+                                    <div className="h-full rounded-full transition-all duration-1000" 
+                                         style={{ 
+                                             width: `${mlInsights.churn?.probability ? mlInsights.churn.probability * 100 : mlInsights.churn?.churn_risk_score || 0}%`,
+                                             background: (mlInsights.churn?.risk_level === 'high' || mlInsights.churn?.churn_risk_label === 'High') ? '#ef4444' :
+                                                         (mlInsights.churn?.risk_level === 'medium' || mlInsights.churn?.churn_risk_label === 'Medium') ? '#f97316' : '#10b981'
+                                         }}>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Segmentation Card */}
+                            <div className="p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between" style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.1)' }}>
+                                <div className="absolute top-0 right-0 p-4 opacity-10 text-6xl">🎯</div>
+                                <div>
+                                    <h3 className="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">AI Customer Segment</h3>
+                                    
+                                    <div className="mt-2 text-center py-4">
+                                        <h4 className="text-3xl font-bold bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #a855f7, #ec4899)' }}>
+                                            {mlInsights.segment?.segment || mlInsights.segment?.ml_segment || 'Unknown Segment'}
+                                        </h4>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-slate-500 mt-4 text-center">
+                                    Based on K-Means clustering of RFM behavior and engagement metrics.
+                                </p>
+                            </div>
+                            
+                            {/* Product Recommendations Card (Full Width) */}
+                            <div className="md:col-span-2 p-5 rounded-2xl relative overflow-hidden" style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.1)' }}>
+                                <h3 className="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">
+                                    ✨ Suggested Products
+                                </h3>
+                                <p className="text-xs text-slate-500 mb-4">
+                                    Predicted using Neural Collaborative Filtering based on purchase history.
+                                </p>
+                                
+                                {mlInsights.recommendations && mlInsights.recommendations.length > 0 ? (
+                                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                                        {mlInsights.recommendations.map((rec: any, idx: number) => (
+                                            <div key={idx} className="p-3 rounded-xl bg-slate-800/50 border border-slate-700 hover:border-purple-500/50 transition-colors flex flex-col items-center text-center">
+                                                <div className="text-2xl mb-2">📦</div>
+                                                <p className="text-sm font-semibold text-white truncate w-full">Product {rec.product_id}</p>
+                                                <p className="text-xs text-purple-400 mt-1">Match: {Math.min(99, Math.round(rec.score * 100))}%</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-6 text-slate-500 text-sm">
+                                        Not enough data for recommendations.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-center py-10">
+                            <p className="text-slate-400">No AI insights available for this customer.</p>
                         </div>
                     )}
                 </div>

@@ -17,6 +17,8 @@ const Leads = lazy(() => import('./pages/Leads'));
 const Customers = lazy(() => import('./pages/Customers'));
 const CustomerDetail = lazy(() => import('./pages/CustomerDetail'));
 const Products = lazy(() => import('./pages/Products'));
+const Chatbot = lazy(() => import('./pages/Chatbot'));
+const ChatbotTraining = lazy(() => import('./pages/ChatbotTraining'));
 
 // Simple full-page loading fallback
 const PageLoader: React.FC = () => (
@@ -110,6 +112,26 @@ const App: React.FC = () => {
                 />
 
                 {/* Admin-only routes */}
+                <Route
+                  path="/chatbot"
+                  element={
+                    <PrivateRoute>
+                      <Layout title="AI Assistant" subtitle="Your intelligent operations companion">
+                        <Chatbot />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/chatbot-training"
+                  element={
+                    <PrivateRoute adminOnly>
+                      <Layout title="AI Training" subtitle="Train your chatbot's machine learning model">
+                        <ChatbotTraining />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
                 <Route
                   path="/admin/users"
                   element={

@@ -14,9 +14,11 @@ class Customer extends Model
         'name',
         'email',
         'phone',
-        'address',
         'loyalty_score',
         'converted_from_lead_id',
+        'age',
+        'gender',
+        'segment',
     ];
 
     protected $casts = [
@@ -31,6 +33,21 @@ class Customer extends Model
     public function interactions(): HasMany
     {
         return $this->hasMany(Interaction::class);
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(\App\Models\Transaction::class, 'client_id');
+    }
+
+    public function feedback(): HasMany
+    {
+        return $this->hasMany(\App\Models\Feedback::class, 'client_id');
+    }
+
+    public function campaigns(): HasMany
+    {
+        return $this->hasMany(\App\Models\Campaign::class, 'client_id');
     }
 
     public function updateLoyaltyScore(): void
@@ -52,5 +69,36 @@ class Customer extends Model
         }
 
         return 'Bronze';
+    }
+
+    public function getRFMScore(): array
+    {
+        // Recency: Days since last transaction
+        $latestTx = $this->transactions()->latest('date')->first();
+        $recency = $latestTx ? now()->diffInDays($latestTx->date) : 999;
+
+        // Frequency: Total count of transactions
+        $frequency = $this->transactions()->count();
+
+        // Monetary: Total sum of transactions
+        $monetary = (float) $this->transactions()->sum('price');
+
+        return [
+            'recency' => $recency,
+            'frequency' => $frequency,
+            'monetary' => $monetary,
+        ];
+    }
+
+    public function getEngagementRate(): float
+    {
+        $campaigns = $this->campaigns();
+        $total = $campaigns->count();
+        if ($total === 0) return 0;
+
+        // Clicks or Opened are engagement positive responses
+        $engaged = $this->campaigns()->whereIn('response', ['Cliqué', 'Ouvert'])->count();
+        
+        return round($engaged / $total, 2);
     }
 }

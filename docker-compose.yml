@@ -1,4 +1,4 @@
-services:
+﻿services:
   mysql:
     image: mysql:8
     ports:
@@ -14,6 +14,8 @@ services:
       timeout: 5s
       retries: 10
       start_period: 20s
+    networks:
+      - ourcrm_network
 
   backend:
     build:
@@ -40,9 +42,15 @@ services:
       SESSION_SAME_SITE: lax
       CACHE_DRIVER: file
       QUEUE_CONNECTION: sync
+      SANCTUM_STATEFUL_DOMAINS: "localhost,localhost:3000,localhost:8000,127.0.0.1,127.0.0.1:3000,127.0.0.1:8000"
+      # ── ML Service URL (used by ChatbotController + MLController) ──
+      ML_SERVICE_URL: "http://ml-service:8001"
+      AI_SERVICE_URL: "http://ml-service:8001"
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      - ourcrm_network
 
   frontend:
     image: node:18-alpine
@@ -57,13 +65,50 @@ services:
       - WATCHPACK_POLLING=true
       - HOST=0.0.0.0
       - WDS_SOCKET_PORT=0
-      - REACT_APP_API_URL=http://127.0.0.1:8000/api
-    # Install deps on first run (only if node_modules is empty), then start
+      # ── Laravel API (called from browser) ──
+      - REACT_APP_API_URL=http://localhost:8000/api
+      # ── ML Service (called from browser for direct access) ──
+      - REACT_APP_ML_URL=http://localhost:8001
+      # ── Vite users: also add these ──
+      - VITE_API_URL=http://localhost:8000/api
+      - VITE_ML_URL=http://localhost:8001
     command: sh -c "[ -d node_modules/.bin ] || npm install && npm start"
     depends_on:
       - backend
+    networks:
+      - ourcrm_network
+
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./ml-service:/app
+      - ml-models:/app/saved_models
+      - ./backend/storage/app/ml:/app/data
+    environment:
+      - DATA_DIR=/app/data
+      - PYTHONUNBUFFERED=1
+    # ── Health check so backend waits for ML to be ready ──
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8001/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    depends_on:
+      - backend
+    networks:
+      - ourcrm_network
+
+networks:
+  ourcrm_network:
+    driver: bridge
 
 volumes:
   mysql-data:
   vendor-cache:
   frontend-node-modules:
+  ml-models:

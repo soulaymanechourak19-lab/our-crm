@@ -46,7 +46,8 @@ class CustomerController extends Controller
             });
         }
 
-        $customers = $query->orderBy('created_at', 'desc')->paginate(15);
+        $perPage = $request->input('per_page', 15);
+        $customers = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
         // Append tier to each customer
         $customers->getCollection()->transform(function ($customer) {

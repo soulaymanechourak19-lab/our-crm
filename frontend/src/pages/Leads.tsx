@@ -3,6 +3,22 @@ import { useCRM, Lead } from '../context/CRMContext';
 import KanbanBoard from '../components/leads/KanbanBoard';
 import LeadForm from '../components/leads/LeadForm';
 
+const getPaginationGroup = (current: number, last: number) => {
+    const pages: (number | string)[] = [];
+    if (last <= 7) {
+        for (let i = 1; i <= last; i++) pages.push(i);
+    } else {
+        pages.push(1);
+        if (current > 3) pages.push('...');
+        const start = Math.max(2, current - 1);
+        const end = Math.min(last - 1, current + 1);
+        for (let i = start; i <= end; i++) pages.push(i);
+        if (current < last - 2) pages.push('...');
+        pages.push(last);
+    }
+    return pages;
+};
+
 const statusColors: Record<string, { bg: string; text: string; dot: string }> = {
     new: { bg: 'rgba(59, 130, 246, 0.1)', text: '#60a5fa', dot: '#3b82f6' },
     contacted: { bg: 'rgba(245, 158, 11, 0.1)', text: '#fbbf24', dot: '#f59e0b' },
@@ -210,16 +226,20 @@ const Leads: React.FC = () => {
                     <p className="text-sm text-slate-400">
                         Showing {leads.length} of {leadsPagination.total} leads
                     </p>
-                    <div className="flex space-x-1">
-                        {Array.from({ length: leadsPagination.last_page }, (_, i) => i + 1).map(page => (
-                            <button key={page} onClick={() => handlePageChange(page)}
-                                className={`px-3 py-1.5 text-sm rounded-lg transition-all ${page === leadsPagination.current_page
-                                    ? 'text-white font-semibold'
-                                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                                    }`}
-                                style={page === leadsPagination.current_page ? { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' } : {}}>
-                                {page}
-                            </button>
+                    <div className="flex items-center space-x-1">
+                        {getPaginationGroup(leadsPagination.current_page, leadsPagination.last_page).map((page, i) => (
+                            typeof page === 'number' ? (
+                                <button key={i} onClick={() => handlePageChange(page)}
+                                    className={`px-3 py-1.5 text-sm rounded-lg transition-all ${page === leadsPagination.current_page
+                                        ? 'text-white font-semibold'
+                                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                        }`}
+                                    style={page === leadsPagination.current_page ? { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' } : {}}>
+                                    {page}
+                                </button>
+                            ) : (
+                                <span key={i} className="px-2 py-1.5 text-slate-500">...</span>
+                            )
                         ))}
                     </div>
                 </div>
