@@ -16,10 +16,13 @@
     "ajv-keywords": "5.1.0",
     "autoprefixer": "^10.4.24",
     "axios": "^1.13.5",
+    "i18next": "^25.8.18",
+    "i18next-browser-languagedetector": "^8.2.1",
     "isexe": "^4.0.0",
     "postcss": "^8.5.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-i18next": "^16.5.8",
     "react-router-dom": "^7.13.0",
     "recharts": "^3.7.0",
     "tailwindcss": "^3.4.19",
@@ -51,10 +54,10 @@
     ]
   },
   "devDependencies": {
-    "react-scripts": "^5.0.1",
     "@tailwindcss/postcss": "^4.1.18",
     "autoprefixer": "^10.4.24",
     "postcss": "^8.5.6",
+    "react-scripts": "^5.0.1",
     "tailwindcss": "^3.4.19"
   }
 }

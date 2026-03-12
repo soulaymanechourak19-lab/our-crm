@@ -8,6 +8,7 @@ use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ChatbotTrainingController;
 use App\Http\Controllers\MLController;
 use App\Http\Controllers\MLDataExportController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,6 +63,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('leads', LeadController::class);
     Route::put('/leads/{lead}/status', [LeadController::class, 'updateStatus']);
     Route::post('/leads/{lead}/convert', [LeadController::class, 'convert']);
+
+    // ── Dashboard ───────────────────────────────────────────────────────
+    Route::get('/dashboard/stats', [DashboardController::class, 'getStats']);
+
 
     // ── CRM: Customers ──────────────────────────────────────────────────
     Route::apiResource('customers', CustomerController::class);

@@ -78,18 +78,18 @@ const Customers: React.FC = () => {
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <div className="relative flex-1 max-w-md">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">🔍</span>
                     <input
                         placeholder="Search by name or email..."
-                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border-0 text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
-                        style={{ background: 'var(--bg-secondary)', border: '1px solid rgba(148, 163, 184, 0.1)' }}
+                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border-0 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                        style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                     />
                 </div>
                 <select
-                    className="px-4 py-2.5 rounded-xl text-sm text-slate-300 cursor-pointer outline-none focus:ring-2 focus:ring-indigo-500/50"
-                    style={{ background: 'var(--bg-secondary)', border: '1px solid rgba(148, 163, 184, 0.1)' }}
+                    className="px-4 py-2.5 rounded-xl text-sm text-[var(--text-secondary)] cursor-pointer outline-none focus:ring-2 focus:ring-indigo-500/50"
+                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
                     value={tierFilter}
                     onChange={e => setTierFilter(e.target.value)}
                 >
@@ -113,33 +113,33 @@ const Customers: React.FC = () => {
                     <div className="overflow-x-auto">
                         <table className="min-w-full whitespace-nowrap">
                             <thead>
-                                <tr style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.1)' }}>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Name</th>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Email</th>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">AI Segment</th>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Churn Risk</th>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Tier</th>
-                                    <th className="px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider">Actions</th>
+                                <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Name</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Email</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">AI Segment</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Churn Risk</th>
+                                    <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Tier</th>
+                                    <th className="px-6 py-4 text-right text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {customers.map((customer, idx) => (
                                     <tr key={customer.id}
-                                        className="transition-colors hover:bg-white/[0.02]"
-                                        style={{ borderBottom: idx < customers.length - 1 ? '1px solid rgba(148, 163, 184, 0.06)' : 'none' }}>
+                                        className="transition-colors hover:bg-[var(--bg-secondary)]"
+                                        style={{ borderBottom: idx < customers.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
                                         <td className="px-6 py-4">
-                                            <div className="text-sm font-semibold text-white">{customer.name}</div>
+                                            <div className="text-sm font-semibold text-[var(--text-primary)]">{customer.name}</div>
                                             {customer.converted_from_lead_id && (
-                                                <div className="text-xs text-slate-500 mt-0.5">From Lead #{customer.converted_from_lead_id}</div>
+                                                <div className="text-xs text-[var(--text-muted)] mt-0.5">From Lead #{customer.converted_from_lead_id}</div>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-slate-400">{customer.email}</td>
+                                        <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{customer.email}</td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full ${
                                                 (customer as any).segment === 'VIP' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
                                                 (customer as any).segment === 'Nouveau' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
                                                 (customer as any).segment === 'Occasionnel' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
-                                                'bg-slate-500/10 text-slate-400 border border-slate-500/20'
+                                                'bg-slate-500/10 text-[var(--text-secondary)] border border-slate-500/20'
                                             }`}>
                                                 {(customer as any).segment || 'Standard'}
                                             </span>
@@ -147,7 +147,7 @@ const Customers: React.FC = () => {
                                         <td className="px-6 py-4">
                                             {/* Dynamic Churn Risk mockup (since live churn is per-customer fetch, we derive a mock score proportional to loyalty/segment for the list view or use the DB segment) */}
                                             <div className="flex items-center space-x-2">
-                                                <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(148, 163, 184, 0.15)' }}>
+                                                <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-subtle)' }}>
                                                     <div className="h-full rounded-full transition-all"
                                                         style={{
                                                             width: `${Math.max(10, 100 - (customer.loyalty_score / 5))}%`,
@@ -183,7 +183,7 @@ const Customers: React.FC = () => {
                                 ))}
                                 {customers.length === 0 && (
                                     <tr>
-                                        <td colSpan={6} className="px-6 py-16 text-center text-slate-500">
+                                        <td colSpan={6} className="px-6 py-16 text-center text-[var(--text-secondary)]">
                                             <div className="text-4xl mb-3">👥</div>
                                             <p className="font-medium">No customers found</p>
                                             <p className="text-sm mt-1">Try adjusting your search or convert a lead</p>
@@ -200,14 +200,14 @@ const Customers: React.FC = () => {
             {!customersLoading && customersPagination.total > 0 && (
                 <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
                     <div className="flex items-center space-x-4">
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-[var(--text-secondary)]">
                             Showing {customers.length} of {customersPagination.total} customers
                         </p>
                         <div className="flex items-center space-x-2">
-                            <label className="text-sm text-slate-400">Rows per page:</label>
+                            <label className="text-sm text-[var(--text-secondary)]">Rows per page:</label>
                             <select
-                                className="text-sm rounded border-0 text-slate-300 outline-none cursor-pointer focus:ring-2 focus:ring-indigo-500/50 py-1 px-2"
-                                style={{ background: 'rgba(148, 163, 184, 0.1)' }}
+                                className="text-sm rounded border-0 text-[var(--text-secondary)] outline-none cursor-pointer focus:ring-2 focus:ring-indigo-500/50 py-1 px-2"
+                                style={{ background: 'var(--bg-secondary)' }}
                                 value={pageSize}
                                 onChange={e => setPageSize(Number(e.target.value))}
                             >
@@ -225,13 +225,13 @@ const Customers: React.FC = () => {
                                     <button key={i} onClick={() => handlePageChange(page)}
                                         className={`px-3 py-1.5 text-sm rounded-lg transition-all ${page === customersPagination.current_page
                                             ? 'text-white font-semibold'
-                                            : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                            : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
                                             }`}
                                         style={page === customersPagination.current_page ? { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' } : {}}>
                                         {page}
                                     </button>
                                 ) : (
-                                    <span key={i} className="px-2 py-1.5 text-slate-500">...</span>
+                                    <span key={i} className="px-2 py-1.5 text-[var(--text-secondary)]">...</span>
                                 )
                             ))}
                         </div>
@@ -243,35 +243,35 @@ const Customers: React.FC = () => {
             {showAddForm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
                     <div className="glass-card p-6 w-full max-w-md mx-4 animate-slide-in">
-                        <h2 className="text-xl font-bold text-white mb-5">Add New Customer</h2>
+                        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-5">Add New Customer</h2>
                         <form onSubmit={handleAddCustomer} className="space-y-4">
                             <div>
-                                <label className="block text-xs font-medium text-slate-400 mb-1.5">Full Name *</label>
-                                <input required className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/50"
-                                    style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.15)' }}
+                                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Full Name *</label>
+                                <input required className="w-full px-4 py-2.5 rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
                                     value={newCustomer.name} onChange={e => setNewCustomer({ ...newCustomer, name: e.target.value })} />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-slate-400 mb-1.5">Email *</label>
-                                <input required type="email" className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/50"
-                                    style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.15)' }}
+                                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Email *</label>
+                                <input required type="email" className="w-full px-4 py-2.5 rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
                                     value={newCustomer.email} onChange={e => setNewCustomer({ ...newCustomer, email: e.target.value })} />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-slate-400 mb-1.5">Phone</label>
-                                <input className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/50"
-                                    style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.15)' }}
+                                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Phone</label>
+                                <input className="w-full px-4 py-2.5 rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
                                     value={newCustomer.phone} onChange={e => setNewCustomer({ ...newCustomer, phone: e.target.value })} />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-slate-400 mb-1.5">Address</label>
-                                <textarea rows={2} className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/50 resize-none"
-                                    style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.15)' }}
+                                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Address</label>
+                                <textarea rows={2} className="w-full px-4 py-2.5 rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-2 focus:ring-indigo-500/50 resize-none"
+                                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
                                     value={newCustomer.address} onChange={e => setNewCustomer({ ...newCustomer, address: e.target.value })} />
                             </div>
                             <div className="flex justify-end space-x-3 pt-2">
                                 <button type="button" onClick={() => setShowAddForm(false)}
-                                    className="px-4 py-2 text-sm font-medium text-slate-400 rounded-xl hover:text-white hover:bg-white/5 transition-all">
+                                    className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] rounded-xl hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-all">
                                     Cancel
                                 </button>
                                 <button type="submit" className="px-5 py-2 text-sm font-semibold text-white rounded-xl"
@@ -288,11 +288,11 @@ const Customers: React.FC = () => {
             {confirmDelete && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
                     <div className="glass-card p-6 w-full max-w-sm mx-4 animate-slide-in">
-                        <h3 className="text-lg font-bold text-white mb-2">Delete Customer</h3>
-                        <p className="text-sm text-slate-400 mb-6">Are you sure? This action can be undone.</p>
+                        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Delete Customer</h3>
+                        <p className="text-sm text-[var(--text-secondary)] mb-6">Are you sure? This action can be undone.</p>
                         <div className="flex justify-end space-x-3">
                             <button onClick={() => setConfirmDelete(null)}
-                                className="px-4 py-2 text-sm font-medium text-slate-400 rounded-xl hover:text-white hover:bg-white/5 transition-all">
+                                className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] rounded-xl hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-all">
                                 Cancel
                             </button>
                             <button onClick={handleDelete} className="px-4 py-2 text-sm font-semibold text-white rounded-xl bg-red-500 hover:bg-red-600 transition-all">

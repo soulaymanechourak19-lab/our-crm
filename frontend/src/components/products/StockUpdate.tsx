@@ -45,14 +45,14 @@ const StockUpdate: React.FC<StockUpdateProps> = ({ isOpen, onClose, product, onS
         <Modal isOpen={isOpen} onClose={onClose} title={`Update Stock - ${product.name}`} size="sm">
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label className="block text-sm font-medium text-dark-300 mb-3">Quantity</label>
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3">Quantity</label>
 
                     {/* Increment / Decrement */}
                     <div className="flex items-center justify-center gap-4">
                         <button
                             type="button"
                             onClick={() => setStock(Math.max(0, stock - 1))}
-                            className="w-12 h-12 rounded-xl bg-dark-700 hover:bg-dark-600 text-white text-xl font-bold transition-all flex items-center justify-center"
+                            className="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] hover:bg-[var(--border-subtle)] text-[var(--text-primary)] text-xl font-bold transition-all flex items-center justify-center"
                         >
                             −
                         </button>
@@ -61,14 +61,14 @@ const StockUpdate: React.FC<StockUpdateProps> = ({ isOpen, onClose, product, onS
                             type="number"
                             value={stock}
                             onChange={(e) => setStock(Math.max(0, parseInt(e.target.value) || 0))}
-                            className="w-24 text-center text-2xl font-bold text-white bg-dark-900/50 border border-dark-600/50 rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all"
+                            className="w-24 text-center text-2xl font-bold text-[var(--text-primary)] bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
                             min={0}
                         />
 
                         <button
                             type="button"
                             onClick={() => setStock(stock + 1)}
-                            className="w-12 h-12 rounded-xl bg-dark-700 hover:bg-dark-600 text-white text-xl font-bold transition-all flex items-center justify-center"
+                            className="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] hover:bg-[var(--border-subtle)] text-[var(--text-primary)] text-xl font-bold transition-all flex items-center justify-center"
                         >
                             +
                         </button>
@@ -92,7 +92,7 @@ const StockUpdate: React.FC<StockUpdateProps> = ({ isOpen, onClose, product, onS
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-2 border-t border-dark-700/50">
+                <div className="flex justify-end gap-3 pt-2 border-t border-[var(--border-subtle)]">
                     <Button variant="secondary" onClick={onClose} disabled={isLoading}>
                         Cancel
                     </Button>

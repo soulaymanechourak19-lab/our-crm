@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface SidebarProps {
     isCollapsed: boolean;
@@ -8,15 +9,17 @@ interface SidebarProps {
     onMobileClose: () => void;
 }
 
-const navItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/leads', label: 'Leads', icon: '👥' },
-    { path: '/products', label: 'Products', icon: '🛒' },
-    { path: '/customers', label: 'Customers', icon: '👤' },
-    { path: '/settings', label: 'Settings', icon: '⚙️' },
-];
-
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, isMobileOpen, onMobileClose }) => {
+    const { t } = useTranslation();
+
+    const navItems = [
+        { path: '/dashboard', label: t('sidebar.dashboard'), icon: '📊' },
+        { path: '/leads', label: t('sidebar.leads'), icon: '👥' },
+        { path: '/products', label: t('sidebar.products'), icon: '🛒' },
+        { path: '/customers', label: t('sidebar.customers'), icon: '👤' },
+        { path: '/settings', label: t('sidebar.settings'), icon: '⚙️' },
+        { path: '/logs', label: t('sidebar.logs'), icon: '📋' },
+    ];
 
     return (
         <>

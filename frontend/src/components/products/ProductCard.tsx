@@ -24,18 +24,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete, on
     };
 
     return (
-        <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-2xl p-5 hover:border-dark-600/50 hover:bg-dark-800/70 transition-all duration-200 group">
+        <div className="glass-card p-5 group">
             {/* Header */}
             <div className="flex items-start justify-between mb-3">
                 <div className="flex-1 min-w-0">
-                    <h3 className="text-white font-semibold truncate">{product.name}</h3>
+                    <h3 className="text-[var(--text-primary)] font-semibold truncate">{product.name}</h3>
                     <Badge variant="info" className="mt-1">{product.category}</Badge>
                 </div>
                 {/* Action buttons */}
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                         onClick={() => onEdit(product)}
-                        className="p-1.5 text-dark-400 hover:text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all"
+                        className="p-1.5 text-[var(--text-secondary)] hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-all"
                         title="Edit"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -44,7 +44,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete, on
                     </button>
                     <button
                         onClick={() => onDelete(product)}
-                        className="p-1.5 text-dark-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+                        className="p-1.5 text-[var(--text-secondary)] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
                         title="Delete"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -56,12 +56,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete, on
 
             {/* Description */}
             {product.description && (
-                <p className="text-dark-400 text-sm mb-4 line-clamp-2">{product.description}</p>
+                <p className="text-[var(--text-secondary)] text-sm mb-4 line-clamp-2">{product.description}</p>
             )}
 
             {/* Price */}
             <div className="mb-4">
-                <span className="text-2xl font-bold text-white">${product.price.toFixed(2)}</span>
+                <span className="text-2xl font-bold text-[var(--text-primary)]">${product.price.toFixed(2)}</span>
             </div>
 
             {/* Stock */}
@@ -70,13 +70,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete, on
                     <Badge variant={getStockVariant(product.stock)}>
                         {getStockLabel(product.stock)}
                     </Badge>
-                    <span className="text-dark-400 text-sm">{product.stock} units</span>
+                    <span className="text-[var(--text-secondary)] text-sm">{product.stock} units</span>
                 </div>
 
                 {/* Quick stock buttons */}
                 <button
                     onClick={() => onStockUpdate(product)}
-                    className="text-xs text-dark-400 hover:text-primary-400 px-2 py-1 rounded-lg hover:bg-primary-500/10 transition-all"
+                    className="text-xs text-[var(--text-secondary)] hover:text-indigo-400 px-2 py-1 rounded-lg hover:bg-indigo-500/10 transition-all"
                 >
                     Update Stock
                 </button>

@@ -64,7 +64,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ leads }) => {
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center space-x-2">
                                 <div className="w-2 h-2 rounded-full" style={{ background: col.color }}></div>
-                                <h3 className="text-sm font-semibold text-white uppercase tracking-wide">{col.label}</h3>
+                                <h3 className="text-sm font-semibold text-[var(--text-primary)] uppercase tracking-wide">{col.label}</h3>
                             </div>
                             <span className="text-xs font-bold px-2 py-0.5 rounded-full"
                                 style={{ background: `${col.color}20`, color: col.color }}>
@@ -80,22 +80,22 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ leads }) => {
                                     onDragEnd={onDragEnd}
                                     className="glass-card p-4 cursor-grab active:cursor-grabbing transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
                                     style={{ borderLeft: `3px solid ${col.color}` }}>
-                                    <div className="text-sm font-semibold text-white mb-1">{lead.company_name}</div>
-                                    <div className="text-xs text-slate-400">{lead.contact_name}</div>
-                                    <div className="text-xs text-slate-500 mt-2">{lead.email}</div>
+                                    <div className="text-sm font-semibold text-[var(--text-primary)] mb-1">{lead.company_name}</div>
+                                    <div className="text-xs text-[var(--text-secondary)]">{lead.contact_name}</div>
+                                    <div className="text-xs text-[var(--text-muted)] mt-2">{lead.email}</div>
                                     {lead.creator && (
-                                        <div className="flex items-center mt-3 pt-2" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.08)' }}>
+                                        <div className="flex items-center mt-3 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                                             <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white mr-2"
                                                 style={{ background: col.color }}>
                                                 {lead.creator.name?.charAt(0)?.toUpperCase()}
                                             </div>
-                                            <span className="text-[11px] text-slate-500">{lead.creator.name}</span>
+                                            <span className="text-[11px] text-[var(--text-muted)]">{lead.creator.name}</span>
                                         </div>
                                     )}
                                 </div>
                             ))}
                             {columnLeads.length === 0 && (
-                                <div className="text-center py-8 text-slate-600 text-xs">
+                                <div className="text-center py-8 text-[var(--text-muted)] text-xs">
                                     Drop leads here
                                 </div>
                             )}

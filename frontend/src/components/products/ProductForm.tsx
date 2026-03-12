@@ -145,7 +145,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ isOpen, onClose, product, onS
                     required
                 />
 
-                <div className="flex justify-end gap-3 pt-4 border-t border-dark-700/50">
+                <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border-subtle)]">
                     <Button variant="secondary" onClick={onClose} disabled={isLoading}>
                         Cancel
                     </Button>

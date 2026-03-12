@@ -34,85 +34,133 @@ const Register: React.FC = () => {
     const firstError = (field: string) => errors[field]?.[0];
 
     return (
-        <div className="auth-container">
-            <div className="auth-card">
-                <div className="auth-header">
-                    <div className="auth-logo">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                            <rect width="40" height="40" rx="10" fill="url(#grad2)" />
-                            <text x="50%" y="55%" textAnchor="middle" dominantBaseline="middle" fill="#fff" fontSize="18" fontWeight="700">C</text>
-                            <defs><linearGradient id="grad2" x1="0" y1="0" x2="40" y2="40"><stop stopColor="#6366f1" /><stop offset="1" stopColor="#8b5cf6" /></linearGradient></defs>
-                        </svg>
+        <div className="auth-page">
+            {/* Left decorative panel */}
+            <div className="auth-side-panel">
+                <div className="auth-side-content">
+                    <div className="auth-side-logo">
+                        <div className="auth-side-logo-icon">C</div>
+                        <span className="auth-side-logo-text">OurCRM</span>
                     </div>
-                    <h1>Create your account</h1>
-                    <p>Get started with CRM today</p>
+                    <h2 className="auth-side-title">Start growing<br />your business today</h2>
+                    <p className="auth-side-desc">Join thousands of teams using AI-powered insights to close more deals and build lasting relationships.</p>
+                    <div className="auth-side-dots">
+                        <span className="auth-dot" />
+                        <span className="auth-dot active" />
+                        <span className="auth-dot" />
+                    </div>
                 </div>
+            </div>
 
-                {errors.general && <div className="alert alert-error">{errors.general[0]}</div>}
-
-                <form onSubmit={handleSubmit} className="auth-form">
-                    <div className="form-group">
-                        <label htmlFor="name">Full name</label>
-                        <input
-                            id="name"
-                            type="text"
-                            placeholder="John Doe"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                            autoFocus
-                        />
-                        {firstError('name') && <span className="field-error">{firstError('name')}</span>}
+            {/* Right form panel */}
+            <div className="auth-form-panel">
+                <div className="auth-card-v2">
+                    <div className="auth-header-v2">
+        <div className="auth-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="8.5" cy="7" r="4"/>
+                                <line x1="20" y1="8" x2="20" y2="14"/>
+                                <line x1="23" y1="11" x2="17" y2="11"/>
+                            </svg>
+                        </div>
+                        <h1>Create your account</h1>
+                        <p>Get started with OurCRM today</p>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="reg-email">Email address</label>
-                        <input
-                            id="reg-email"
-                            type="email"
-                            placeholder="you@company.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        {firstError('email') && <span className="field-error">{firstError('email')}</span>}
-                    </div>
+                    {errors.general && <div className="auth-error-v2">{errors.general[0]}</div>}
 
-                    <div className="form-group">
-                        <label htmlFor="reg-password">Password</label>
-                        <input
-                            id="reg-password"
-                            type="password"
-                            placeholder="Minimum 8 characters"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            minLength={8}
-                        />
-                        {firstError('password') && <span className="field-error">{firstError('password')}</span>}
-                    </div>
+                    <form onSubmit={handleSubmit} className="auth-form-v2">
+                        <div className="auth-field">
+                            <label htmlFor="name">FULL NAME</label>
+                            <div className="auth-input-wrap">
+                                <svg className="auth-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                <input
+                                    id="name"
+                                    type="text"
+                                    placeholder="John Doe"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                    autoFocus
+                                />
+                            </div>
+                            {firstError('name') && <span className="auth-field-error">{firstError('name')}</span>}
+                        </div>
 
-                    <div className="form-group">
-                        <label htmlFor="reg-password-confirm">Confirm password</label>
-                        <input
-                            id="reg-password-confirm"
-                            type="password"
-                            placeholder="Re-enter your password"
-                            value={passwordConfirmation}
-                            onChange={(e) => setPasswordConfirmation(e.target.value)}
-                            required
-                            minLength={8}
-                        />
-                    </div>
+                        <div className="auth-field">
+                            <label htmlFor="reg-email">EMAIL ADDRESS</label>
+                            <div className="auth-input-wrap">
+                                <svg className="auth-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                <input
+                                    id="reg-email"
+                                    type="email"
+                                    placeholder="you@company.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            {firstError('email') && <span className="auth-field-error">{firstError('email')}</span>}
+                        </div>
 
-                    <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-                        {submitting ? 'Creating account…' : 'Create account'}
-                    </button>
-                </form>
+                        <div className="auth-field">
+                            <label htmlFor="reg-password">PASSWORD</label>
+                            <div className="auth-input-wrap">
+                                <svg className="auth-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                                <input
+                                    id="reg-password"
+                                    type="password"
+                                    placeholder="Minimum 8 characters"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    minLength={8}
+                                />
+                            </div>
+                            {firstError('password') && <span className="auth-field-error">{firstError('password')}</span>}
+                        </div>
 
-                <p className="auth-footer">
-                    Already have an account? <Link to="/login">Sign in</Link>
-                </p>
+                        <div className="auth-field">
+                            <label htmlFor="reg-password-confirm">CONFIRM PASSWORD</label>
+                            <div className="auth-input-wrap">
+                                <svg className="auth-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                <input
+                                    id="reg-password-confirm"
+                                    type="password"
+                                    placeholder="Re-enter your password"
+                                    value={passwordConfirmation}
+                                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                                    required
+                                    minLength={8}
+                                />
+                            </div>
+                        </div>
+
+                        <button type="submit" className="auth-submit-btn" disabled={submitting}>
+                            {submitting ? (
+                                <><span className="auth-spinner" /> Creating account…</>
+                            ) : (
+                                'Create account'
+                            )}
+                        </button>
+                    </form>
+
+                    <p className="auth-footer-v2">
+                        Already have an account? <Link to="/login">Sign in</Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

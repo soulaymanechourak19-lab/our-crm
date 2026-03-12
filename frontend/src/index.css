@@ -156,13 +156,7 @@ code {
   }
 }
 
-/* ── Glass card effect ─────────────────────────────── */
-.glass-card {
-  background: var(--bg-glass);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-}
+
 
 /* ── Animations ────────────────────────────────────── */
 @keyframes pulse-glow {

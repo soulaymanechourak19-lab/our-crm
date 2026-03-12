@@ -5,6 +5,7 @@ import { CRMProvider } from './context/CRMContext';
 import { ToastProvider } from './components/common/Toast';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
+import { ThemeProvider } from './context/ThemeContext';
 import './App.css';
 
 // ── Lazy-loaded routes (code splitting — smaller initial bundle) ──
@@ -19,6 +20,9 @@ const CustomerDetail = lazy(() => import('./pages/CustomerDetail'));
 const Products = lazy(() => import('./pages/Products'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
 const ChatbotTraining = lazy(() => import('./pages/ChatbotTraining'));
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Logs = lazy(() => import('./pages/Logs'));
 
 // Simple full-page loading fallback
 const PageLoader: React.FC = () => (
@@ -38,10 +42,12 @@ const App: React.FC = () => {
     <HashRouter>
       <AuthProvider>
         <CRMProvider>
-          <ToastProvider>
+          <ThemeProvider>
+            <ToastProvider>
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 {/* Public routes */}
+                <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
@@ -52,6 +58,26 @@ const App: React.FC = () => {
                     <PrivateRoute>
                       <Layout title="Dashboard" subtitle="Overview of your business performance">
                         <Dashboard />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <PrivateRoute>
+                      <Layout title="Settings" subtitle="Manage your account, preferences, and ML configurations">
+                        <Settings />
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/logs"
+                  element={
+                    <PrivateRoute adminOnly>
+                      <Layout title="System Logs" subtitle="Complete audit trail of system events and user activity">
+                        <Logs />
                       </Layout>
                     </PrivateRoute>
                   }
@@ -144,10 +170,11 @@ const App: React.FC = () => {
                 />
 
                 {/* Default redirect */}
-                <Route path="*" element={<Navigate to="/login" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Suspense>
           </ToastProvider>
+          </ThemeProvider>
         </CRMProvider>
       </AuthProvider>
     </HashRouter>

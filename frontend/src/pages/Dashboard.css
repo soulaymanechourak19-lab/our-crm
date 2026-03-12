@@ -1,0 +1,612 @@
+/* ═══════════════════════════════════════════════════════
+   Premium Dashboard — Dark Neon Theme
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Variables ────────────────────────────────────────── */
+.db-root {
+  --db-bg: #0a0e1a;
+  --db-card: rgba(15, 20, 40, 0.85);
+  --db-card-border: rgba(255, 255, 255, 0.06);
+  --db-card-hover: rgba(20, 28, 55, 0.95);
+  --db-text: #f1f5f9;
+  --db-text-secondary: #94a3b8;
+  --db-text-muted: #64748b;
+  --db-magenta: #e84393;
+  --db-cyan: #00cec9;
+  --db-amber: #fdcb6e;
+  --db-electric: #6c5ce7;
+  --db-lime: #00b894;
+  --db-pink: #fd79a8;
+  --db-blue: #74b9ff;
+  --db-orange: #e17055;
+  --db-red: #ff7675;
+  --db-purple: #a29bfe;
+  --db-radius: 16px;
+  --db-radius-sm: 12px;
+}
+
+[data-theme='light'] .db-root {
+  --db-bg: var(--bg-primary);
+  --db-card: #ffffff;
+  --db-card-border: rgba(0, 0, 0, 0.06);
+  --db-card-hover: #f8fafc;
+  --db-text: #1e293b;
+  --db-text-secondary: #64748b;
+  --db-text-muted: #94a3b8;
+}
+
+/* ── Animations ───────────────────────────────────────── */
+@keyframes db-fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes db-progressFill {
+  from { width: 0; }
+}
+
+@keyframes db-radialFill {
+  from { stroke-dashoffset: 283; }
+}
+
+@keyframes db-pulseGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px var(--glow-color)); }
+  50%      { filter: drop-shadow(0 0 12px var(--glow-color)); }
+}
+
+.db-animate-in {
+  animation: db-fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.db-animate-in-1 { animation-delay: 0.05s; }
+.db-animate-in-2 { animation-delay: 0.1s; }
+.db-animate-in-3 { animation-delay: 0.15s; }
+.db-animate-in-4 { animation-delay: 0.2s; }
+.db-animate-in-5 { animation-delay: 0.25s; }
+.db-animate-in-6 { animation-delay: 0.3s; }
+
+/* ── Layout ───────────────────────────────────────────── */
+.db-root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.db-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.db-header-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--db-text);
+  letter-spacing: -0.5px;
+}
+
+.db-header-sub {
+  font-size: 0.88rem;
+  color: var(--db-text-secondary);
+  margin-top: 2px;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.db-date-badge {
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--db-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Stat Cards Row ───────────────────────────────────── */
+.db-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.db-stat-card {
+  background: var(--db-card);
+  border: 1px solid var(--db-card-border);
+  border-radius: var(--db-radius);
+  padding: 22px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.db-stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent-gradient);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.db-stat-card:hover {
+  background: var(--db-card-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.db-stat-card:hover::after {
+  opacity: 1;
+}
+
+.db-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.db-stat-icon.magenta  { background: rgba(232, 67, 147, 0.15); color: var(--db-magenta); }
+.db-stat-icon.cyan     { background: rgba(0, 206, 201, 0.15); color: var(--db-cyan); }
+.db-stat-icon.amber    { background: rgba(253, 203, 110, 0.15); color: var(--db-amber); }
+.db-stat-icon.red      { background: rgba(255, 118, 117, 0.15); color: var(--db-red); }
+
+.db-stat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.db-stat-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--db-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.db-stat-value {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--db-text);
+  line-height: 1;
+}
+
+.db-stat-trend {
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.db-stat-trend.up   { background: rgba(0, 184, 148, 0.1); color: var(--db-lime); }
+.db-stat-trend.down { background: rgba(255, 118, 117, 0.1); color: var(--db-red); }
+
+/* ── Main Grid (left sidebar + center + right) ────────── */
+.db-main-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr 280px;
+  gap: 18px;
+}
+
+/* ── Quick Access Sidebar ─────────────────────────────── */
+.db-quick-access {
+  background: var(--db-card);
+  border: 1px solid var(--db-card-border);
+  border-radius: var(--db-radius);
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.db-quick-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--db-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+
+.db-quick-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: var(--db-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.db-quick-item:hover {
+  background: rgba(108, 92, 231, 0.08);
+  color: var(--db-text);
+  border-color: rgba(108, 92, 231, 0.15);
+}
+
+.db-quick-item.active {
+  background: rgba(108, 92, 231, 0.12);
+  color: #fff;
+  border-color: rgba(108, 92, 231, 0.2);
+}
+
+.db-quick-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Center Content ───────────────────────────────────── */
+.db-center {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Gauge row */
+.db-gauges-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.db-gauge-card {
+  background: var(--db-card);
+  border: 1px solid var(--db-card-border);
+  border-radius: var(--db-radius);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.db-gauge-svg {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.db-gauge-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 8;
+}
+
+.db-gauge-fill {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  animation: db-radialFill 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.db-gauge-text {
+  fill: var(--db-text);
+  font-size: 16px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.db-gauge-info {
+  flex: 1;
+}
+
+.db-gauge-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--db-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+}
+
+.db-gauge-detail {
+  font-size: 0.82rem;
+  color: var(--db-text-muted);
+  line-height: 1.5;
+}
+
+/* Progress bars card */
+.db-progress-card {
+  background: var(--db-card);
+  border: 1px solid var(--db-card-border);
+  border-radius: var(--db-radius);
+  padding: 24px;
+}
+
+.db-progress-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--db-text);
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.db-progress-item {
+  margin-bottom: 14px;
+}
+
+.db-progress-item:last-child {
+  margin-bottom: 0;
+}
+
+.db-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.db-progress-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--db-text-secondary);
+}
+
+.db-progress-pct {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--db-text);
+}
+
+.db-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.db-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  animation: db-progressFill 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Charts */
+.db-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.db-chart-card {
+  background: var(--db-card);
+  border: 1px solid var(--db-card-border);
+  border-radius: var(--db-radius);
+  padding: 24px;
+}
+
+.db-chart-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--db-text);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.db-chart-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* ── Right Panel ──────────────────────────────────────── */
+.db-right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.db-big-stat-card {
+  background: var(--db-card);
+  border: 1px solid var(--db-card-border);
+  border-radius: var(--db-radius);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.db-big-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.db-big-stat-value {
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.db-big-stat-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--db-text-secondary);
+  margin-bottom: 14px;
+}
+
+.db-big-stat-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.db-big-stat-bar-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.db-big-stat-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  animation: db-progressFill 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Pie card */
+.db-pie-card {
+  background: var(--db-card);
+  border: 1px solid var(--db-card-border);
+  border-radius: var(--db-radius);
+  padding: 24px;
+}
+
+.db-pie-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--db-text);
+  margin-bottom: 16px;
+}
+
+/* Activity */
+.db-activity-card {
+  background: var(--db-card);
+  border: 1px solid var(--db-card-border);
+  border-radius: var(--db-radius);
+  padding: 20px;
+}
+
+.db-activity-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--db-text);
+  margin-bottom: 14px;
+}
+
+.db-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: background 0.2s;
+  cursor: default;
+}
+
+.db-activity-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.db-activity-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.db-activity-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.db-activity-action {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--db-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.db-activity-detail {
+  font-size: 0.72rem;
+  color: var(--db-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.db-activity-time {
+  font-size: 0.7rem;
+  color: var(--db-text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── ML Section ───────────────────────────────────────── */
+.db-ml-section {
+  margin-top: 6px;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .db-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .db-quick-access {
+    display: none;
+  }
+
+  .db-right-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .db-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .db-charts-row,
+  .db-gauges-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .db-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .db-right-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .db-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

@@ -5,30 +5,39 @@
 import { useEffect, useState } from 'react';
 import { checkMLHealth, trainAllModels } from '../../services/mlService';
 
+/* ── SVG Icons (Lucide/Feather) ───────────────────────── */
+const svgs = {
+    ai: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.27A7 7 0 0 1 14 22h-4a7 7 0 0 1-6.73-3H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="9.5" cy="15.5" r="1" fill="currentColor"/><circle cx="14.5" cy="15.5" r="1" fill="currentColor"/></svg>,
+    refresh: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 2.65-6.35L11 10"/><path d="M3 2v6h6"/><path d="M21 12a9 9 0 1 0-2.65 6.35L13 14"/></svg>,
+    globe: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+    churn: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="23" y2="12"/><line x1="23" y1="8" x2="19" y2="12"/></svg>,
+    scoring: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+    segmentation: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    recommender: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+    sentiment: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+};
+
 export default function MLDashboard() {
     const [health, setHealth] = useState<'online' | 'offline' | 'loading'>('loading');
     const [models, setModels] = useState<Record<string, boolean | string>>({});
     const [training, setTraining] = useState(false);
     const [trainResult, setTrainResult] = useState<any>(null);
 
-    // Mock global stats for demonstration of ML insights
-    const globalInsights = {
-        avgChurnRisk: 14.5, // 14.5% global churn risk
-        sentimentScore: 82, // 82% positive sentiment
-        keyPhrases: ['"great ai features"', '"fast support"', '"could be cheaper"'],
-        topSegments: [
-            { name: 'Champions', percent: 35 },
-            { name: 'At Risk', percent: 15 },
-            { name: 'Newbies', percent: 20 },
-            { name: 'Loyal', percent: 30 },
-        ]
-    };
+    const [globalInsights, setGlobalInsights] = useState({
+        avgChurnRisk: 0,
+        sentimentScore: 0,
+        keyPhrases: [] as string[],
+        topSegments: [] as { name: string, percent: number }[]
+    });
 
     useEffect(() => {
         checkMLHealth().then(data => {
             if (data.status === 'healthy') {
                 setHealth('online');
                 setModels(data.models_ready || {});
+                if (data.global_insights) {
+                    setGlobalInsights(data.global_insights);
+                }
             } else {
                 setHealth('offline');
             }
@@ -47,6 +56,9 @@ export default function MLDashboard() {
             if (healthData.status === 'healthy') {
                 setHealth('online');
                 setModels(healthData.models_ready || {});
+                if (healthData.global_insights) {
+                    setGlobalInsights(healthData.global_insights);
+                }
             } else {
                 setHealth('offline');
             }
@@ -59,62 +71,81 @@ export default function MLDashboard() {
 
     return (
         <div style={{
-            background: 'linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.95) 100%)',
-            borderRadius: '16px', padding: '24px', border: '1px solid rgba(99,102,241,0.2)',
+            background: 'linear-gradient(135deg, rgba(15, 20, 42, 0.6) 0%, rgba(10, 14, 30, 0.8) 100%)',
+            borderRadius: '16px', padding: '28px', border: '1px solid rgba(108, 92, 231, 0.1)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
         }}>
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                     <div style={{
-                        width: '42px', height: '42px', borderRadius: '12px', display: 'flex',
-                        alignItems: 'center', justifyContent: 'center', fontSize: '20px',
-                        background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                    }}>🤖</div>
+                        width: '46px', height: '46px', borderRadius: '12px', display: 'flex',
+                        alignItems: 'center', justifyContent: 'center',
+                        background: 'linear-gradient(135deg, #6c5ce7, #e84393)',
+                        color: '#fff', boxShadow: '0 4px 15px rgba(108, 92, 231, 0.35)'
+                    }}>
+                        {svgs.ai}
+                    </div>
                     <div>
-                        <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#f1f5f9' }}>
+                        <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.3px' }}>
                             AI / ML Service
                         </h2>
-                        <p style={{ margin: 0, fontSize: '12px', color: '#94a3b8' }}>
-                            Machine Learning & Intelligence Artificielle
+                        <p style={{ margin: 0, fontSize: '12.5px', color: '#94a3b8', marginTop: '2px' }}>
+                            Predictive Intelligence & Models
                         </p>
                     </div>
                 </div>
 
                 <div style={{
-                    display: 'flex', alignItems: 'center', gap: '6px',
-                    padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600,
-                    backgroundColor: health === 'online' ? 'rgba(16,185,129,0.15)' : health === 'offline' ? 'rgba(239,68,68,0.15)' : 'rgba(148,163,184,0.15)',
-                    color: health === 'online' ? '#10b981' : health === 'offline' ? '#ef4444' : '#94a3b8',
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    padding: '6px 14px', borderRadius: '20px', fontSize: '12.5px', fontWeight: 700,
+                    backgroundColor: health === 'online' ? 'rgba(0, 184, 148, 0.15)' : health === 'offline' ? 'rgba(255, 118, 117, 0.15)' : 'rgba(148, 163, 184, 0.15)',
+                    color: health === 'online' ? '#00b894' : health === 'offline' ? '#ff7675' : '#94a3b8',
+                    border: `1px solid ${health === 'online' ? 'rgba(0, 184, 148, 0.3)' : health === 'offline' ? 'rgba(255, 118, 117, 0.3)' : 'rgba(148, 163, 184, 0.3)'}`
                 }}>
                     <span style={{
                         width: '8px', height: '8px', borderRadius: '50%',
-                        backgroundColor: health === 'online' ? '#10b981' : health === 'offline' ? '#ef4444' : '#94a3b8',
+                        backgroundColor: health === 'online' ? '#00b894' : health === 'offline' ? '#ff7675' : '#94a3b8',
+                        boxShadow: `0 0 8px ${health === 'online' ? '#00b894' : health === 'offline' ? '#ff7675' : '#94a3b8'}`
                     }} />
-                    {health === 'online' ? 'Online' : health === 'offline' ? 'Offline' : 'Checking...'}
+                    {health === 'online' ? 'System Online' : health === 'offline' ? 'System Offline' : 'Checking...'}
                 </div>
             </div>
 
-            {/* Model Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '16px', marginBottom: '24px' }}>
                 {[
-                    { key: 'churn', label: 'Churn', icon: '🔴', metric: 'XGBoost' },
-                    { key: 'scoring', label: 'Lead Score', icon: '📊', metric: 'Gradient Boost' },
-                    { key: 'segmentation', label: 'Segments', icon: '👥', metric: 'K-Means' },
-                    { key: 'recommender', label: 'Recommend', icon: '🎯', metric: 'Neural CF' },
-                    { key: 'sentiment', label: 'Sentiment', icon: '💬', metric: 'BERT' },
+                    { key: 'churn', label: 'Churn Risk', icon: svgs.churn, metric: 'XGBoost', color: '#ff7675' },
+                    { key: 'scoring', label: 'Lead Score', icon: svgs.scoring, metric: 'Gradient Boost', color: '#00cec9' },
+                    { key: 'segmentation', label: 'Segments', icon: svgs.segmentation, metric: 'K-Means', color: '#a29bfe' },
+                    { key: 'recommender', label: 'Recommend', icon: svgs.recommender, metric: 'Neural CF', color: '#e84393' },
+                    { key: 'sentiment', label: 'Sentiment', icon: svgs.sentiment, metric: 'BERT', color: '#74b9ff' },
                 ].map(m => (
                     <div key={m.key} style={{
-                        padding: '14px', borderRadius: '12px', textAlign: 'center',
-                        backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)',
-                    }}>
-                        <div style={{ fontSize: '24px', marginBottom: '6px' }}>{m.icon}</div>
-                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#e2e8f0', marginBottom: '2px' }}>{m.label}</div>
-                        <div style={{ fontSize: '10px', color: '#64748b' }}>{m.metric}</div>
+                        padding: '18px 14px', borderRadius: '14px', textAlign: 'center',
+                        background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)',
+                        transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+                    }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px', color: m.color }}>
+                            {m.icon}
+                        </div>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#f1f5f9', marginBottom: '4px' }}>{m.label}</div>
+                        <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 500 }}>{m.metric}</div>
                         <div style={{
-                            marginTop: '8px', fontSize: '11px', fontWeight: 600,
-                            color: models[m.key] ? '#10b981' : '#f59e0b',
+                            marginTop: '12px', fontSize: '11px', fontWeight: 700,
+                            color: models[m.key] ? '#00b894' : '#fdcb6e',
+                            background: models[m.key] ? 'rgba(0, 184, 148, 0.1)' : 'rgba(253, 203, 110, 0.1)',
+                            padding: '4px 8px', borderRadius: '6px', display: 'inline-block'
                         }}>
-                            {typeof models[m.key] === 'string' ? models[m.key] : models[m.key] ? '✅ Trained' : '⏳ Not trained'}
+                            {typeof models[m.key] === 'string' ? models[m.key] : models[m.key] ? 'Trained' : 'Not trained'}
                         </div>
                     </div>
                 ))}
@@ -125,54 +156,61 @@ export default function MLDashboard() {
                 onClick={handleTrain}
                 disabled={training}
                 style={{
-                    width: '100%', padding: '10px', borderRadius: '10px',
+                    width: '100%', padding: '14px', borderRadius: '12px',
                     border: 'none', cursor: training ? 'not-allowed' : 'pointer',
-                    background: training ? '#334155' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                    color: '#fff', fontSize: '13px', fontWeight: 600,
-                    opacity: training ? 0.7 : 1,
+                    background: training ? 'rgba(108, 92, 231, 0.5)' : 'linear-gradient(90deg, #6c5ce7, #a29bfe)',
+                    color: '#fff', fontSize: '14px', fontWeight: 700,
                     transition: 'all 0.2s ease',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                    boxShadow: training ? 'none' : '0 4px 15px rgba(108, 92, 231, 0.3)'
                 }}
+                onMouseEnter={(e) => { if(!training) e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                onMouseLeave={(e) => { if(!training) e.currentTarget.style.transform = 'none'; }}
             >
-                {training ? '⏳ Training models...' : '🔄 Retrain All Models'}
+                {training ? (
+                    <>⏳ Training models...</>
+                ) : (
+                    <>{svgs.refresh} Retrain All Models</>
+                )}
             </button>
 
             {/* Global ML Insights */}
-            <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#e2e8f0', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span>🌍</span> Global AI Insights
+            <div style={{ marginTop: '28px', paddingTop: '24px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#f1f5f9', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ color: '#00cec9' }}>{svgs.globe}</span> Global AI Insights
                 </h3>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     {/* Churn Rate insight */}
-                    <div style={{ background: 'rgba(15,23,42,0.6)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.2)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ background: 'rgba(10, 14, 30, 0.5)', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 118, 117, 0.2)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             Avg Portfolio Churn Risk
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'baseline', marginTop: '8px', gap: '8px' }}>
-                            <span style={{ fontSize: '28px', fontWeight: 700, color: '#f87171' }}>{globalInsights.avgChurnRisk}%</span>
-                            <span style={{ fontSize: '12px', fontWeight: 500, color: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', padding: '2px 6px', borderRadius: '4px' }}>
-                                +2.1%
+                        <div style={{ display: 'flex', alignItems: 'baseline', marginTop: '12px', gap: '12px' }}>
+                            <span style={{ fontSize: '32px', fontWeight: 800, color: '#ff7675', letterSpacing: '-1px' }}>{globalInsights.avgChurnRisk}%</span>
+                            <span style={{ fontSize: '12px', fontWeight: 700, color: globalInsights.avgChurnRisk > 50 ? '#ff7675' : globalInsights.avgChurnRisk > 25 ? '#fdcb6e' : '#00b894', backgroundColor: globalInsights.avgChurnRisk > 50 ? 'rgba(255, 118, 117, 0.1)' : globalInsights.avgChurnRisk > 25 ? 'rgba(253, 203, 110, 0.1)' : 'rgba(0, 184, 148, 0.1)', padding: '4px 8px', borderRadius: '6px' }}>
+                                {globalInsights.avgChurnRisk > 50 ? 'High Risk' : globalInsights.avgChurnRisk > 25 ? 'Medium Risk' : 'Low Risk'}
                             </span>
                         </div>
-                        <div style={{ width: '100%', height: '4px', backgroundColor: '#334155', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
-                            <div style={{ width: `${globalInsights.avgChurnRisk}%`, height: '100%', backgroundColor: '#ef4444' }} />
+                        <div style={{ width: '100%', height: '6px', backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: '3px', marginTop: '16px', overflow: 'hidden' }}>
+                            <div style={{ width: `${globalInsights.avgChurnRisk}%`, height: '100%', background: 'linear-gradient(90deg, #ff7675, #e84393)' }} />
                         </div>
                     </div>
 
                     {/* Sentiment insight */}
-                    <div style={{ background: 'rgba(15,23,42,0.6)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.2)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ background: 'rgba(10, 14, 30, 0.5)', padding: '20px', borderRadius: '14px', border: '1px solid rgba(0, 184, 148, 0.2)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             Global Customer Sentiment
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'baseline', marginTop: '8px', gap: '8px' }}>
-                            <span style={{ fontSize: '28px', fontWeight: 700, color: '#34d399' }}>{globalInsights.sentimentScore}%</span>
-                            <span style={{ fontSize: '12px', fontWeight: 500, color: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', marginTop: '12px', gap: '12px' }}>
+                            <span style={{ fontSize: '32px', fontWeight: 800, color: '#00b894', letterSpacing: '-1px' }}>{globalInsights.sentimentScore}%</span>
+                            <span style={{ fontSize: '12px', fontWeight: 700, color: '#00b894', backgroundColor: 'rgba(0, 184, 148, 0.1)', padding: '4px 8px', borderRadius: '6px' }}>
                                 Positive
                             </span>
                         </div>
-                        <div style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 500, color: '#cbd5e1', marginTop: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                             {globalInsights.keyPhrases.map((phrase, i) => (
-                                <span key={i} style={{ backgroundColor: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '10px' }}>{phrase}</span>
+                                <span key={i} style={{ backgroundColor: 'rgba(255, 255, 255, 0.08)', padding: '4px 10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>{phrase}</span>
                             ))}
                         </div>
                     </div>
@@ -181,13 +219,15 @@ export default function MLDashboard() {
 
             {trainResult && (
                 <div style={{
-                    marginTop: '10px', padding: '10px', borderRadius: '8px', fontSize: '12px',
-                    backgroundColor: trainResult.error ? 'rgba(239,68,68,0.12)' : 'rgba(16,185,129,0.12)',
-                    color: trainResult.error ? '#fca5a5' : '#6ee7b7',
+                    marginTop: '20px', padding: '12px 16px', borderRadius: '10px', fontSize: '13px', fontWeight: 600,
+                    backgroundColor: trainResult.error ? 'rgba(255, 118, 117, 0.1)' : 'rgba(0, 184, 148, 0.1)',
+                    color: trainResult.error ? '#ff7675' : '#00b894',
+                    border: `1px solid ${trainResult.error ? 'rgba(255, 118, 117, 0.2)' : 'rgba(0, 184, 148, 0.2)'}`,
+                    display: 'flex', alignItems: 'center', gap: '8px'
                 }}>
                     {trainResult.error
-                        ? '❌ Training failed. Check logs.'
-                        : `✅ ${trainResult.status === 'success' ? 'All models trained successfully!' : JSON.stringify(trainResult.status)}`
+                        ? <><span style={{ fontSize: '16px' }}>❌</span> Training failed. Check logs.</>
+                        : <><span style={{ fontSize: '16px' }}>✅</span> {trainResult.status === 'success' ? 'All models trained successfully!' : JSON.stringify(trainResult.status)}</>
                     }
                 </div>
             )}

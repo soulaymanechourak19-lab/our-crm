@@ -92,7 +92,6 @@ const Products: React.FC = () => {
                         value={search}
                         onChange={handleSearch}
                         placeholder="Search products..."
-                        className="bg-dark-900 border-dark-700"
                     />
                 </div>
 
@@ -125,7 +124,7 @@ const Products: React.FC = () => {
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-20 text-dark-400">
+                <div className="text-center py-20 text-[var(--text-secondary)]">
                     No products found. Try adjusting your filters.
                 </div>
             )}

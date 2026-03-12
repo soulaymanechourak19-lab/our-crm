@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { useTranslation } from 'react-i18next';
+import {
+    LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area,
+    XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+} from 'recharts';
 import { useAuth } from '../context/AuthContext';
-import Card from '../components/common/Card';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { getDashboardStats } from '../services/api';
 import { getProducts } from '../services/products';
 import MLDashboard from '../components/ml/MLDashboard';
+import './Dashboard.css';
 
 interface Stats {
     totalProducts: number;
@@ -14,38 +19,76 @@ interface Stats {
     totalCustomers: number;
 }
 
-// Mock data for charts (leads over time)
-const leadsOverTime = [
-    { month: 'Jan', leads: 12 },
-    { month: 'Feb', leads: 19 },
-    { month: 'Mar', leads: 15 },
-    { month: 'Apr', leads: 28 },
-    { month: 'May', leads: 24 },
-    { month: 'Jun', leads: 32 },
-];
+/* ── SVG Radial Gauge ─────────────────────────────────── */
+const RadialGauge: React.FC<{ value: number; color: string; size?: number }> = ({
+    value, color, size = 90
+}) => {
+    const r = 36;
+    const circumference = 2 * Math.PI * r;
+    const offset = circumference - (value / 100) * circumference;
+    return (
+        <svg className="db-gauge-svg" viewBox="0 0 90 90" width={size} height={size}>
+            <circle className="db-gauge-track" cx="45" cy="45" r={r} />
+            <circle
+                className="db-gauge-fill"
+                cx="45" cy="45" r={r}
+                stroke={color}
+                strokeDasharray={circumference}
+                strokeDashoffset={offset}
+            />
+            <text className="db-gauge-text" x="45" y="45">{value}%</text>
+        </svg>
+    );
+};
 
-// Mock lead status distribution
-const leadStatusData = [
-    { name: 'New', value: 35, color: '#818cf8' },
-    { name: 'Contacted', value: 25, color: '#6366f1' },
-    { name: 'Qualified', value: 20, color: '#22c55e' },
-    { name: 'Lost', value: 10, color: '#ef4444' },
-    { name: 'Won', value: 10, color: '#f59e0b' },
-];
+/* ── Progress Bar ─────────────────────────────────────── */
+const ProgressBar: React.FC<{ label: string; value: number; max: number; color: string }> = ({
+    label, value, max, color
+}) => {
+    const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+    return (
+        <div className="db-progress-item">
+            <div className="db-progress-header">
+                <span className="db-progress-name">{label}</span>
+                <span className="db-progress-pct">{pct}%</span>
+            </div>
+            <div className="db-progress-track">
+                <div className="db-progress-fill" style={{ width: `${pct}%`, background: color }} />
+            </div>
+        </div>
+    );
+};
 
-// Recent activity mock data
-const recentActivity = [
-    { id: 1, action: 'New lead created', detail: 'Ahmed Benali', time: '5 min ago', icon: '👥' },
-    { id: 2, action: 'Product updated', detail: 'Laptop Pro X1', time: '12 min ago', icon: '🛒' },
-    { id: 3, action: 'Customer registered', detail: 'Sara El Fassi', time: '1 hour ago', icon: '👤' },
-    { id: 4, action: 'Stock alert', detail: 'Wireless Mouse - Low stock', time: '2 hours ago', icon: '⚠️' },
-    { id: 5, action: 'Deal closed', detail: 'Enterprise Package', time: '3 hours ago', icon: '💰' },
-];
+/* ── SVG Icons (Lucide/Feather) ───────────────────────── */
+const svgs = {
+    users: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    settings: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+    logs: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
+    ai: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.27A7 7 0 0 1 14 22h-4a7 7 0 0 1-6.73-3H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/><circle cx="9.5" cy="15.5" r="1" fill="currentColor"/><circle cx="14.5" cy="15.5" r="1" fill="currentColor"/></svg>,
+    brain: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A5.5 5.5 0 0 0 4 7.5c0 1.14.35 2.2.94 3.08A5.5 5.5 0 0 0 7 18.5V22h4v-3.5"/><path d="M14.5 2A5.5 5.5 0 0 1 20 7.5c0 1.14-.35 2.2-.94 3.08A5.5 5.5 0 0 1 17 18.5V22h-4v-3.5"/><path d="M8 10h8"/><path d="M9 14h6"/></svg>,
+    target: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+    handshake: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    box: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>,
+    chart: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+    ticket: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5v2"/><path d="M15 11v2"/><path d="M15 17v2"/><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/></svg>,
+    user: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    book: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
+    check: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
+    alert: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+    activity: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+};
+
 
 const Dashboard: React.FC = () => {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const [stats, setStats] = useState<Stats>({ totalProducts: 0, lowStockCount: 0, totalLeads: 0, totalCustomers: 0 });
     const [productsByCategory, setProductsByCategory] = useState<{ category: string; count: number }[]>([]);
+    const [chartData, setChartData] = useState({
+        leadsOverTime: [] as any[],
+        leadStatusData: [] as any[],
+        recentActivity: [] as any[]
+    });
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -53,56 +96,27 @@ const Dashboard: React.FC = () => {
             try {
                 const productsRes = await getProducts({ page: 1 });
                 const products = productsRes.data;
-                const lowStock = products.filter((p: any) => p.stock < 5).length;
-
-                // Count by category
                 const catMap: Record<string, number> = {};
                 products.forEach((p: any) => {
                     catMap[p.category] = (catMap[p.category] || 0) + 1;
                 });
-                const catData = Object.entries(catMap).map(([category, count]) => ({ category, count }));
+                setProductsByCategory(Object.entries(catMap).map(([category, count]) => ({ category, count })));
 
-                setStats({
-                    totalProducts: productsRes.total,
-                    lowStockCount: lowStock,
-                    totalLeads: 130, // Mock
-                    totalCustomers: 85, // Mock
+                const dbStats = await getDashboardStats();
+                setStats(dbStats.stats);
+                setChartData({
+                    leadsOverTime: dbStats.leadsOverTime,
+                    leadStatusData: dbStats.leadStatusData,
+                    recentActivity: dbStats.recentActivity
                 });
-                setProductsByCategory(catData);
-            } catch {
-                // Use mock data on error
-                setStats({ totalProducts: 0, lowStockCount: 0, totalLeads: 130, totalCustomers: 85 });
+            } catch (err) {
+                console.error("Dashboard stats error:", err);
             } finally {
                 setIsLoading(false);
             }
         };
         fetchStats();
     }, []);
-
-    const cards: { title: string; description: string; icon: string; link?: string; color: string }[] = [];
-
-    if (user?.role === 'admin') {
-        cards.push(
-            { title: 'User Management', description: 'Create, edit & remove users', icon: '👥', link: '/admin/users', color: 'indigo' },
-            { title: 'System Settings', description: 'Configure global CRM settings', icon: '⚙️', color: 'slate' },
-            { title: 'System Logs', description: 'View activity & audit logs', icon: '📋', color: 'slate' },
-            { title: 'All Modules', description: 'Full access to every module', icon: '🔓', color: 'slate' },
-        );
-    } else if (user?.role === 'agent_commercial') {
-        cards.push(
-            { title: 'My Leads', description: 'View & manage your assigned leads', icon: '🎯', link: '/leads', color: 'indigo' },
-            { title: 'Customers', description: 'Convert qualified leads to customers', icon: '🤝', link: '/customers', color: 'emerald' },
-            { title: 'Products Catalog', description: 'Browse the product catalog', icon: '📦', link: '/products', color: 'indigo' },
-            { title: 'Performance', description: 'Your sales performance metrics', icon: '📊', color: 'slate' },
-        );
-    } else {
-        cards.push(
-            { title: 'Support Tickets', description: 'Create & manage support tickets', icon: '🎫', color: 'amber' },
-            { title: 'Customers', description: 'View customer information', icon: '👤', link: '/customers', color: 'indigo' },
-            { title: 'Knowledge Base', description: 'Access support resources', icon: '📚', color: 'slate' },
-            { title: 'Issue Resolution', description: 'Track & resolve customer issues', icon: '✅', color: 'emerald' },
-        );
-    }
 
     if (isLoading) {
         return (
@@ -112,144 +126,285 @@ const Dashboard: React.FC = () => {
         );
     }
 
-    const statCards = [
-        { label: 'Total Leads', value: stats.totalLeads, icon: '👥', color: 'from-indigo-600 to-indigo-800', change: '+12%' },
-        { label: 'Total Products', value: stats.totalProducts, icon: '🛒', color: 'from-emerald-600 to-emerald-800', change: '+5%' },
-        { label: 'Total Customers', value: stats.totalCustomers, icon: '👤', color: 'from-amber-600 to-amber-800', change: '+8%' },
-        { label: 'Low Stock', value: stats.lowStockCount, icon: '⚠️', color: 'from-red-600 to-red-800', change: '-3%' },
-    ];
+    // Quick access cards based on role
+    const cards: { title: string; icon: React.ReactNode; link?: string; color: string }[] = [];
+    if (user?.role === 'admin') {
+        cards.push(
+            { title: t('sidebar.users') || 'Users', icon: svgs.users, link: '/admin/users', color: '#6c5ce7' },
+            { title: t('sidebar.settings'), icon: svgs.settings, link: '/settings', color: '#e17055' },
+            { title: t('sidebar.logs'), icon: svgs.logs, link: '/logs', color: '#00cec9' },
+            { title: t('sidebar.aiAssistant') || 'AI Assistant', icon: svgs.ai, link: '/chatbot', color: '#e84393' },
+            { title: t('sidebar.aiTraining') || 'AI Training', icon: svgs.brain, link: '/chatbot-training', color: '#fdcb6e' },
+        );
+    } else if (user?.role === 'agent_commercial') {
+        cards.push(
+            { title: t('sidebar.myLeads') || 'My Leads', icon: svgs.target, link: '/leads', color: '#e84393' },
+            { title: t('sidebar.customers'), icon: svgs.handshake, link: '/customers', color: '#00cec9' },
+            { title: 'Products', icon: svgs.box, link: '/products', color: '#6c5ce7' },
+            { title: 'Performance', icon: svgs.chart, color: '#fdcb6e' },
+        );
+    } else {
+        cards.push(
+            { title: 'Tickets', icon: svgs.ticket, color: '#fdcb6e' },
+            { title: 'Customers', icon: svgs.user, link: '/customers', color: '#6c5ce7' },
+            { title: 'Knowledge', icon: svgs.book, color: '#00cec9' },
+            { title: 'Issues', icon: svgs.check, color: '#00b894' },
+        );
+    }
+
+    // Compute metrics for gauges
+    const totalStatusValues = chartData.leadStatusData.reduce((sum: number, s: any) => sum + (s.value || 0), 0);
+    const wonLeads = chartData.leadStatusData.find((s: any) => s.name === 'Won')?.value || 0;
+    const conversionRate = totalStatusValues > 0 ? Math.round((wonLeads / totalStatusValues) * 100) : 0;
+    const healthyStock = stats.totalProducts > 0 ? Math.round(((stats.totalProducts - stats.lowStockCount) / stats.totalProducts) * 100) : 0;
+
+    // Build progress data from lead statuses
+    const leadStatusColors: Record<string, string> = {
+        New: '#74b9ff',
+        Contacted: '#a29bfe',
+        Qualified: '#00cec9',
+        Won: '#00b894',
+        Lost: '#ff7675',
+    };
+
+    // Bar chart colors
+    const barColors = ['#e84393', '#00cec9', '#fdcb6e', '#6c5ce7', '#74b9ff', '#00b894', '#e17055', '#a29bfe'];
 
     return (
-        <div className="animate-fade-in space-y-8">
-            <div className="flex items-center justify-between">
+        <div className="db-root">
+            {/* ── Header ──────────────────────────────────── */}
+            <div className="db-header db-animate-in">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-white tracking-tight">Overview</h1>
-                    <p className="text-slate-400 mt-1 font-medium italic opacity-80">Welcome back, {user?.name?.split(' ')[0]}</p>
+                    <h1 className="db-header-title">{t('dashboard.overview') || 'Overview'}</h1>
+                    <p className="db-header-sub">{t('dashboard.welcomeBack') || 'Welcome back'}, {user?.name?.split(' ')[0]}</p>
                 </div>
-                <div className="hidden sm:flex gap-2">
-                    <div className="px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.05] text-xs font-bold text-slate-400 uppercase tracking-widest leading-none flex items-center">
-                        {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
-                    </div>
+                <div className="db-date-badge">
+                    {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                 </div>
             </div>
 
-            {/* Quick Access Modules */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {cards.map((card) => (
-                    <div className="group relative" key={card.title}>
-                        <div className={`p-6 rounded-3xl bg-white/[0.03] border border-white/[0.05] transition-all duration-300 hover:bg-white/[0.06] hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10`}>
-                            {card.link && <Link to={card.link} className="absolute inset-0 z-10" />}
-                            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
-                                {card.icon}
-                            </div>
-                            <h3 className="text-lg font-bold text-white mb-2">{card.title}</h3>
-                            <p className="text-sm text-slate-400 font-medium leading-relaxed">{card.description}</p>
-                            {!card.link && (
-                                <div className="mt-4 flex items-center gap-2">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                                    <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Coming Soon</span>
-                                </div>
-                            )}
+            {/* ── Stat Cards ─────────────────────────────── */}
+            <div className="db-stats-grid">
+                {[
+                    { label: t('dashboard.totalLeads') || 'Total Leads', value: stats.totalLeads, icon: svgs.target, iconClass: 'magenta', trend: '+12%', trendDir: 'up' },
+                    { label: t('dashboard.products') || 'Products', value: stats.totalProducts, icon: svgs.box, iconClass: 'cyan', trend: '+5%', trendDir: 'up' },
+                    { label: t('dashboard.customers') || 'Customers', value: stats.totalCustomers, icon: svgs.users, iconClass: 'amber', trend: '+8%', trendDir: 'up' },
+                    { label: t('dashboard.lowStock') || 'Low Stock', value: stats.lowStockCount, icon: svgs.alert, iconClass: 'red', trend: stats.lowStockCount > 0 ? t('dashboard.attention') || 'Attention' : t('dashboard.ok') || 'OK', trendDir: stats.lowStockCount > 0 ? 'down' : 'up' },
+                ].map((s, i) => (
+                    <div key={s.label} className={`db-stat-card db-animate-in db-animate-in-${i + 1}`}
+                         style={{ '--accent-gradient': `linear-gradient(90deg, ${i === 0 ? '#e84393' : i === 1 ? '#00cec9' : i === 2 ? '#fdcb6e' : '#ff7675'}, transparent)` } as React.CSSProperties}>
+                        <div className={`db-stat-icon ${s.iconClass}`}>
+                            <span>{s.icon}</span>
+                        </div>
+                        <div className="db-stat-info">
+                            <div className="db-stat-label">{s.label}</div>
+                            <div className="db-stat-value">{s.value}</div>
+                            <span className={`db-stat-trend ${s.trendDir}`}>
+                                {s.trendDir === 'up' ? '↑' : '↓'} {s.trend}
+                            </span>
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {statCards.map((stat) => (
-                    <Card key={stat.label} className="relative overflow-hidden border-none!">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-slate-400 text-sm font-medium">{stat.label}</p>
-                                <p className="text-3xl font-bold text-white mt-1">{stat.value}</p>
-                                <span className={`text-xs mt-2 inline-block font-semibold ${stat.change.startsWith('+') ? 'text-emerald-400' : 'text-red-400'}`}>
-                                    {stat.change} this month
-                                </span>
-                            </div>
-                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center text-xl shadow-lg`}>
-                                {stat.icon}
+            {/* ── Main 3-Column Grid ─────────────────────── */}
+            <div className="db-main-grid db-animate-in db-animate-in-5">
+                {/* Left — Quick Access */}
+                <div className="db-quick-access">
+                    <div className="db-quick-title">{t('dashboard.quickAccess')}</div>
+                    {cards.map((c) => {
+                        const inner = (
+                            <>
+                                <span className="db-quick-dot" style={{ background: c.color }} />
+                                <span>{c.title}</span>
+                            </>
+                        );
+                        return c.link ? (
+                            <Link key={c.title} to={c.link} className="db-quick-item">{inner}</Link>
+                        ) : (
+                            <div key={c.title} className="db-quick-item" style={{ opacity: 0.5, cursor: 'default' }}>{inner}</div>
+                        );
+                    })}
+                </div>
+
+                {/* Center — Gauges, Progress, Charts */}
+                <div className="db-center">
+                    {/* Gauges */}
+                    <div className="db-gauges-row">
+                        <div className="db-gauge-card">
+                            <RadialGauge value={conversionRate} color="#e84393" />
+                            <div className="db-gauge-info">
+                                <div className="db-gauge-label">{t('dashboard.leadConversion') || 'Lead Conversion'}</div>
+                                <div className="db-gauge-detail">
+                                    {t('dashboard.wonOutOfTotal', { won: wonLeads, total: totalStatusValues }) || `${wonLeads} won out of ${totalStatusValues} total leads in pipeline`}
+                                </div>
                             </div>
                         </div>
-                    </Card>
-                ))}
-            </div>
-
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Line Chart - Leads over time */}
-                <Card className="border-none!">
-                    <h3 className="text-white font-semibold mb-4 text-lg">Leads Over Time</h3>
-                    <ResponsiveContainer width="100%" height={280}>
-                        <LineChart data={leadsOverTime}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                            <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
-                            <YAxis stroke="#64748b" fontSize={12} />
-                            <Tooltip
-                                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '12px', color: '#fff' }}
-                            />
-                            <Line type="monotone" dataKey="leads" stroke="#6366f1" strokeWidth={3} dot={{ fill: '#6366f1', r: 5 }} activeDot={{ r: 7 }} />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </Card>
-
-                {/* Bar Chart - Products by category */}
-                <Card className="border-none!">
-                    <h3 className="text-white font-semibold mb-4 text-lg">Products by Category</h3>
-                    <ResponsiveContainer width="100%" height={280}>
-                        <BarChart data={productsByCategory.length > 0 ? productsByCategory : [{ category: 'No data', count: 0 }]}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                            <XAxis dataKey="category" stroke="#64748b" fontSize={12} />
-                            <YAxis stroke="#64748b" fontSize={12} />
-                            <Tooltip
-                                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '12px', color: '#fff' }}
-                            />
-                            <Bar dataKey="count" fill="#6366f1" radius={[8, 8, 0, 0]} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </Card>
-
-                {/* Pie Chart - Lead Status */}
-                <Card className="border-none!">
-                    <h3 className="text-white font-semibold mb-4 text-lg">Lead Status Distribution</h3>
-                    <ResponsiveContainer width="100%" height={280}>
-                        <PieChart>
-                            <Pie data={leadStatusData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={3} dataKey="value">
-                                {leadStatusData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                            </Pie>
-                            <Tooltip
-                                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '12px', color: '#fff' }}
-                            />
-                            <Legend
-                                formatter={(value) => <span style={{ color: '#94a3b8', fontSize: '12px', fontWeight: 500 }}>{value}</span>}
-                            />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </Card>
-
-                {/* Recent Activity */}
-                <Card className="border-none!">
-                    <h3 className="text-white font-semibold mb-4 text-lg">Recent Activity</h3>
-                    <div className="space-y-3">
-                        {recentActivity.map((activity) => (
-                            <div key={activity.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-700/50 cursor-pointer">
-                                <span className="text-xl">{activity.icon}</span>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-white font-medium truncate">{activity.action}</p>
-                                    <p className="text-xs text-slate-400 truncate">{activity.detail}</p>
+                        <div className="db-gauge-card">
+                            <RadialGauge value={healthyStock} color="#00cec9" />
+                            <div className="db-gauge-info">
+                                <div className="db-gauge-label">{t('dashboard.stockHealth') || 'Stock Health'}</div>
+                                <div className="db-gauge-detail">
+                                    {t('dashboard.productsRunningLow', { low: stats.lowStockCount, total: stats.totalProducts }) || `${stats.lowStockCount} products running low out of ${stats.totalProducts}`}
                                 </div>
-                                <span className="text-xs font-semibold text-slate-500 whitespace-nowrap">{activity.time}</span>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Lead Status Progress Bars */}
+                    <div className="db-progress-card">
+                        <div className="db-progress-title">{t('dashboard.leadStatusDistribution') || 'Lead Status Distribution'}</div>
+                        {chartData.leadStatusData.map((status: any) => (
+                            <ProgressBar
+                                key={status.name}
+                                label={status.name}
+                                value={status.value}
+                                max={totalStatusValues}
+                                color={leadStatusColors[status.name] || '#a29bfe'}
+                            />
                         ))}
                     </div>
-                </Card>
-                
-                {/* AI / ML Global Dashboard */}
-                <div className="lg:col-span-2 mt-4">
-                    <MLDashboard />
+
+                    {/* Charts */}
+                    <div className="db-charts-row">
+                        {/* Area Chart - Leads Over Time */}
+                        <div className="db-chart-card">
+                            <div className="db-chart-title">
+                                <span className="db-chart-dot" style={{ background: '#e84393' }} />
+                                {t('dashboard.leadsOverTime') || 'Leads Over Time'}
+                            </div>
+                            <ResponsiveContainer width="100%" height={220}>
+                                <AreaChart data={chartData.leadsOverTime}>
+                                    <defs>
+                                        <linearGradient id="leadGrad" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor="#e84393" stopOpacity={0.3} />
+                                            <stop offset="100%" stopColor="#e84393" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                    <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#1a1f35', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#f1f5f9', fontSize: '12px' }}
+                                    />
+                                    <Area type="monotone" dataKey="leads" stroke="#e84393" strokeWidth={2.5} fill="url(#leadGrad)" dot={{ fill: '#e84393', r: 4, strokeWidth: 0 }} activeDot={{ r: 6, stroke: '#e84393', strokeWidth: 2 }} />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+
+                        {/* Bar Chart - Products by Category */}
+                        <div className="db-chart-card">
+                            <div className="db-chart-title">
+                                <span className="db-chart-dot" style={{ background: '#00cec9' }} />
+                                {t('dashboard.productsByCategory') || 'Products by Category'}
+                            </div>
+                            <ResponsiveContainer width="100%" height={220}>
+                                <BarChart data={productsByCategory.length > 0 ? productsByCategory : [{ category: 'No data', count: 0 }]}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                    <XAxis dataKey="category" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#1a1f35', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#f1f5f9', fontSize: '12px' }}
+                                    />
+                                    <Bar dataKey="count" radius={[6, 6, 0, 0]}>
+                                        {(productsByCategory.length > 0 ? productsByCategory : [{ category: 'No data', count: 0 }]).map((_, i) => (
+                                            <Cell key={i} fill={barColors[i % barColors.length]} />
+                                        ))}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
                 </div>
+
+                {/* Right Panel — Big Stats + Pie + Activity */}
+                <div className="db-right-panel">
+                    {/* Big Stat 1 */}
+                    <div className="db-big-stat-card">
+                        <div className="db-big-stat-value" style={{ color: '#a29bfe' }}>{conversionRate}%</div>
+                        <div className="db-big-stat-label">{t('dashboard.leadConversionRate') || 'Lead Conversion Rate'}</div>
+                        <div className="db-big-stat-bars">
+                            <div className="db-big-stat-bar-track">
+                                <div className="db-big-stat-bar-fill" style={{ width: `${conversionRate}%`, background: 'linear-gradient(90deg, #6c5ce7, #a29bfe)' }} />
+                            </div>
+                            <div className="db-big-stat-bar-track">
+                                <div className="db-big-stat-bar-fill" style={{ width: `${Math.min(conversionRate + 15, 100)}%`, background: 'linear-gradient(90deg, #00cec9, #74b9ff)' }} />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Big Stat 2 */}
+                    <div className="db-big-stat-card">
+                        <div className="db-big-stat-value" style={{ color: '#00cec9' }}>{healthyStock}%</div>
+                        <div className="db-big-stat-label">{t('dashboard.inventoryHealthScore') || 'Inventory Health Score'}</div>
+                        <div className="db-big-stat-bars">
+                            <div className="db-big-stat-bar-track">
+                                <div className="db-big-stat-bar-fill" style={{ width: `${healthyStock}%`, background: 'linear-gradient(90deg, #00b894, #00cec9)' }} />
+                            </div>
+                            <div className="db-big-stat-bar-track">
+                                <div className="db-big-stat-bar-fill" style={{ width: `${Math.max(healthyStock - 10, 0)}%`, background: 'linear-gradient(90deg, #e84393, #fd79a8)' }} />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Pie Chart */}
+                    <div className="db-pie-card">
+                        <div className="db-pie-title">{t('dashboard.leadStatus') || 'Lead Status'}</div>
+                        <ResponsiveContainer width="100%" height={180}>
+                            <PieChart>
+                                <Pie
+                                    data={chartData.leadStatusData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={45}
+                                    outerRadius={70}
+                                    paddingAngle={3}
+                                    dataKey="value"
+                                >
+                                    {chartData.leadStatusData.map((entry: any, index: number) => (
+                                        <Cell key={`cell-${index}`} fill={entry.color || barColors[index % barColors.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#1a1f35', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#f1f5f9', fontSize: '12px' }}
+                                />
+                                <Legend
+                                    formatter={(value: any) => <span style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 500 }}>{value}</span>}
+                                />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+
+                    {/* Recent Activity */}
+                    <div className="db-activity-card">
+                        <div className="db-activity-title">{t('dashboard.recentActivity') || 'Recent Activity'}</div>
+                        {chartData.recentActivity.slice(0, 5).map((a: any) => {
+                            // Map the backend emojis to our frontend SVGs
+                            const activityIcon = a.icon === '🎯' ? svgs.target : 
+                                                 a.icon === '👤' ? svgs.user : 
+                                                 a.icon === '🛒' ? svgs.box : 
+                                                 svgs.activity;
+                                                 
+                            return (
+                                <div key={a.id} className="db-activity-item">
+                                    <span className="db-activity-icon" style={{ display: 'flex', alignItems: 'center' }}>
+                                        {activityIcon}
+                                    </span>
+                                    <div className="db-activity-text">
+                                        <div className="db-activity-action">{a.action}</div>
+                                        <div className="db-activity-detail">{a.detail}</div>
+                                    </div>
+                                    <span className="db-activity-time">{a.time}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+
+            {/* ── ML Dashboard ────────────────────────────── */}
+            <div className="db-ml-section db-animate-in db-animate-in-6">
+                <MLDashboard />
             </div>
         </div>
     );

@@ -201,6 +201,22 @@ async def predict_segmentation(features: Dict[str, Any]):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Alias route — Laravel MLController calls /segment/customer
+@app.post("/segment/customer")
+async def segment_customer_alias(features: Dict[str, Any]):
+    """Alias for /predict/segmentation (called by Laravel)."""
+    return await predict_segmentation(features)
+
+# Alias route — Laravel MLController calls GET /recommend/{customer_id}
+@app.get("/recommend/{customer_id}")
+async def recommend_alias(customer_id: int, top_k: int = 5):
+    """Alias for /predict/recommender (called by Laravel)."""
+    try:
+        return recommender.recommend(customer_id, top_k)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  PHASE 4: DEEP LEARNING & NLP
@@ -246,6 +262,12 @@ async def predict_sentiment(req: SentimentRequest):
         return sentiment.analyze(req.text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Alias route — Laravel MLController calls /analyze/sentiment
+@app.post("/analyze/sentiment")
+async def analyze_sentiment_alias(req: SentimentRequest):
+    """Alias for /predict/sentiment (called by Laravel)."""
+    return await predict_sentiment(req)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

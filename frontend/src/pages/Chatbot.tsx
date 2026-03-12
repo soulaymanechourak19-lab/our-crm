@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { sendChatMessage } from '../services/mlService';
+import { useTranslation } from 'react-i18next';
+import './Chatbot.css';
 
 interface Message {
     id: number;
@@ -15,9 +17,8 @@ const FormattedText: React.FC<{ text: string }> = ({ text }) => {
         <>
             {parts.map((part, i) => {
                 if (part.startsWith('**') && part.endsWith('**')) {
-                    return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
+                    return <strong key={i} className="font-bold">{part.slice(2, -2)}</strong>;
                 }
-                // Split by newline for line breaks
                 const lines = part.split('\n');
                 return lines.map((line, j) => (
                     <React.Fragment key={`${i}-${j}`}>
@@ -30,15 +31,37 @@ const FormattedText: React.FC<{ text: string }> = ({ text }) => {
     );
 };
 
+/* ── SVG Icons ── */
+const BotIcon = () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.27A7 7 0 0 1 14 22h-4a7 7 0 0 1-6.73-3H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z" />
+        <circle cx="9.5" cy="15.5" r="1" fill="currentColor" />
+        <circle cx="14.5" cy="15.5" r="1" fill="currentColor" />
+    </svg>
+);
+
+const SendIcon = () => (
+    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 12L3 21l18-9L3 3l3 9m0 0h12" />
+    </svg>
+);
+
 const Chatbot: React.FC = () => {
+    const { t } = useTranslation();
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
+    
+    // Using translation keys directly for the initial bot greeting
+    const defaultGreeting = t('sidebar.aiAssistant') === 'sidebar.aiAssistant' 
+        ? "Hey! I'm your CRM assistant with full database access.\n\nAsk me anything — customer details, lead stats, stock alerts, or just search for any name!"
+        : `${t('chat.greeting', "Hey! I'm your CRM assistant with full database access.\n\nAsk me anything — customer details, lead stats, stock alerts, or just search for any name!")}`;
+
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 1,
             sender: 'bot',
-            text: "Hey! 👋 I'm your CRM assistant with full database access.\n\nAsk me anything — customer details, lead stats, stock alerts, or just search for any name!",
-            time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+            text: "Hey! I'm your CRM assistant with full database access.\n\nAsk me anything — customer details, lead stats, stock alerts, or just search for any name!",
+            time: new Date().toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }),
         },
     ]);
     const bottomRef = useRef<HTMLDivElement>(null);
@@ -56,7 +79,7 @@ const Chatbot: React.FC = () => {
             id: Date.now(),
             sender: 'user',
             text: msgText,
-            time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+            time: new Date().toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }),
         };
 
         setMessages(prev => [...prev, userMsg]);
@@ -70,14 +93,14 @@ const Chatbot: React.FC = () => {
                 id: Date.now() + 1,
                 sender: 'bot',
                 text: data.response || "I couldn't process that request.",
-                time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                time: new Date().toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }),
             }]);
         } catch {
             setMessages(prev => [...prev, {
                 id: Date.now() + 1,
                 sender: 'bot',
-                text: '❌ Connection to AI service failed.',
-                time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                text: 'Connection to AI service failed. Please try again.',
+                time: new Date().toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }),
             }]);
         } finally {
             setLoading(false);
@@ -85,144 +108,117 @@ const Chatbot: React.FC = () => {
     };
 
     const suggestions = [
-        { icon: '📊', text: 'summary' },
-        { icon: '👥', text: 'top customers' },
-        { icon: '🎯', text: 'leads by status' },
-        { icon: '⚠️', text: 'low stock' },
-        { icon: '📈', text: 'conversion rate' },
-        { icon: '💰', text: 'pricing' },
+        { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-4"></path></svg>, text: 'summary' },
+        { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>, text: 'top customers' },
+        { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>, text: 'leads by status' },
+        { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>, text: 'low stock' }
     ];
 
     return (
-        <div className="p-4 sm:p-6 h-[calc(100vh-100px)] max-w-5xl mx-auto flex flex-col">
-            <div className="flex-1 flex flex-col rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl" style={{ background: 'linear-gradient(180deg, #0c1222 0%, #0a0f1c 100%)' }}>
+        <div className="p-4 sm:p-6 h-[calc(100vh-100px)] max-w-5xl mx-auto flex flex-col chatbot-container">
+            <div className="flex-1 flex flex-col rounded-2xl overflow-hidden chatbot-window">
 
                 {/* ── Header ── */}
-                <div className="relative px-5 py-4 flex items-center justify-between overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/90 via-violet-600/90 to-purple-600/90" />
-                    <div className="absolute inset-0 backdrop-blur-sm" />
-                    <div className="relative flex items-center gap-3 z-10">
-                        <div className="w-11 h-11 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center text-xl border border-white/10 shadow-lg">
-                            🤖
+                <div className="relative px-5 py-4 flex items-center justify-between overflow-hidden chat-header-bg">
+                    <div className="relative flex items-center gap-4 z-10 w-full">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center chat-bot-icon">
+                            <BotIcon />
                         </div>
-                        <div>
-                            <h3 className="font-bold text-[15px] text-white tracking-tight">OurCRM Intelligence</h3>
-                            <div className="flex items-center gap-1.5 text-[11px] text-white/70 font-medium">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                        <div className="flex-1">
+                            <h3 className="font-bold text-[16px] text-white tracking-tight">{t('sidebar.aiAssistant') || 'OurCRM Intelligence'}</h3>
+                            <div className="flex items-center gap-2 text-[12px] text-white/80 font-medium tracking-wide mt-0.5">
+                                <span className="relative flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 chat-status-indicator" />
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 chat-status-indicator" />
                                 </span>
-                                Live — Connected to database
+                                {t('dashboard.systemOnline') || 'Live — Connected'}
                             </div>
                         </div>
-                    </div>
-                    <div className="relative z-10 hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10">
-                        <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">Full Access</span>
+                        <div className="relative z-10 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/10 backdrop-blur-md border border-white/20">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            <span className="text-[11px] font-bold text-white uppercase tracking-widest">Full Access</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* ── Messages ── */}
-                <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 space-y-5 chat-scrollbar">
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6 chat-scrollbar">
                     {messages.map((msg, idx) => (
-                        <div key={msg.id} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                            style={{ animation: `fadeSlideIn 0.3s ease ${idx * 0.05}s both` }}>
+                        <div key={msg.id} className={`flex items-end gap-3 animate-message ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                            style={{ animationDelay: `${idx * 0.05}s` }}>
 
                             {msg.sender === 'bot' && (
-                                <div className="w-7 h-7 rounded-lg bg-indigo-500/20 flex-shrink-0 flex items-center justify-center text-xs border border-indigo-500/20">
-                                    🤖
+                                <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center chat-msg-bot-icon">
+                                    <BotIcon />
                                 </div>
                             )}
 
-                            <div className={`max-w-[82%] sm:max-w-[72%] rounded-2xl px-4 py-3 text-[14px] leading-relaxed ${msg.sender === 'user'
-                                    ? 'bg-gradient-to-br from-indigo-500 to-violet-600 text-white rounded-br-md shadow-lg shadow-indigo-500/20'
-                                    : 'bg-slate-800/60 backdrop-blur-sm border border-slate-700/40 text-slate-300 rounded-bl-md'
+                            <div className={`max-w-[85%] sm:max-w-[75%] px-5 py-3.5 text-[14.5px] leading-relaxed relative ${msg.sender === 'user'
+                                    ? 'chat-msg-user rounded-2xl'
+                                    : 'chat-msg-bot rounded-2xl'
                                 }`}>
                                 <div className="whitespace-pre-wrap">
                                     <FormattedText text={msg.text} />
                                 </div>
-                                <div className={`flex items-center gap-1.5 mt-2 text-[10px] font-medium ${msg.sender === 'user' ? 'text-white/50' : 'text-slate-600'
-                                    }`}>
+                                <div className={`flex items-center gap-1.5 mt-2.5 text-[11px] font-medium opacity-80 ${msg.sender === 'user' ? 'justify-end text-white/70' : 'text-gray-500'}`}>
                                     {msg.time}
-                                    {msg.sender === 'user' && <span className="text-white/40">✓✓</span>}
+                                    {msg.sender === 'user' && (
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-80">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     ))}
 
                     {loading && (
-                        <div className="flex items-end gap-2" style={{ animation: 'fadeSlideIn 0.3s ease both' }}>
-                            <div className="w-7 h-7 rounded-lg bg-indigo-500/20 flex-shrink-0 flex items-center justify-center text-xs border border-indigo-500/20">
-                                🤖
+                        <div className="flex items-end gap-3 animate-message">
+                            <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center chat-msg-bot-icon">
+                                <BotIcon />
                             </div>
-                            <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/40 rounded-2xl rounded-bl-md px-5 py-4 flex gap-1.5">
+                            <div className="chat-msg-bot px-5 py-4 rounded-2xl flex gap-1.5 items-center">
                                 {[0, 1, 2].map(i => (
-                                    <div key={i} className="w-2 h-2 rounded-full bg-indigo-400"
-                                        style={{ animation: `typingDot 1.4s infinite ${i * 0.2}s` }}
+                                    <div key={i} className="w-2 h-2 rounded-full typing-dot"
+                                        style={{ animation: `chatTypingWave 1.4s infinite ease-in-out ${i * 0.2}s` }}
                                     />
                                 ))}
                             </div>
                         </div>
                     )}
-                    <div ref={bottomRef} />
+                    <div ref={bottomRef} className="h-4" />
                 </div>
 
                 {/* ── Quick Suggestions ── */}
-                <div className="px-4 sm:px-5 py-3 border-t border-slate-800/80 flex gap-2 overflow-x-auto chat-scrollbar-h">
+                <div className="px-4 sm:px-6 py-4 flex gap-2.5 overflow-x-auto chat-scrollbar-h">
                     {suggestions.map(s => (
                         <button key={s.text} onClick={() => sendMessage(s.text)}
-                            className="whitespace-nowrap px-3.5 py-1.5 rounded-full text-[12px] font-semibold
-                         bg-slate-800/50 text-slate-400 border border-slate-700/50
-                         hover:bg-indigo-500/15 hover:text-indigo-300 hover:border-indigo-500/30
-                         active:scale-95 transition-all duration-200 cursor-pointer">
-                            {s.icon} {s.text}
+                            className="whitespace-nowrap px-4 py-2 rounded-full text-[13px] font-medium flex items-center gap-2 chat-suggestion-btn transition-all duration-200 cursor-pointer">
+                            <span className="opacity-70">{s.icon}</span> 
+                            <span className="capitalize">{s.text}</span>
                         </button>
                     ))}
                 </div>
 
                 {/* ── Input ── */}
-                <div className="px-4 sm:px-5 py-3.5 border-t border-slate-800/80 flex gap-3" style={{ background: 'rgba(10,15,28,0.8)' }}>
+                <div className="px-4 sm:px-6 py-4 flex gap-3 chat-input-area">
                     <input
                         ref={inputRef}
                         value={input}
                         onChange={e => setInput(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && sendMessage()}
                         placeholder="Ask anything about your CRM data..."
-                        className="flex-1 bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-xl px-4 py-3 text-[14px]
-                       outline-none focus:border-indigo-500/40 focus:bg-slate-800/80 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]
-                       transition-all duration-200 placeholder:text-slate-600"
+                        className="flex-1 rounded-xl px-5 py-3.5 text-[15px] outline-none transition-all duration-200 chat-input-field"
                     />
                     <button
                         onClick={() => sendMessage()}
                         disabled={loading || !input.trim()}
-                        className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center
-                       disabled:opacity-30 disabled:cursor-not-allowed
-                       hover:shadow-lg hover:shadow-indigo-500/30 hover:scale-105
-                       active:scale-95 transition-all duration-200 outline-none"
+                        className="w-12 h-12 rounded-xl flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 chat-send-btn outline-none"
                     >
-                        <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 12L3 21l18-9L3 3l3 9m0 0h12" />
-                        </svg>
+                        <SendIcon />
                     </button>
                 </div>
             </div>
-
-            <style>{`
-        @keyframes fadeSlideIn {
-          from { opacity: 0; transform: translateY(8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes typingDot {
-          0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-          30% { transform: translateY(-6px); opacity: 1; }
-        }
-        .chat-scrollbar::-webkit-scrollbar { width: 5px; }
-        .chat-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .chat-scrollbar::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.15); border-radius: 10px; }
-        .chat-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.3); }
-        .chat-scrollbar-h::-webkit-scrollbar { height: 3px; }
-        .chat-scrollbar-h::-webkit-scrollbar-track { background: transparent; }
-        .chat-scrollbar-h::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.15); border-radius: 10px; }
-      `}</style>
         </div>
     );
 };
