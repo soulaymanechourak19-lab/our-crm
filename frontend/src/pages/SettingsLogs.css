@@ -12,14 +12,14 @@
 .page-title {
   font-size: 24px;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--text-primary);
   letter-spacing: -0.5px;
   margin-bottom: 8px;
 }
 
 .page-subtitle {
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 /* Settings Grid Layout */
@@ -30,8 +30,8 @@
 }
 
 .settings-card {
-  background: rgba(21, 19, 43, 0.7);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -41,14 +41,14 @@
 
 .settings-card-header {
   padding: 20px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
 }
 
 .settings-card-header h3 {
   font-size: 16px;
   font-weight: 600;
-  color: #f1f5f9;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -65,7 +65,7 @@
   display: block;
   font-size: 13px;
   font-weight: 500;
-  color: #cbd5e1;
+  color: var(--text-secondary);
   margin-bottom: 8px;
 }
 
@@ -87,10 +87,10 @@
 .form-input, .form-select {
   width: 100%;
   padding: 12px 16px;
-  background: rgba(11, 14, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
-  color: #f1f5f9;
+  color: var(--text-primary);
   font-size: 14px;
   transition: all 0.2s ease;
   font-family: inherit;
@@ -99,7 +99,7 @@
 .form-input:focus, .form-select:focus {
   outline: none;
   border-color: #6c5ce7;
-  background: rgba(15, 20, 42, 0.9);
+  background: var(--bg-secondary);
   box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
 }
 
@@ -119,27 +119,27 @@
   right: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: var(--text-secondary);
   pointer-events: none;
 }
 
 .form-select option {
-  background: #0f142a;
-  color: #f1f5f9;
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .form-range {
   width: 100%;
   accent-color: #6c5ce7;
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border-subtle);
   border-radius: 5px;
   outline: none;
 }
 
 .setting-help {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-muted);
   margin-top: 8px;
   line-height: 1.4;
 }
@@ -148,7 +148,7 @@
 .form-toggle-group {
   margin-bottom: 20px;
   padding: 12px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .toggle-label {
@@ -162,12 +162,12 @@
 .toggle-title {
   font-size: 14px;
   font-weight: 500;
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 .toggle-desc {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
@@ -182,7 +182,7 @@
   position: relative;
   width: 44px;
   height: 24px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--border-subtle);
   border-radius: 12px;
   transition: .3s;
   flex-shrink: 0;
@@ -235,8 +235,8 @@
 
 .btn-outline {
   background: transparent;
-  color: #f1f5f9;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
   padding: 12px 24px;
   border-radius: 10px;
   font-weight: 600;
@@ -250,8 +250,8 @@
 }
 
 .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--bg-secondary);
+  border-color: #6c5ce7;
 }
 
 /* ── Logs Page Toolbar ── */
@@ -264,8 +264,8 @@
   display: flex;
   gap: 16px;
   padding: 20px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
   align-items: center;
   flex-wrap: wrap;
 }
@@ -281,7 +281,7 @@
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 .search-input {
@@ -311,22 +311,22 @@
   padding: 16px 24px;
   font-size: 12px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .logs-table td {
   padding: 16px 24px;
   font-size: 14px;
-  color: #e2e8f0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .logs-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-secondary);
 }
 
 .logs-table tr:last-child td {
@@ -334,18 +334,18 @@
 }
 
 .log-time {
-  color: #94a3b8 !important;
+  color: var(--text-secondary) !important;
   font-size: 13px !important;
 }
 
 .log-event {
   font-weight: 500;
-  color: #f1f5f9 !important;
+  color: var(--text-primary) !important;
 }
 
 .user-badge {
-  background: rgba(148, 163, 184, 0.15);
-  color: #cbd5e1;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 12px;
@@ -381,6 +381,6 @@
 .no-logs {
   text-align: center;
   padding: 40px !important;
-  color: #64748b !important;
+  color: var(--text-muted) !important;
   font-style: italic;
 }

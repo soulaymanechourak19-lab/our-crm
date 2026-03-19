@@ -1,6 +1,7 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, NavLinkProps } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarProps {
     isCollapsed: boolean;
@@ -8,6 +9,22 @@ interface SidebarProps {
     isMobileOpen: boolean;
     onMobileClose: () => void;
 }
+
+const navContainerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.08,
+            delayChildren: 0.2
+        }
+    }
+};
+
+const navItemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    show: { opacity: 1, x: 0, transition: { type: 'spring' as const, stiffness: 350, damping: 25 } }
+};
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, isMobileOpen, onMobileClose }) => {
     const { t } = useTranslation();
@@ -21,12 +38,25 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, isMobileOpen, 
         { path: '/logs', label: t('sidebar.logs'), icon: '📋' },
     ];
 
+    // Create a motion component wrapper for NavLink correctly handling the active class via children
+    const MotionNavLink = motion.create(React.forwardRef<HTMLAnchorElement, NavLinkProps>((props, ref) => (
+        <NavLink ref={ref} {...props} />
+    )));
+
     return (
         <>
             {/* Mobile Overlay */}
-            {isMobileOpen && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden" onClick={onMobileClose} />
-            )}
+            <AnimatePresence>
+                {isMobileOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden" 
+                        onClick={onMobileClose} 
+                    />
+                )}
+            </AnimatePresence>
 
             {/* Sidebar */}
             <aside
@@ -44,30 +74,38 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, isMobileOpen, 
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                <motion.nav 
+                    variants={navContainerVariants}
+                    initial="hidden"
+                    animate="show"
+                    className="flex-1 px-3 py-4 space-y-2 overflow-y-auto"
+                >
                     {navItems.map((item) => (
-                        <NavLink
+                        <MotionNavLink
                             key={item.path}
                             to={item.path}
                             onClick={onMobileClose}
-                            className={({ isActive }) =>
-                                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
-                                    ? 'bg-primary-500/10 text-primary-400 border border-primary-500/20'
-                                    : 'text-dark-400 hover:text-white hover:bg-dark-800'
+                            variants={navItemVariants}
+                            whileHover={{ scale: 1.02, x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={({ isActive }: { isActive: boolean }) =>
+                                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-200 ${isActive
+                                    ? 'bg-primary-500/10 text-primary-400 border border-primary-500/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]'
+                                    : 'text-dark-400 hover:text-white hover:bg-dark-800 hover:shadow-lg'
                                 } ${isCollapsed ? 'justify-center' : ''}`
                             }
                         >
                             <span className="text-lg flex-shrink-0">{item.icon}</span>
                             {!isCollapsed && <span>{item.label}</span>}
-                        </NavLink>
+                        </MotionNavLink>
                     ))}
-                </nav>
+                </motion.nav>
 
                 {/* Collapse Toggle (desktop) */}
-                <div className="hidden lg:block px-3 py-2">
+                <div className="hidden lg:block px-3 py-2 border-t border-dark-700/50">
                     <button
                         onClick={onToggle}
-                        className="w-full flex items-center justify-center gap-2 px-3 py-2 text-dark-400 hover:text-white hover:bg-dark-800 rounded-xl transition-all text-sm"
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-dark-400 hover:text-white hover:bg-dark-800 rounded-xl transition-all text-sm font-medium"
                     >
                         {isCollapsed ? '→' : '← Collapse'}
                     </button>
@@ -78,4 +116,3 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, isMobileOpen, 
 };
 
 export default Sidebar;
-

@@ -3,9 +3,9 @@ import Card from '../components/common/Card';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import Pagination from '../components/common/Pagination';
-import LoadingSpinner from '../components/common/LoadingSpinner';
 import ProductCard from '../components/products/ProductCard';
 import ProductForm from '../components/products/ProductForm';
+import Skeleton from '../components/common/Skeleton';
 import StockUpdate from '../components/products/StockUpdate';
 import CategoryManager from '../components/products/CategoryManager';
 import ConfirmationDialog from '../components/common/ConfirmationDialog';
@@ -108,8 +108,18 @@ const Products: React.FC = () => {
 
             {/* Product Grid */}
             {isLoading ? (
-                <div className="flex justify-center py-20">
-                    <LoadingSpinner size="lg" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                        <div key={`skel-${i}`} className="glass-card p-5 space-y-4">
+                            <Skeleton height={140} borderRadius="12px" className="mb-4" />
+                            <Skeleton height={20} width="70%" />
+                            <Skeleton height={14} width="50%" />
+                            <div className="flex justify-between items-center pt-3">
+                                <Skeleton height={24} width="30%" />
+                                <Skeleton height={32} width="80px" borderRadius="12px" />
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : products.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

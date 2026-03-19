@@ -98,6 +98,3 @@ Route::fallback(function () {
     return response()->json(['message' => 'Route not found'], 404);
 });
 
-Route::options('/{any}', function () {
-    return response()->noContent();
-})->where('any', '.*');

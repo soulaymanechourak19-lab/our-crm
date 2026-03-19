@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useCRM, Lead } from '../context/CRMContext';
 import KanbanBoard from '../components/leads/KanbanBoard';
 import LeadForm from '../components/leads/LeadForm';
+import Skeleton from '../components/common/Skeleton';
 
 const getPaginationGroup = (current: number, last: number) => {
     const pages: (number | string)[] = [];
@@ -141,17 +142,16 @@ const Leads: React.FC = () => {
                 </select>
             </div>
 
-            {/* Loading */}
-            {leadsLoading && (
-                <div className="flex justify-center py-20">
-                    <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-            )}
-
             {/* Content */}
-            {!leadsLoading && view === 'kanban' ? (
-                <KanbanBoard leads={leads} />
-            ) : !leadsLoading ? (
+            {view === 'kanban' ? (
+                leadsLoading ? (
+                    <div className="flex justify-center py-20">
+                        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                ) : (
+                    <KanbanBoard leads={leads} />
+                )
+            ) : (
                 <div className="glass-card overflow-hidden animate-slide-in">
                     <table className="min-w-full">
                         <thead>
@@ -168,45 +168,64 @@ const Leads: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {leads.map((lead, idx) => (
-                                <tr key={lead.id}
-                                    className="transition-colors hover:bg-[var(--bg-secondary)]"
-                                    style={{ borderBottom: idx < leads.length - 1 ? '1px solid var(--border-subtle)' : 'none', animationDelay: `${idx * 30}ms` }}>
-                                    <td className="px-6 py-4">
-                                        <div className="text-sm font-semibold text-[var(--text-primary)]">{lead.company_name}</div>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.contact_name}</td>
-                                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.email}</td>
-                                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.phone || '—'}</td>
-                                    <td className="px-6 py-4">
-                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
-                                            style={{ background: statusColors[lead.status]?.bg, color: statusColors[lead.status]?.text }}>
-                                            <span className="w-1.5 h-1.5 rounded-full mr-2" style={{ background: statusColors[lead.status]?.dot }}></span>
-                                            {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
-                                        </span>
-                                    </td>
-                                    {currentUser?.role === 'admin' && (
-                                        <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.creator?.name || '—'}</td>
-                                    )}
-                                    <td className="px-6 py-4 text-right space-x-2">
-                                        <button onClick={() => handleEdit(lead)}
-                                            className="px-3 py-1.5 text-xs font-medium text-indigo-400 rounded-lg transition-all hover:bg-indigo-500/10">
-                                            Edit
-                                        </button>
-                                        {lead.status === 'qualified' && (
-                                            <button onClick={() => setConfirmAction({ type: 'convert', lead })}
-                                                className="px-3 py-1.5 text-xs font-medium text-emerald-400 rounded-lg transition-all hover:bg-emerald-500/10">
-                                                Convert
-                                            </button>
+                            {leadsLoading ? (
+                                Array.from({ length: 5 }).map((_, i) => (
+                                    <tr key={`skel-${i}`} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                                        <td className="px-6 py-4"><Skeleton height={20} width="70%" /></td>
+                                        <td className="px-6 py-4"><Skeleton height={20} width="60%" /></td>
+                                        <td className="px-6 py-4"><Skeleton height={20} width="80%" /></td>
+                                        <td className="px-6 py-4"><Skeleton height={20} width="60%" /></td>
+                                        <td className="px-6 py-4"><Skeleton height={24} width="80px" borderRadius="12px" /></td>
+                                        {currentUser?.role === 'admin' && (
+                                            <td className="px-6 py-4"><Skeleton height={20} width="50%" /></td>
                                         )}
-                                        <button onClick={() => setConfirmAction({ type: 'delete', lead })}
-                                            className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg transition-all hover:bg-red-500/10">
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            {leads.length === 0 && (
+                                        <td className="px-6 py-4 flex justify-end gap-2 text-right">
+                                            <Skeleton height={28} width="50px" borderRadius="8px" />
+                                            <Skeleton height={28} width="60px" borderRadius="8px" />
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                leads.map((lead, idx) => (
+                                    <tr key={lead.id}
+                                        className="transition-colors hover:bg-[var(--bg-secondary)]"
+                                        style={{ borderBottom: idx < leads.length - 1 ? '1px solid var(--border-subtle)' : 'none', animationDelay: `${idx * 30}ms` }}>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm font-semibold text-[var(--text-primary)]">{lead.company_name}</div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.contact_name}</td>
+                                        <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.email}</td>
+                                        <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.phone || '—'}</td>
+                                        <td className="px-6 py-4">
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+                                                style={{ background: statusColors[lead.status]?.bg, color: statusColors[lead.status]?.text }}>
+                                                <span className="w-1.5 h-1.5 rounded-full mr-2" style={{ background: statusColors[lead.status]?.dot }}></span>
+                                                {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
+                                            </span>
+                                        </td>
+                                        {currentUser?.role === 'admin' && (
+                                            <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.creator?.name || '—'}</td>
+                                        )}
+                                        <td className="px-6 py-4 text-right space-x-2">
+                                            <button onClick={() => handleEdit(lead)}
+                                                className="px-3 py-1.5 text-xs font-medium text-indigo-400 rounded-lg transition-all hover:bg-indigo-500/10">
+                                                Edit
+                                            </button>
+                                            {lead.status === 'qualified' && (
+                                                <button onClick={() => setConfirmAction({ type: 'convert', lead })}
+                                                    className="px-3 py-1.5 text-xs font-medium text-emerald-400 rounded-lg transition-all hover:bg-emerald-500/10">
+                                                    Convert
+                                                </button>
+                                            )}
+                                            <button onClick={() => setConfirmAction({ type: 'delete', lead })}
+                                                className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg transition-all hover:bg-red-500/10">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                            {!leadsLoading && leads.length === 0 && (
                                 <tr>
                                     <td colSpan={7} className="px-6 py-16 text-center text-[var(--text-secondary)]">
                                         <div className="text-4xl mb-3">🎯</div>
@@ -218,7 +237,7 @@ const Leads: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-            ) : null}
+            )}
 
             {/* Pagination */}
             {!leadsLoading && leadsPagination.last_page > 1 && (

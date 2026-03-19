@@ -5,12 +5,67 @@
     "products": "Productos",
     "customers": "Clientes",
     "settings": "Ajustes",
-    "logs": "Registros",
+    "logs": "Registros del Sistema",
     "users": "Usuarios",
     "aiAssistant": "Asistente de IA",
     "aiTraining": "Entrenamiento de IA",
+    "profile": "Perfil",
     "myLeads": "Mis Prospectos",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "settingsSection": "Ajustes",
+    "new": "Nuevo",
+    "collapse": "Colapsar"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Tablero",
+      "subtitle": "Resumen del rendimiento de su negocio"
+    },
+    "leads": {
+      "title": "Prospectos",
+      "subtitle": "Gestione y haga seguimiento de su pipeline de ventas"
+    },
+    "customers": {
+      "title": "Clientes",
+      "subtitle": "Haga un seguimiento de las relaciones con sus clientes"
+    },
+    "customerDetail": {
+      "title": "Detalles del Cliente",
+      "subtitle": "Vista detallada de la información del cliente"
+    },
+    "products": {
+      "title": "Productos",
+      "subtitle": "Gestione su inventario y catálogo de productos"
+    },
+    "aiAssistant": {
+      "title": "Asistente de IA",
+      "subtitle": "Su compañero inteligente de operaciones"
+    },
+    "aiTraining": {
+      "title": "Entrenamiento de IA",
+      "subtitle": "Entrene el modelo de aprendizaje automático de su chatbot"
+    },
+    "users": {
+      "title": "Gestión de Usuarios",
+      "subtitle": "Gestione usuarios y permisos del sistema"
+    },
+    "settings": {
+      "title": "Ajustes",
+      "subtitle": "Gestione su cuenta, preferencias y configuraciones de ML"
+    },
+    "logs": {
+      "title": "Registros del Sistema",
+      "subtitle": "Registro completo de auditoría de eventos y actividades de usuarios"
+    },
+    "profile": {
+      "title": "Perfil de Usuario",
+      "subtitle": "Administre la configuración de su cuenta"
+    }
+  },
+  "roles": {
+    "admin": "Administrador",
+    "agent_commercial": "Agente Comercial",
+    "agent_sav": "Agente de Soporte"
   },
   "dashboard": {
     "quickAccess": "Acceso Rápido",
@@ -49,9 +104,98 @@
     "language": "Idioma",
     "theme": "Tema",
     "emailNotifications": "Notificaciones por correo",
+    "emailNotificationsDesc": "Reciba informes diarios y alertas.",
     "mlConfig": "Configuración de IA/ML",
     "churnThreshold": "Umbral de alerta de riesgo de abandono",
+    "churnThresholdDesc": "Las cuentas con un riesgo superior a este umbral se marcarán en rojo.",
     "autoRetrain": "Reentrenamiento automático de modelos",
-    "forceRetrain": "Forcer el reentrenamiento global"
+    "autoRetrainDesc": "Actualizar automáticamente los modelos predictivos cada 7 días.",
+    "forceRetrain": "Forzar el reentrenamiento global"
+  },
+  "common": {
+    "search": "Buscar...",
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "back": "Volver",
+    "noData": "Sin datos disponibles"
+  },
+  "landing": {
+    "nav": {
+      "home": "Inicio",
+      "about": "Acerca de",
+      "features": "Características",
+      "implementation": "Implementación",
+      "contact": "Contacto"
+    },
+    "hero": {
+      "badge": "Plataforma CRM Inteligente",
+      "title": "CRM",
+      "subtitle": "Simplifique sus relaciones con los clientes con análisis impulsados por IA. Gestione prospectos, realice seguimiento de interacciones y aumente los ingresos — todo desde una plataforma inteligente diseñada para equipos modernos.",
+      "moreDetails": "Más detalles",
+      "viewDemo": "Ver demo"
+    },
+    "about": {
+      "tag": "Acerca de",
+      "title": "Construido para el futuro de las ventas",
+      "desc": "Creamos OurCRM con una premisa simple: los datos de sus clientes no deberían estar atrapados en silos aislados. Combinando modelos de aprendizaje automático líderes con un diseño intuitivo, le ayudamos a prever las necesidades de sus clientes.",
+      "point1": "Confiado por más de 10.000 equipos innovadores",
+      "point2": "Certificado SOC2 Tipo II para seguridad empresarial",
+      "point3": "99,99% de disponibilidad con soporte dedicado 24/7"
+    },
+    "features": {
+      "tag": "Características",
+      "title": "Todo lo que necesita para escalar",
+      "desc": "Herramientas poderosas diseñadas para ayudar a su equipo a convertir más prospectos, deleitar a los clientes y tomar decisiones más inteligentes.",
+      "leadMgmt": "Gestión de Prospectos",
+      "leadMgmtDesc": "Capture, califique y cultive prospectos en su pipeline. Los flujos automatizados garantizan que ninguna oportunidad se escape.",
+      "customerInsights": "Perspectivas del Cliente",
+      "customerInsightsDesc": "Profundice en el comportamiento y las preferencias de los clientes. Los perfiles de 360° brindan a su equipo el contexto necesario para personalizar cada interacción.",
+      "aiAnalytics": "Análisis con IA",
+      "aiAnalyticsDesc": "Los modelos de aprendizaje automático predicen la rotación, pronostican ingresos y revelan información procesable — para que pueda actuar antes de que surjan problemas."
+    },
+    "implementation": {
+      "tag": "Implementación",
+      "title": "Operativo en pocos días",
+      "desc": "Nos encargamos del trabajo pesado de importar sus datos y entrenar sus modelos ML personalizados. Aquí está nuestro proceso de incorporación simplificado.",
+      "step1Title": "Migración de Datos",
+      "step1Desc": "Conecte sus herramientas existentes con nuestras integraciones de un clic o importe hojas de cálculo de forma masiva y segura.",
+      "step2Title": "Entrenamiento de IA",
+      "step2Desc": "Nuestros sistemas limpian automáticamente sus datos pasados para entrenar algoritmos predictivos específicos para sus pipelines.",
+      "step3Title": "Puesta en Marcha",
+      "step3Desc": "Su equipo inicia sesión en un espacio de trabajo completamente poblado e inteligente, listo para cerrar negocios desde el primer día."
+    },
+    "stats": {
+      "activeUsers": "Usuarios Activos",
+      "uptimeSLA": "SLA de Disponibilidad",
+      "fasterConversions": "Conversiones Más Rápidas",
+      "aiSupport": "Soporte IA"
+    },
+    "footer": {
+      "copyright": "© {{year}} OurCRM. Todos los derechos reservados."
+    },
+    "signIn": "Iniciar Sesión"
+  },
+  "login": {
+    "welcomeBack": "Bienvenido de nuevo",
+    "subtitle": "Inicie sesión en su cuenta CRM",
+    "emailLabel": "CORREO ELECTRÓNICO",
+    "emailPlaceholder": "tu@empresa.com",
+    "passwordLabel": "CONTRASEÑA",
+    "signIn": "Iniciar sesión",
+    "signingIn": "Iniciando sesión…",
+    "noAccount": "¿No tiene una cuenta?",
+    "createOne": "Crear una"
+  },
+  "authSidePanel": {
+    "slide1Title": "Gestione su negocio\ncon inteligencia",
+    "slide1Desc": "CRM impulsado por IA que le ayuda a convertir prospectos, deleitar a los clientes y aumentar los ingresos.",
+    "slide2Title": "Comience a hacer crecer\nsu negocio hoy",
+    "slide2Desc": "Únase a miles de equipos que utilizan análisis impulsados por IA para cerrar más negocios y construir relaciones duraderas.",
+    "slide3Title": "Anticipe las necesidades\nde los clientes",
+    "slide3Desc": "Aproveche el aprendizaje automático avanzado para identificar riesgos de abandono y descubrir oportunidades de venta adicional."
   }
 }

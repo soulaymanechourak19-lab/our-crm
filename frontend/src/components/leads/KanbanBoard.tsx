@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCRM, Lead } from '../../context/CRMContext';
 
 interface KanbanBoardProps {
@@ -12,9 +12,16 @@ const columnConfig = [
     { key: 'converted', label: 'Converted', color: '#10b981', bg: 'rgba(16, 185, 129, 0.05)' },
 ];
 
-const KanbanBoard: React.FC<KanbanBoardProps> = ({ leads }) => {
+const KanbanBoard: React.FC<KanbanBoardProps> = React.memo(({ leads }) => {
     const { updateLeadStatus } = useCRM();
     const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+
+    const columnsWithLeads = useMemo(() => {
+        return columnConfig.map(col => ({
+            ...col,
+            columnLeads: leads.filter(l => l.status === col.key)
+        }));
+    }, [leads]);
 
     const onDragStart = (e: React.DragEvent, id: number) => {
         e.dataTransfer.setData('id', id.toString());
@@ -44,8 +51,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ leads }) => {
 
     return (
         <div className="flex gap-4 overflow-x-auto pb-4 animate-slide-in">
-            {columnConfig.map(col => {
-                const columnLeads = leads.filter(l => l.status === col.key);
+            {columnsWithLeads.map(col => {
+                const { columnLeads } = col;
                 const isOver = dragOverColumn === col.key;
 
                 return (
@@ -105,6 +112,6 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ leads }) => {
             })}
         </div>
     );
-};
+});
 
 export default KanbanBoard;

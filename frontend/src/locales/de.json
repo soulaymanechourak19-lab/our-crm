@@ -1,0 +1,201 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "leads": "Leads",
+    "products": "Produkte",
+    "customers": "Kunden",
+    "settings": "Einstellungen",
+    "logs": "Systemprotokolle",
+    "users": "Benutzer",
+    "aiAssistant": "KI-Assistent",
+    "aiTraining": "KI-Training",
+    "profile": "Profil",
+    "myLeads": "Meine Leads",
+    "logout": "Abmelden",
+    "settingsSection": "Einstellungen",
+    "new": "Neu",
+    "collapse": "Einklappen"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Überblick über Ihre Geschäftsleistung"
+    },
+    "leads": {
+      "title": "Leads",
+      "subtitle": "Verwalten und verfolgen Sie Ihre Vertriebspipeline"
+    },
+    "customers": {
+      "title": "Kunden",
+      "subtitle": "Behalten Sie den Überblick über Ihre Kundenbeziehungen"
+    },
+    "customerDetail": {
+      "title": "Kundendetails",
+      "subtitle": "Detaillierte Ansicht der Kundeninformationen"
+    },
+    "products": {
+      "title": "Produkte",
+      "subtitle": "Verwalten Sie Ihr Inventar und Ihren Produktkatalog"
+    },
+    "aiAssistant": {
+      "title": "KI-Assistent",
+      "subtitle": "Ihr intelligenter Begleiter für den Betrieb"
+    },
+    "aiTraining": {
+      "title": "KI-Training",
+      "subtitle": "Trainieren Sie das maschinelle Lernmodell Ihres Chatbots"
+    },
+    "users": {
+      "title": "Benutzerverwaltung",
+      "subtitle": "Verwalten Sie Systembenutzer und Berechtigungen"
+    },
+    "settings": {
+      "title": "Einstellungen",
+      "subtitle": "Verwalten Sie Ihr Konto, Einstellungen und ML-Konfigurationen"
+    },
+    "logs": {
+      "title": "Systemprotokolle",
+      "subtitle": "Vollständiger Audit-Trail von Systemereignissen und Benutzeraktivitäten"
+    },
+    "profile": {
+      "title": "Benutzerprofil",
+      "subtitle": "Verwalten Sie Ihre Kontoeinstellungen"
+    }
+  },
+  "roles": {
+    "admin": "Administrator",
+    "agent_commercial": "Handelsvertreter",
+    "agent_sav": "Supportmitarbeiter"
+  },
+  "dashboard": {
+    "quickAccess": "Schnellzugriff",
+    "aiService": "KI / ML Service",
+    "predictiveIntelligence": "Prädiktive Intelligenz & Modelle",
+    "systemOnline": "System Online",
+    "systemOffline": "System Offline",
+    "leadConversion": "Lead-Konvertierung",
+    "stockHealth": "Lagerbestand",
+    "recentActivity": "Letzte Aktivität",
+    "overview": "Übersicht",
+    "welcomeBack": "Willkommen zurück",
+    "totalLeads": "Gesamte Leads",
+    "products": "Produkte",
+    "customers": "Kunden",
+    "lowStock": "Geringer Bestand",
+    "attention": "Achtung",
+    "ok": "OK",
+    "leadConversionRate": "Lead-Konvertierungsrate",
+    "wonOutOfTotal": "{{won}} von {{total}} Leads in der Pipeline gewonnen",
+    "productsRunningLow": "{{low}} von {{total}} Produkten werden knapp",
+    "inventoryHealthScore": "Lagerbestandsbewertung",
+    "leadStatusDistribution": "Lead-Status-Verteilung",
+    "leadsOverTime": "Leads im Zeitverlauf",
+    "productsByCategory": "Produkte nach Kategorie",
+    "leadStatus": "Lead-Status"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Verwalten Sie Ihr Konto und Ihre Anwendungseinstellungen.",
+    "profileInfo": "Profilinformationen",
+    "fullName": "Vollständiger Name",
+    "emailAddress": "E-Mail-Adresse",
+    "saveProfile": "Profil Speichern",
+    "appPreferences": "Anwendungseinstellungen",
+    "language": "Sprache",
+    "theme": "Thema",
+    "emailNotifications": "E-Mail-Benachrichtigungen",
+    "emailNotificationsDesc": "Erhalten Sie tägliche Zusammenfassungen und Warnungen.",
+    "mlConfig": "KI/ML Konfiguration",
+    "churnThreshold": "Warnschwelle für Abwanderungsrisiko",
+    "churnThresholdDesc": "Konten mit einem Abwanderungsrisiko über dieser Schwelle werden rot markiert.",
+    "autoRetrain": "Modelle automatisch neu trainieren",
+    "autoRetrainDesc": "Prädiktive Modelle alle 7 Tage automatisch aktualisieren.",
+    "forceRetrain": "Globales Neulernen erzwingen"
+  },
+  "common": {
+    "search": "Suchen...",
+    "loading": "Wird geladen...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "back": "Zurück",
+    "noData": "Keine Daten verfügbar"
+  },
+  "landing": {
+    "nav": {
+      "home": "Startseite",
+      "about": "Über uns",
+      "features": "Funktionen",
+      "implementation": "Umsetzung",
+      "contact": "Kontakt"
+    },
+    "hero": {
+      "badge": "Intelligente CRM-Plattform",
+      "title": "CRM",
+      "subtitle": "Vereinfachen Sie Ihre Kundenbeziehungen mit KI-gestützten Analysen. Verwalten Sie Leads, verfolgen Sie Interaktionen und steigern Sie den Umsatz — alles auf einer intelligenten Plattform für moderne Teams.",
+      "moreDetails": "Mehr Details",
+      "viewDemo": "Demo ansehen"
+    },
+    "about": {
+      "tag": "Über uns",
+      "title": "Gebaut für die Zukunft des Vertriebs",
+      "desc": "Wir haben OurCRM mit einer einfachen Prämisse gestartet: Ihre Kundendaten sollten nicht in isolierten Silos gefangen sein. Durch die Kombination branchenführender Machine-Learning-Modelle mit intuitivem Design helfen wir Ihnen, Kundenbedürfnisse vorauszusehen.",
+      "point1": "Über 10.000 zukunftsorientierte Teams vertrauen uns",
+      "point2": "SOC2 Typ II zertifiziert für Sicherheit auf Unternehmensniveau",
+      "point3": "99,99% Verfügbarkeit mit 24/7 dediziertem Support"
+    },
+    "features": {
+      "tag": "Funktionen",
+      "title": "Alles was Sie zum Skalieren brauchen",
+      "desc": "Leistungsstarke Tools, die Ihrem Team helfen, mehr Leads zu konvertieren, Kunden zu begeistern und klügere Entscheidungen zu treffen.",
+      "leadMgmt": "Lead-Verwaltung",
+      "leadMgmtDesc": "Erfassen, bewerten und pflegen Sie Leads in Ihrer Pipeline. Automatisierte Workflows stellen sicher, dass keine Gelegenheit verloren geht.",
+      "customerInsights": "Kundeneinblicke",
+      "customerInsightsDesc": "Tauchen Sie tief in das Kundenverhalten und die Präferenzen ein. 360°-Profile geben Ihrem Team den Kontext für personalisierte Interaktionen.",
+      "aiAnalytics": "KI-gestützte Analysen",
+      "aiAnalyticsDesc": "Machine-Learning-Modelle prognostizieren Abwanderung, Umsatz und liefern umsetzbare Erkenntnisse — damit Sie handeln können, bevor Probleme auftreten."
+    },
+    "implementation": {
+      "tag": "Umsetzung",
+      "title": "In wenigen Tagen einsatzbereit",
+      "desc": "Wir übernehmen die schwere Arbeit beim Import Ihrer Daten und dem Training Ihrer individuellen ML-Modelle. Hier ist unser optimierter Onboarding-Prozess.",
+      "step1Title": "Datenmigration",
+      "step1Desc": "Verbinden Sie Ihre bestehenden Tools mit unseren Ein-Klick-Integrationen oder importieren Sie Tabellen sicher in großen Mengen.",
+      "step2Title": "KI-Training",
+      "step2Desc": "Unsere Systeme bereinigen automatisch Ihre vergangenen Daten, um prädiktive Algorithmen spezifisch für Ihre Pipelines zu trainieren.",
+      "step3Title": "Go Live",
+      "step3Desc": "Ihr Team meldet sich in einem vollständig befüllten, intelligenten Arbeitsbereich an — bereit, vom ersten Tag an Geschäfte abzuschließen."
+    },
+    "stats": {
+      "activeUsers": "Aktive Benutzer",
+      "uptimeSLA": "Verfügbarkeits-SLA",
+      "fasterConversions": "Schnellere Konvertierungen",
+      "aiSupport": "KI-Support"
+    },
+    "footer": {
+      "copyright": "© {{year}} OurCRM. Alle Rechte vorbehalten."
+    },
+    "signIn": "Anmelden"
+  },
+  "login": {
+    "welcomeBack": "Willkommen zurück",
+    "subtitle": "Melden Sie sich bei Ihrem CRM-Konto an",
+    "emailLabel": "E-MAIL-ADRESSE",
+    "emailPlaceholder": "sie@unternehmen.de",
+    "passwordLabel": "PASSWORT",
+    "signIn": "Anmelden",
+    "signingIn": "Anmeldung läuft…",
+    "noAccount": "Noch kein Konto?",
+    "createOne": "Erstellen Sie eins"
+  },
+  "authSidePanel": {
+    "slide1Title": "Verwalten Sie Ihr Unternehmen\nmit Intelligenz",
+    "slide1Desc": "KI-gestütztes CRM, das Ihnen hilft, Leads zu konvertieren, Kunden zu begeistern und den Umsatz zu steigern.",
+    "slide2Title": "Beginnen Sie noch heute\nIhr Geschäft auszubauen",
+    "slide2Desc": "Schließen Sie sich Tausenden von Teams an, die KI-gestützte Analysen nutzen, um mehr Geschäfte abzuschließen und langfristige Beziehungen aufzubauen.",
+    "slide3Title": "Kundenbedürfnisse vorhersagen\nbevor sie entstehen",
+    "slide3Desc": "Nutzen Sie fortschrittliches maschinelles Lernen, um Abwanderungsrisiken zu identifizieren und Upselling-Möglichkeiten aufzudecken."
+  }
+}

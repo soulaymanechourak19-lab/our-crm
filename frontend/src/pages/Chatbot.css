@@ -63,8 +63,23 @@
     color: var(--indigo-500);
 }
 
+/* -------- Light Mode Message Overrides -------- */
 [data-theme='light'] .chat-msg-bot-icon {
-    background: rgba(99, 102, 241, 0.05);
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+[data-theme='light'] .chat-msg-user {
+    background: linear-gradient(135deg, var(--indigo-500) 0%, var(--indigo-600) 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
+}
+
+[data-theme='light'] .chat-msg-bot {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+    box-shadow: var(--shadow-sm);
 }
 
 .chat-time-icon {
@@ -108,6 +123,40 @@
 .chat-input-field::placeholder {
     color: var(--text-secondary);
     opacity: 0.7;
+}
+
+/* -------- Light Mode Suggestions & Input Overrides -------- */
+[data-theme='light'] .chat-suggestion-btn {
+    background: #ffffff;
+    color: #475569;
+    border-color: #cbd5e1;
+}
+
+[data-theme='light'] .chat-suggestion-btn:hover {
+    background: #f8fafc;
+    color: var(--indigo-600);
+    border-color: var(--indigo-400);
+}
+
+[data-theme='light'] .chat-input-area {
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+}
+
+[data-theme='light'] .chat-input-field {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+[data-theme='light'] .chat-input-field:focus {
+    background: #ffffff;
+    border-color: var(--indigo-500);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme='light'] .chat-input-field::placeholder {
+    color: #94a3b8;
 }
 
 .chat-send-btn {

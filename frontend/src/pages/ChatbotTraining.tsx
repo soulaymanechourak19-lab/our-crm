@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 
 interface Intent {
@@ -178,7 +179,12 @@ const ChatbotTraining: React.FC = () => {
     // ── Render ──────────────────────────────────────────────────────
 
     return (
-        <div className="p-4 sm:p-6 space-y-6">
+        <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 15 }}
+            className="p-4 sm:p-6 space-y-6"
+        >
             {/* Toast */}
             {toast && (
                 <div className={`fixed top-4 right-4 z-50 px-4 py-2.5 rounded-lg text-sm font-medium shadow-lg border animate-pulse ${toast.type === 'success' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-red-500/20 text-red-300 border-red-500/30'
@@ -190,12 +196,12 @@ const ChatbotTraining: React.FC = () => {
             {/* Header + Model Status */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div>
-                    <h1 className="text-xl font-bold text-white flex items-center gap-2">🧠 Chatbot Training</h1>
-                    <p className="text-sm text-slate-400 mt-1">Manage intents, add training examples, and train the ML model</p>
+                    <h1 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">🧠 Chatbot Training</h1>
+                    <p className="text-sm text-[var(--text-secondary)] mt-1">Manage intents, add training examples, and train the ML model</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button onClick={seedData} disabled={seeding}
-                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-700/50 text-slate-300 border border-slate-600/50 hover:bg-slate-700 transition disabled:opacity-50">
+                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:bg-[var(--border-subtle)] transition disabled:opacity-50">
                         {seeding ? 'Seeding...' : '🌱 Seed Data'}
                     </button>
                     <button onClick={trainModel} disabled={training}
@@ -208,50 +214,71 @@ const ChatbotTraining: React.FC = () => {
             </div>
 
             {/* Model Info Card */}
-            <div className="glass-card border-slate-700/50 p-4 flex flex-wrap gap-6 text-sm">
+            <div className="glass-card p-4 flex flex-wrap gap-6 text-sm">
                 <div>
-                    <span className="text-slate-500">Status:</span>{' '}
+                    <span className="text-[var(--text-secondary)]">Status:</span>{' '}
                     <span className={modelInfo?.status === 'trained' ? 'text-emerald-400 font-bold' : 'text-amber-400'}>
                         {modelInfo?.status === 'trained' ? '🟢 Trained' : '🟡 Not trained'}
                     </span>
                 </div>
-                {modelInfo?.num_intents && <div><span className="text-slate-500">Intents:</span> <span className="text-white font-bold">{modelInfo.num_intents}</span></div>}
-                {modelInfo?.num_examples && <div><span className="text-slate-500">Examples:</span> <span className="text-white font-bold">{modelInfo.num_examples}</span></div>}
-                {modelInfo?.trained_at && <div><span className="text-slate-500">Last trained:</span> <span className="text-slate-300">{new Date(modelInfo.trained_at).toLocaleString()}</span></div>}
-                {trainResult?.cv_accuracy && <div><span className="text-slate-500">Accuracy:</span> <span className="text-emerald-400 font-bold">{(trainResult.cv_accuracy * 100).toFixed(1)}%</span></div>}
+                {modelInfo?.num_intents && <div><span className="text-[var(--text-secondary)]">Intents:</span> <span className="text-[var(--text-primary)] font-bold">{modelInfo.num_intents}</span></div>}
+                {modelInfo?.num_examples && <div><span className="text-[var(--text-secondary)]">Examples:</span> <span className="text-[var(--text-primary)] font-bold">{modelInfo.num_examples}</span></div>}
+                {modelInfo?.trained_at && <div><span className="text-[var(--text-secondary)]">Last trained:</span> <span className="text-[var(--text-secondary)]">{new Date(modelInfo.trained_at).toLocaleString()}</span></div>}
+                {trainResult?.cv_accuracy && <div><span className="text-[var(--text-secondary)]">Accuracy:</span> <span className="text-emerald-400 font-bold">{(trainResult.cv_accuracy * 100).toFixed(1)}%</span></div>}
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1 bg-slate-800/50 rounded-lg p-1 w-fit">
-                {(['intents', 'logs'] as const).map(tab => (
-                    <button key={tab} onClick={() => setActiveTab(tab)}
-                        className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${activeTab === tab ? 'bg-indigo-500/20 text-indigo-300' : 'text-slate-500 hover:text-slate-300'
-                            }`}>
-                        {tab === 'intents' ? '📋 Intents & Examples' : '📊 Prediction Logs'}
-                    </button>
-                ))}
+            <div className="flex gap-2 border-b border-[var(--border-subtle)] w-full mb-6 relative">
+                {(['intents', 'logs'] as const).map(tab => {
+                    const isActive = activeTab === tab;
+                    return (
+                        <button 
+                            key={tab} 
+                            onClick={() => setActiveTab(tab)}
+                            className={`relative px-4 py-3 text-sm font-semibold transition-colors duration-200 outline-none ${
+                                isActive ? 'text-indigo-500 dark:text-indigo-400' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                            }`}
+                        >
+                            {tab === 'intents' ? '📋 Intents & Examples' : '📊 Prediction Logs'}
+                            {isActive && (
+                                <motion.div
+                                    layoutId="chatbotTabInd"
+                                    className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-indigo-500 rounded-t-md"
+                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                />
+                            )}
+                        </button>
+                    );
+                })}
             </div>
 
-            {activeTab === 'intents' ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Left: Intents */}
-                    <div className="glass-card border-slate-700/50 p-5 space-y-4">
-                        <h2 className="text-base font-bold text-white">Intents ({intents.length})</h2>
+            <AnimatePresence mode="wait">
+                {activeTab === 'intents' ? (
+                    <motion.div 
+                        key="intents-view"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+                    >
+                        {/* Left: Intents */}
+                    <div className="glass-card p-5 space-y-4">
+                        <h2 className="text-base font-bold text-[var(--text-primary)]">Intents ({intents.length})</h2>
 
                         {/* Add Intent */}
                         <div className="flex flex-col gap-2">
                             <div className="flex gap-2">
                                 <input value={newIntentName} onChange={e => setNewIntentName(e.target.value)}
                                     placeholder="intent_name" onKeyDown={e => e.key === 'Enter' && createIntent()}
-                                    className="flex-1 bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
+                                    className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
                                 <input value={newIntentDesc} onChange={e => setNewIntentDesc(e.target.value)}
                                     placeholder="Description (e.g. Greeting)"
-                                    className="flex-1 bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
+                                    className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
                             </div>
                             <div className="flex gap-2">
                                 <input value={newIntentResponse} onChange={e => setNewIntentResponse(e.target.value)}
                                     placeholder="Bot Response (e.g. Hello! How can I help you?)" onKeyDown={e => e.key === 'Enter' && createIntent()}
-                                    className="flex-1 bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
+                                    className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
                                 <button onClick={createIntent}
                                     className="px-4 py-2 rounded-lg bg-indigo-500/20 text-indigo-300 text-sm font-bold hover:bg-indigo-500/30 transition">Add Intent</button>
                             </div>
@@ -259,40 +286,48 @@ const ChatbotTraining: React.FC = () => {
 
                         {/* Intent List */}
                         <div className="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">
-                            {intents.map(intent => (
-                                <div key={intent.id}
-                                    onClick={() => selectIntent(intent)}
-                                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition ${selectedIntent?.id === intent.id ? 'bg-indigo-500/20 border border-indigo-500/30' : 'bg-slate-800/30 border border-transparent hover:bg-slate-800/60'
-                                        }`}>
-                                    <div>
-                                        <div className="flex items-baseline gap-2">
-                                            <span className="text-sm font-semibold text-white">{intent.name}</span>
-                                            {intent.description && <span className="text-xs text-slate-500">{intent.description}</span>}
-                                        </div>
-                                        {intent.response && (
-                                            <div className="text-xs text-indigo-300/80 mt-1 italic truncate max-w-[200px] sm:max-w-xs block">
-                                                ↳ "{intent.response}"
+                            <AnimatePresence>
+                                {intents.map((intent, idx) => (
+                                    <motion.div 
+                                        key={intent.id}
+                                        layout
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        transition={{ delay: Math.min(idx * 0.03, 0.3) }}
+                                        onClick={() => selectIntent(intent)}
+                                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 outline-none ${selectedIntent?.id === intent.id ? 'bg-indigo-500/10 border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.1)]' : 'bg-[var(--bg-secondary)] border border-transparent hover:bg-slate-100 hover:dark:bg-dark-700/50 hover:shadow-sm'
+                                            }`}>
+                                        <div>
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="text-sm font-semibold text-[var(--text-primary)]">{intent.name}</span>
+                                                {intent.description && <span className="text-xs text-[var(--text-secondary)]">{intent.description}</span>}
                                             </div>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full">{intent.example_count}</span>
-                                        <button onClick={(e) => { e.stopPropagation(); deleteIntent(intent.id); }}
-                                            className="text-red-400/50 hover:text-red-400 text-xs transition">✕</button>
-                                    </div>
-                                </div>
-                            ))}
-                            {intents.length === 0 && <p className="text-sm text-slate-600 text-center py-8">No intents yet. Click "🌱 Seed Data" to get started!</p>}
+                                            {intent.response && (
+                                                <div className="text-xs text-indigo-300/80 mt-1 italic truncate max-w-[200px] sm:max-w-xs block">
+                                                    ↳ "{intent.response}"
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-[var(--text-secondary)] bg-[var(--bg-secondary)] px-2 py-0.5 rounded-full">{intent.example_count}</span>
+                                            <button onClick={(e) => { e.stopPropagation(); deleteIntent(intent.id); }}
+                                                className="text-red-400/50 hover:text-red-400 text-xs transition">✕</button>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                            {intents.length === 0 && <p className="text-sm text-[var(--text-muted)] text-center py-8">No intents yet. Click "🌱 Seed Data" to get started!</p>}
                         </div>
                     </div>
 
                     {/* Right: Examples */}
-                    <div className="glass-card border-slate-700/50 p-5 space-y-4">
+                    <div className="glass-card p-5 space-y-4">
                         {selectedIntent ? (
                             <>
-                                <h2 className="text-base font-bold text-white">
+                                <h2 className="text-base font-bold text-[var(--text-primary)]">
                                     Examples for <span className="text-indigo-400">{selectedIntent.name}</span>
-                                    <span className="text-slate-500 font-normal text-sm ml-2">({examples.length})</span>
+                                    <span className="text-[var(--text-secondary)] font-normal text-sm ml-2">({examples.length})</span>
                                 </h2>
 
                                 {/* Add single example */}
@@ -300,18 +335,18 @@ const ChatbotTraining: React.FC = () => {
                                     <input value={newExampleText} onChange={e => setNewExampleText(e.target.value)}
                                         placeholder="Type an example phrase..."
                                         onKeyDown={e => e.key === 'Enter' && addExample()}
-                                        className="flex-1 bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
+                                        className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50" />
                                     <button onClick={addExample}
                                         className="px-3 py-2 rounded-lg bg-indigo-500/20 text-indigo-300 text-sm font-bold hover:bg-indigo-500/30 transition">Add</button>
                                 </div>
 
                                 {/* Bulk add */}
                                 <details className="group">
-                                    <summary className="text-xs text-slate-500 cursor-pointer hover:text-slate-300">📝 Bulk add (one per line)</summary>
+                                    <summary className="text-xs text-[var(--text-secondary)] cursor-pointer hover:text-[var(--text-primary)]">📝 Bulk add (one per line)</summary>
                                     <div className="mt-2 space-y-2">
                                         <textarea value={bulkExamples} onChange={e => setBulkExamples(e.target.value)}
                                             placeholder="how many customers&#10;total customers&#10;customer count"
-                                            rows={4} className="w-full bg-slate-800/50 border border-slate-700/50 text-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50 resize-none" />
+                                            rows={4} className="w-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-500/50 resize-none" />
                                         <button onClick={addBulkExamples}
                                             className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 text-sm font-bold hover:bg-emerald-500/30 transition">
                                             Add All
@@ -320,34 +355,55 @@ const ChatbotTraining: React.FC = () => {
                                 </details>
 
                                 {/* Examples List */}
-                                <div className="space-y-1 max-h-[50vh] overflow-y-auto pr-1">
-                                    {examples.map(ex => (
-                                        <div key={ex.id} className="flex items-center justify-between bg-slate-800/30 px-3 py-2 rounded-lg group">
-                                            <span className="text-sm text-slate-300">"{ex.text}"</span>
-                                            <button onClick={() => deleteExample(ex.id)}
-                                                className="text-red-400/0 group-hover:text-red-400/50 hover:!text-red-400 text-xs transition">✕</button>
-                                        </div>
-                                    ))}
+                                <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+                                    <AnimatePresence>
+                                        {examples.map((ex, idx) => (
+                                            <motion.div 
+                                                key={ex.id} 
+                                                layout
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, scale: 0.95 }}
+                                                transition={{ delay: Math.min(idx * 0.02, 0.2) }}
+                                                className="flex items-center justify-between bg-[var(--bg-secondary)] border border-[var(--border-subtle)] px-3 py-2.5 rounded-xl group hover:shadow-sm transition-all"
+                                            >
+                                                <span className="text-sm text-slate-700 dark:text-dark-200 font-medium">"{ex.text}"</span>
+                                                <button onClick={() => deleteExample(ex.id)}
+                                                    className="text-red-400/0 group-hover:text-red-400/70 hover:!text-red-500 text-xs transition-colors p-1 rounded hover:bg-red-500/10">✕</button>
+                                            </motion.div>
+                                        ))}
+                                    </AnimatePresence>
                                 </div>
                             </>
                         ) : (
-                            <div className="flex items-center justify-center h-full text-slate-600 text-sm py-20">
-                                ← Select an intent to manage its examples
-                            </div>
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="flex flex-col items-center justify-center h-full text-[var(--text-secondary)] text-sm py-20 gap-3"
+                            >
+                                <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-dark-700/50 flex items-center justify-center text-xl shadow-inner">🎯</div>
+                                <p>Select an intent to manage its examples</p>
+                            </motion.div>
                         )}
                     </div>
-                </div>
+                </motion.div>
             ) : (
                 /* Logs Tab */
-                <div className="glass-card border-slate-700/50 p-5">
+                <motion.div 
+                    key="logs-view"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="glass-card p-5"
+                >
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-base font-bold text-white">Prediction Logs ({logs.length})</h2>
+                        <h2 className="text-base font-bold text-[var(--text-primary)]">Prediction Logs ({logs.length})</h2>
                         <button onClick={loadLogs} className="text-xs text-indigo-400 hover:text-indigo-300">🔄 Refresh</button>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="text-xs text-slate-500 uppercase border-b border-slate-700/50">
+                                <tr className="text-xs text-[var(--text-secondary)] uppercase border-b border-[var(--border-subtle)]">
                                     <th className="text-left py-2 px-2">Message</th>
                                     <th className="text-left py-2 px-2">Intent</th>
                                     <th className="text-left py-2 px-2">Confidence</th>
@@ -356,36 +412,45 @@ const ChatbotTraining: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {logs.map(log => (
-                                    <tr key={log.id} className="border-b border-slate-800/50 hover:bg-slate-800/30">
-                                        <td className="py-2 px-2 text-slate-300 max-w-xs truncate">{log.message}</td>
-                                        <td className="py-2 px-2">
-                                            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-500/15 text-indigo-300">
-                                                {log.predicted_intent || '—'}
-                                            </span>
-                                        </td>
-                                        <td className="py-2 px-2">
-                                            {log.confidence != null ? (
-                                                <span className={`font-mono text-xs ${log.confidence >= 0.7 ? 'text-emerald-400' : log.confidence >= 0.4 ? 'text-amber-400' : 'text-red-400'}`}>
-                                                    {(log.confidence * 100).toFixed(0)}%
+                                <AnimatePresence mode="popLayout">
+                                    {logs.map((log, idx) => (
+                                        <motion.tr 
+                                            key={log.id} 
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: Math.min(idx * 0.02, 0.4) }}
+                                            className="border-b border-[var(--border-subtle)] hover:bg-slate-50 hover:dark:bg-dark-700/30 transition-colors"
+                                        >
+                                            <td className="py-3 px-3 text-[var(--text-primary)] max-w-xs truncate font-medium">{log.message}</td>
+                                            <td className="py-3 px-3">
+                                                <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20">
+                                                    {log.predicted_intent || '—'}
                                                 </span>
-                                            ) : '—'}
-                                        </td>
-                                        <td className="py-2 px-2">
-                                            {log.used_fallback ? <span className="text-amber-400 text-xs">⚠ Yes</span> : <span className="text-emerald-400 text-xs">✓ ML</span>}
-                                        </td>
-                                        <td className="py-2 px-2 text-xs text-slate-500">{new Date(log.created_at).toLocaleString()}</td>
-                                    </tr>
-                                ))}
+                                            </td>
+                                            <td className="py-3 px-3">
+                                                {log.confidence != null ? (
+                                                    <span className={`font-mono text-xs font-bold ${log.confidence >= 0.7 ? 'text-emerald-500 dark:text-emerald-400' : log.confidence >= 0.4 ? 'text-amber-500 dark:text-amber-400' : 'text-red-500 dark:text-red-400'}`}>
+                                                        {(log.confidence * 100).toFixed(0)}%
+                                                    </span>
+                                                ) : '—'}
+                                            </td>
+                                            <td className="py-3 px-3">
+                                                {log.used_fallback ? <span className="text-amber-500 dark:text-amber-400 text-xs font-medium flex items-center gap-1"><span className="text-sm">⚠</span> Yes</span> : <span className="text-emerald-500 dark:text-emerald-400 text-xs font-medium flex items-center gap-1"><span className="text-sm">✓</span> ML</span>}
+                                            </td>
+                                            <td className="py-3 px-3 text-xs text-[var(--text-secondary)] font-medium">{new Date(log.created_at).toLocaleString()}</td>
+                                        </motion.tr>
+                                    ))}
+                                </AnimatePresence>
                                 {logs.length === 0 && (
-                                    <tr><td colSpan={5} className="text-center py-8 text-slate-600">No predictions logged yet. Use the chatbot first!</td></tr>
+                                    <tr><td colSpan={5} className="text-center py-8 text-[var(--text-muted)]">No predictions logged yet. Use the chatbot first!</td></tr>
                                 )}
                             </tbody>
                         </table>
                     </div>
-                </div>
-            )}
-        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.div>
     );
 };
 

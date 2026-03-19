@@ -42,7 +42,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onClose }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
             style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
             <div className="glass-card p-6 w-full max-w-md mx-4 animate-slide-in">
-                <h2 className="text-xl font-bold text-white mb-5">
+                <h2 className="text-xl font-bold text-[var(--text-primary)] mb-5">
                     {isEdit ? 'Edit Lead' : 'Add New Lead'}
                 </h2>
 
@@ -54,10 +54,10 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onClose }) => {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1.5">Company Name *</label>
+                        <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Company Name *</label>
                         <input
-                            className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
-                            style={{ background: 'rgba(15, 23, 42, 0.6)', border: `1px solid ${errors.company_name ? 'rgba(239, 68, 68, 0.5)' : 'rgba(148, 163, 184, 0.15)'}` }}
+                            className="w-full px-4 py-2.5 rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                            style={{ background: 'var(--bg-secondary)', border: `1px solid ${errors.company_name ? 'rgba(239, 68, 68, 0.5)' : 'var(--border-subtle)'}` }}
                             placeholder="e.g. Acme Corp"
                             required
                             value={formData.company_name}
@@ -67,10 +67,10 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onClose }) => {
                     </div>
 
                     <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1.5">Contact Name *</label>
+                        <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Contact Name *</label>
                         <input
-                            className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
-                            style={{ background: 'rgba(15, 23, 42, 0.6)', border: `1px solid ${errors.contact_name ? 'rgba(239, 68, 68, 0.5)' : 'rgba(148, 163, 184, 0.15)'}` }}
+                            className="w-full px-4 py-2.5 rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                            style={{ background: 'var(--bg-secondary)', border: `1px solid ${errors.contact_name ? 'rgba(239, 68, 68, 0.5)' : 'var(--border-subtle)'}` }}
                             placeholder="e.g. John Doe"
                             required
                             value={formData.contact_name}
@@ -80,10 +80,10 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onClose }) => {
                     </div>
 
                     <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1.5">Email *</label>
+                        <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Email *</label>
                         <input
-                            className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
-                            style={{ background: 'rgba(15, 23, 42, 0.6)', border: `1px solid ${errors.email ? 'rgba(239, 68, 68, 0.5)' : 'rgba(148, 163, 184, 0.15)'}` }}
+                            className="w-full px-4 py-2.5 rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                            style={{ background: 'var(--bg-secondary)', border: `1px solid ${errors.email ? 'rgba(239, 68, 68, 0.5)' : 'var(--border-subtle)'}` }}
                             placeholder="john@acme.com"
                             type="email"
                             required
@@ -94,10 +94,10 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onClose }) => {
                     </div>
 
                     <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1.5">Phone</label>
+                        <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Phone</label>
                         <input
-                            className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
-                            style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.15)' }}
+                            className="w-full px-4 py-2.5 rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                            style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
                             placeholder="+1 555 123 4567"
                             value={formData.phone}
                             onChange={e => setFormData({ ...formData, phone: e.target.value })}
@@ -106,7 +106,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onClose }) => {
 
                     <div className="flex justify-end space-x-3 pt-2">
                         <button type="button" onClick={onClose}
-                            className="px-4 py-2 text-sm font-medium text-slate-400 rounded-xl hover:text-white hover:bg-white/5 transition-all">
+                            className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] rounded-xl hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-all">
                             Cancel
                         </button>
                         <button type="submit" disabled={submitting}

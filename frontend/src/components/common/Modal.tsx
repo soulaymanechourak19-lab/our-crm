@@ -34,13 +34,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
             {/* Modal */}
-            <div className={`${sizeClasses[size]} w-full bg-dark-800 border border-dark-700/50 rounded-2xl shadow-2xl relative z-10 animate-fadeIn`}>
+            <div className={`${sizeClasses[size]} w-full bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl relative z-10 animate-fadeIn`}>
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-dark-700/50">
-                    <h3 className="text-lg font-semibold text-white">{title}</h3>
+                <div className="flex items-center justify-between p-6 border-b border-[var(--border-subtle)]">
+                    <h3 className="text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
                     <button
                         onClick={onClose}
-                        className="text-dark-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-dark-700"
+                        className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors p-1 rounded-lg hover:bg-[var(--bg-secondary)]"
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

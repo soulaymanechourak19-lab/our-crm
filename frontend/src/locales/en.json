@@ -5,12 +5,67 @@
     "products": "Products",
     "customers": "Customers",
     "settings": "Settings",
-    "logs": "Logs",
+    "logs": "System Logs",
     "users": "Users",
     "aiAssistant": "AI Assistant",
     "aiTraining": "AI Training",
+    "profile": "Profile",
     "myLeads": "My Leads",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "settingsSection": "Settings",
+    "new": "New",
+    "collapse": "Collapse"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Overview of your business performance"
+    },
+    "leads": {
+      "title": "Leads",
+      "subtitle": "Manage and track your sales pipeline"
+    },
+    "customers": {
+      "title": "Customers",
+      "subtitle": "Keep track of your client relationships"
+    },
+    "customerDetail": {
+      "title": "Customer Details",
+      "subtitle": "Detailed view of client information"
+    },
+    "products": {
+      "title": "Products",
+      "subtitle": "Manage your inventory and product catalog"
+    },
+    "aiAssistant": {
+      "title": "AI Assistant",
+      "subtitle": "Your intelligent operations companion"
+    },
+    "aiTraining": {
+      "title": "AI Training",
+      "subtitle": "Train your chatbot's machine learning model"
+    },
+    "users": {
+      "title": "User Management",
+      "subtitle": "Manage system users and permissions"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your account, preferences, and ML configurations"
+    },
+    "logs": {
+      "title": "System Logs",
+      "subtitle": "Complete audit trail of system events and user activity"
+    },
+    "profile": {
+      "title": "User Profile",
+      "subtitle": "Manage your account settings"
+    }
+  },
+  "roles": {
+    "admin": "Administrator",
+    "agent_commercial": "Commercial Agent",
+    "agent_sav": "Support Agent"
   },
   "dashboard": {
     "quickAccess": "Quick Access",
@@ -49,9 +104,98 @@
     "language": "Language",
     "theme": "Theme",
     "emailNotifications": "Email Notifications",
+    "emailNotificationsDesc": "Receive daily summary reports and alerts.",
     "mlConfig": "AI/ML Configuration",
     "churnThreshold": "Churn Risk Alert Threshold",
+    "churnThresholdDesc": "Accounts with a churn risk above this threshold will be flagged in red.",
     "autoRetrain": "Auto-retrain Models",
+    "autoRetrainDesc": "Automatically update predictive models every 7 days.",
     "forceRetrain": "Force Global Retrain"
+  },
+  "common": {
+    "search": "Search...",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "back": "Back",
+    "noData": "No data available"
+  },
+  "landing": {
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "features": "Features",
+      "implementation": "Implementation",
+      "contact": "Contact"
+    },
+    "hero": {
+      "badge": "Intelligent CRM Platform",
+      "title": "CRM",
+      "subtitle": "Streamline your customer relationships with AI-powered insights. Manage leads, track interactions, and grow revenue — all from one intelligent platform built for modern teams.",
+      "moreDetails": "More details",
+      "viewDemo": "View demo"
+    },
+    "about": {
+      "tag": "About Us",
+      "title": "Built for the future of sales",
+      "desc": "We started OurCRM with a simple premise: your customer data shouldn't be trapped in isolated silos. By combining industry-leading machine learning models with intuitive design, we help you foresee customer needs before they happen.",
+      "point1": "Trusted by 10,000+ forward-thinking teams",
+      "point2": "SOC2 Type II Certified for enterprise-grade security",
+      "point3": "99.99% uptime with 24/7 dedicated support"
+    },
+    "features": {
+      "tag": "Features",
+      "title": "Everything you need to scale",
+      "desc": "Powerful tools designed to help your team convert more leads, delight customers, and make smarter decisions.",
+      "leadMgmt": "Lead Management",
+      "leadMgmtDesc": "Capture, score, and nurture leads through your pipeline. Automated workflows ensure no opportunity slips through the cracks.",
+      "customerInsights": "Customer Insights",
+      "customerInsightsDesc": "Deep-dive into customer behavior and preferences. 360° profiles give your team the context they need to personalize every interaction.",
+      "aiAnalytics": "AI-Powered Analytics",
+      "aiAnalyticsDesc": "Machine learning models predict churn, forecast revenue, and surface actionable insights — so you can act before problems arise."
+    },
+    "implementation": {
+      "tag": "Implementation",
+      "title": "Get up and running in days",
+      "desc": "We handle the heavy lifting of importing your data and training your custom ML models. Here is our streamlined onboarding process.",
+      "step1Title": "Data Migration",
+      "step1Desc": "Connect your existing tools with our one-click integrations or bulk import spreadsheets securely.",
+      "step2Title": "AI Training",
+      "step2Desc": "Our systems automatically clean your past data to train predictive algorithms specific to your pipelines.",
+      "step3Title": "Go Live",
+      "step3Desc": "Your team logs in to a fully populated, intelligent workspace ready to close deals on day one."
+    },
+    "stats": {
+      "activeUsers": "Active Users",
+      "uptimeSLA": "Uptime SLA",
+      "fasterConversions": "Faster Conversions",
+      "aiSupport": "AI Support"
+    },
+    "footer": {
+      "copyright": "© {{year}} OurCRM. All rights reserved."
+    },
+    "signIn": "Sign In"
+  },
+  "login": {
+    "welcomeBack": "Welcome back",
+    "subtitle": "Sign in to your CRM account",
+    "emailLabel": "EMAIL ADDRESS",
+    "emailPlaceholder": "you@company.com",
+    "passwordLabel": "PASSWORD",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "noAccount": "Don't have an account?",
+    "createOne": "Create one"
+  },
+  "authSidePanel": {
+    "slide1Title": "Manage your business\nwith intelligence",
+    "slide1Desc": "AI-powered CRM that helps you convert leads, delight customers, and grow revenue.",
+    "slide2Title": "Start growing\nyour business today",
+    "slide2Desc": "Join thousands of teams using AI-powered insights to close more deals and build lasting relationships.",
+    "slide3Title": "Predict customer needs\nbefore they happen",
+    "slide3Desc": "Leverage advanced machine learning to identify churn risks and uncover upsell opportunities."
   }
 }

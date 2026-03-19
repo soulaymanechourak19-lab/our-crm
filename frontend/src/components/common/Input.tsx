@@ -15,13 +15,13 @@ const Input: React.FC<InputProps> = ({
     className = '',
     ...props
 }) => {
-    const inputClasses = `w-full px-4 py-3 bg-dark-900/50 border rounded-xl text-white placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${error ? 'border-red-500/50' : 'border-dark-600/50'
+    const inputClasses = `w-full px-4 py-3 bg-[var(--bg-secondary)] border rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${error ? 'border-red-500/50' : 'border-[var(--border-subtle)]'
         } ${className}`;
 
     return (
         <div>
             {label && (
-                <label className="block text-sm font-medium text-dark-300 mb-2">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                     {label}
                     {props.required && <span className="text-red-400 ml-1">*</span>}
                 </label>

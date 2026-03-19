@@ -1,11 +1,14 @@
 import React, { lazy, Suspense } from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { CRMProvider } from './context/CRMContext';
 import { ToastProvider } from './components/common/Toast';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 import { ThemeProvider } from './context/ThemeContext';
+import LoadingScreen from './components/common/LoadingScreen';
+import PageTransition from './components/common/PageTransition';
 import './App.css';
 
 // ── Lazy-loaded routes (code splitting — smaller initial bundle) ──
@@ -24,18 +27,165 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Logs = lazy(() => import('./pages/Logs'));
 
-// Simple full-page loading fallback
-const PageLoader: React.FC = () => (
-  <div style={{
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    height: '100vh', background: '#0a0e1a', color: '#a0aec0', fontFamily: 'Inter, sans-serif'
-  }}>
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-sm font-medium tracking-widest uppercase opacity-50">Loading OurCRM</p>
-    </div>
-  </div>
-);
+// ── Lazy-loaded routes (code splitting — smaller initial bundle) ──
+
+const AnimatedRoutes = () => {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Public routes */}
+        <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
+        <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+        <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+
+        {/* Protected routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.dashboard.title" subtitleKey="pages.dashboard.subtitle">
+                  <Dashboard />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.settings.title" subtitleKey="pages.settings.subtitle">
+                  <Settings />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/logs"
+          element={
+            <PrivateRoute adminOnly>
+              <PageTransition>
+                <Layout titleKey="pages.logs.title" subtitleKey="pages.logs.subtitle">
+                  <Logs />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.profile.title" subtitleKey="pages.profile.subtitle">
+                  <Profile />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+
+        {/* CRM routes */}
+        <Route
+          path="/leads"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.leads.title" subtitleKey="pages.leads.subtitle">
+                  <Leads />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/customers"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.customers.title" subtitleKey="pages.customers.subtitle">
+                  <Customers />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/customers/:id"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.customerDetail.title" subtitleKey="pages.customerDetail.subtitle">
+                  <CustomerDetail />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+
+        {/* Sales routes */}
+        <Route
+          path="/products"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.products.title" subtitleKey="pages.products.subtitle">
+                  <Products />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+
+        {/* Admin-only routes */}
+        <Route
+          path="/chatbot"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.aiAssistant.title" subtitleKey="pages.aiAssistant.subtitle">
+                  <Chatbot />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chatbot-training"
+          element={
+            <PrivateRoute adminOnly>
+              <PageTransition>
+                <Layout titleKey="pages.aiTraining.title" subtitleKey="pages.aiTraining.subtitle">
+                  <ChatbotTraining />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <PrivateRoute adminOnly>
+              <PageTransition>
+                <Layout titleKey="pages.users.title" subtitleKey="pages.users.subtitle">
+                  <Users />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+
+        {/* Default redirect */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
 
 const App: React.FC = () => {
   return (
@@ -44,136 +194,10 @@ const App: React.FC = () => {
         <CRMProvider>
           <ThemeProvider>
             <ToastProvider>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                {/* Public routes */}
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-
-                {/* Protected routes */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <PrivateRoute>
-                      <Layout title="Dashboard" subtitle="Overview of your business performance">
-                        <Dashboard />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/settings"
-                  element={
-                    <PrivateRoute>
-                      <Layout title="Settings" subtitle="Manage your account, preferences, and ML configurations">
-                        <Settings />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/logs"
-                  element={
-                    <PrivateRoute adminOnly>
-                      <Layout title="System Logs" subtitle="Complete audit trail of system events and user activity">
-                        <Logs />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/profile"
-                  element={
-                    <PrivateRoute>
-                      <Layout title="User Profile" subtitle="Manage your account settings">
-                        <Profile />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-
-                {/* CRM routes */}
-                <Route
-                  path="/leads"
-                  element={
-                    <PrivateRoute>
-                      <Layout title="Leads" subtitle="Manage and track your sales pipeline">
-                        <Leads />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/customers"
-                  element={
-                    <PrivateRoute>
-                      <Layout title="Customers" subtitle="Keep track of your client relationships">
-                        <Customers />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/customers/:id"
-                  element={
-                    <PrivateRoute>
-                      <Layout title="Customer Details" subtitle="Detailed view of client information">
-                        <CustomerDetail />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-
-                {/* Sales routes */}
-                <Route
-                  path="/products"
-                  element={
-                    <PrivateRoute>
-                      <Layout title="Products" subtitle="Manage your inventory and product catalog">
-                        <Products />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-
-                {/* Admin-only routes */}
-                <Route
-                  path="/chatbot"
-                  element={
-                    <PrivateRoute>
-                      <Layout title="AI Assistant" subtitle="Your intelligent operations companion">
-                        <Chatbot />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/chatbot-training"
-                  element={
-                    <PrivateRoute adminOnly>
-                      <Layout title="AI Training" subtitle="Train your chatbot's machine learning model">
-                        <ChatbotTraining />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/admin/users"
-                  element={
-                    <PrivateRoute adminOnly>
-                      <Layout title="User Management" subtitle="Manage system users and permissions">
-                        <Users />
-                      </Layout>
-                    </PrivateRoute>
-                  }
-                />
-
-                {/* Default redirect */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Suspense>
-          </ToastProvider>
+              <Suspense fallback={<LoadingScreen />}>
+                <AnimatedRoutes />
+              </Suspense>
+            </ToastProvider>
           </ThemeProvider>
         </CRMProvider>
       </AuthProvider>

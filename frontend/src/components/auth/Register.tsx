@@ -1,6 +1,8 @@
 import React, { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import AuthSidePanel from './AuthSidePanel';
+import ThemeToggleBtn from '../common/ThemeToggleBtn';
 
 const Register: React.FC = () => {
     const { register } = useAuth();
@@ -34,23 +36,13 @@ const Register: React.FC = () => {
     const firstError = (field: string) => errors[field]?.[0];
 
     return (
-        <div className="auth-page">
-            {/* Left decorative panel */}
-            <div className="auth-side-panel">
-                <div className="auth-side-content">
-                    <div className="auth-side-logo">
-                        <div className="auth-side-logo-icon">C</div>
-                        <span className="auth-side-logo-text">OurCRM</span>
-                    </div>
-                    <h2 className="auth-side-title">Start growing<br />your business today</h2>
-                    <p className="auth-side-desc">Join thousands of teams using AI-powered insights to close more deals and build lasting relationships.</p>
-                    <div className="auth-side-dots">
-                        <span className="auth-dot" />
-                        <span className="auth-dot active" />
-                        <span className="auth-dot" />
-                    </div>
-                </div>
+        <div className="auth-page" style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '32px', right: '40px', zIndex: 50 }}>
+                <ThemeToggleBtn />
             </div>
+            
+            {/* Left decorative panel */}
+            <AuthSidePanel />
 
             {/* Right form panel */}
             <div className="auth-form-panel">

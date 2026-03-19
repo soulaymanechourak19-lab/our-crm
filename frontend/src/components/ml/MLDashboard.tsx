@@ -71,9 +71,10 @@ export default function MLDashboard() {
 
     return (
         <div style={{
-            background: 'linear-gradient(135deg, rgba(15, 20, 42, 0.6) 0%, rgba(10, 14, 30, 0.8) 100%)',
-            borderRadius: '16px', padding: '28px', border: '1px solid rgba(108, 92, 231, 0.1)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+            background: 'var(--bg-card)',
+            borderRadius: '16px', padding: '28px', border: '1px solid var(--border-subtle)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)', backdropFilter: 'blur(12px)',
+            transition: 'background 0.3s ease'
         }}>
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px' }}>
@@ -87,10 +88,10 @@ export default function MLDashboard() {
                         {svgs.ai}
                     </div>
                     <div>
-                        <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.3px' }}>
+                        <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.3px' }}>
                             AI / ML Service
                         </h2>
-                        <p style={{ margin: 0, fontSize: '12.5px', color: '#94a3b8', marginTop: '2px' }}>
+                        <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
                             Predictive Intelligence & Models
                         </p>
                     </div>
@@ -122,23 +123,21 @@ export default function MLDashboard() {
                 ].map(m => (
                     <div key={m.key} style={{
                         padding: '18px 14px', borderRadius: '14px', textAlign: 'center',
-                        background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)',
+                        background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)',
                         transition: 'all 0.2s',
                     }}
                     onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                        e.currentTarget.style.borderColor = 'var(--indigo-500)';
                     }}
                     onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+                        e.currentTarget.style.borderColor = 'var(--border-subtle)';
                     }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px', color: m.color }}>
                             {m.icon}
                         </div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#f1f5f9', marginBottom: '4px' }}>{m.label}</div>
-                        <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 500 }}>{m.metric}</div>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>{m.label}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 500 }}>{m.metric}</div>
                         <div style={{
                             marginTop: '12px', fontSize: '11px', fontWeight: 700,
                             color: models[m.key] ? '#00b894' : '#fdcb6e',
@@ -175,15 +174,15 @@ export default function MLDashboard() {
             </button>
 
             {/* Global ML Insights */}
-            <div style={{ marginTop: '28px', paddingTop: '24px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#f1f5f9', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ marginTop: '28px', paddingTop: '24px', borderTop: '1px solid var(--border-subtle)' }}>
+                <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <span style={{ color: '#00cec9' }}>{svgs.globe}</span> Global AI Insights
                 </h3>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     {/* Churn Rate insight */}
-                    <div style={{ background: 'rgba(10, 14, 30, 0.5)', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 118, 117, 0.2)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    <div style={{ background: 'var(--bg-secondary)', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 118, 117, 0.2)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             Avg Portfolio Churn Risk
                         </div>
                         <div style={{ display: 'flex', alignItems: 'baseline', marginTop: '12px', gap: '12px' }}>
@@ -192,14 +191,14 @@ export default function MLDashboard() {
                                 {globalInsights.avgChurnRisk > 50 ? 'High Risk' : globalInsights.avgChurnRisk > 25 ? 'Medium Risk' : 'Low Risk'}
                             </span>
                         </div>
-                        <div style={{ width: '100%', height: '6px', backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: '3px', marginTop: '16px', overflow: 'hidden' }}>
+                        <div style={{ width: '100%', height: '6px', backgroundColor: 'var(--border-subtle)', borderRadius: '3px', marginTop: '16px', overflow: 'hidden' }}>
                             <div style={{ width: `${globalInsights.avgChurnRisk}%`, height: '100%', background: 'linear-gradient(90deg, #ff7675, #e84393)' }} />
                         </div>
                     </div>
 
                     {/* Sentiment insight */}
-                    <div style={{ background: 'rgba(10, 14, 30, 0.5)', padding: '20px', borderRadius: '14px', border: '1px solid rgba(0, 184, 148, 0.2)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    <div style={{ background: 'var(--bg-secondary)', padding: '20px', borderRadius: '14px', border: '1px solid rgba(0, 184, 148, 0.2)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             Global Customer Sentiment
                         </div>
                         <div style={{ display: 'flex', alignItems: 'baseline', marginTop: '12px', gap: '12px' }}>
@@ -208,9 +207,9 @@ export default function MLDashboard() {
                                 Positive
                             </span>
                         </div>
-                        <div style={{ fontSize: '12px', fontWeight: 500, color: '#cbd5e1', marginTop: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-secondary)', marginTop: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                             {globalInsights.keyPhrases.map((phrase, i) => (
-                                <span key={i} style={{ backgroundColor: 'rgba(255, 255, 255, 0.08)', padding: '4px 10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>{phrase}</span>
+                                <span key={i} style={{ backgroundColor: 'var(--bg-card)', padding: '4px 10px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>{phrase}</span>
                             ))}
                         </div>
                     </div>

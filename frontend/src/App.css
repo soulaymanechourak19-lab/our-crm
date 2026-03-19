@@ -96,7 +96,7 @@ body {
 
 .btn-outline {
   background: transparent;
-  color: var(--gray-300);
+  color: var(--text-secondary);
   border: 1px solid var(--border-subtle);
 }
 
@@ -108,11 +108,11 @@ body {
 
 .btn-ghost {
   background: transparent;
-  color: var(--gray-400);
+  color: var(--text-secondary);
 }
 
 .btn-ghost:hover {
-  color: var(--gray-200);
+  color: var(--text-primary);
   background: rgba(255, 255, 255, .05);
 }
 
@@ -453,6 +453,44 @@ body {
   color: #E879F9;
 }
 
+/* -------- Light Theme Overrides for Auth -------- */
+[data-theme='light'] .auth-page {
+  background: #f8fafc;
+}
+[data-theme='light'] .auth-side-panel {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+[data-theme='light'] .auth-form-panel {
+  background: #ffffff;
+}
+[data-theme='light'] .auth-side-logo-text,
+[data-theme='light'] .auth-side-title,
+[data-theme='light'] .auth-header-v2 h1 {
+  color: #1e293b;
+}
+[data-theme='light'] .auth-side-desc,
+[data-theme='light'] .auth-header-v2 p {
+  color: #64748b;
+}
+[data-theme='light'] .auth-dot {
+  background: rgba(0, 0, 0, 0.1);
+}
+[data-theme='light'] .auth-input-wrap input {
+  background: #ffffff;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+[data-theme='light'] .auth-field label {
+  color: #475569;
+}
+[data-theme='light'] .auth-footer-v2 {
+  color: #64748b;
+}
+[data-theme='light'] .auth-icon-wrap {
+  background: rgba(168, 85, 247, 0.1);
+  color: #9333EA;
+}
+
 /* Auth responsive */
 @media (max-width: 900px) {
   .auth-page {
@@ -498,7 +536,7 @@ body {
 .form-group label {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--gray-300);
+  color: var(--text-secondary);
 }
 
 .form-group input,
@@ -506,8 +544,8 @@ body {
   padding: 10px 14px;
   font-family: var(--font-sans);
   font-size: 0.9rem;
-  background: rgba(15, 23, 42, .6);
-  color: var(--gray-100);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xs);
   outline: none;
@@ -859,8 +897,8 @@ body {
 }
 
 .data-table thead th {
-  background: rgba(15, 23, 42, .5);
-  color: var(--gray-400);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.75rem;
@@ -869,8 +907,9 @@ body {
 }
 
 .data-table tbody tr {
-  border-bottom: 1px solid rgba(148, 163, 184, .06);
+  border-bottom: 1px solid var(--border-subtle);
   transition: background .15s;
+  color: var(--text-primary);
 }
 
 .data-table tbody tr:hover {
@@ -911,7 +950,7 @@ body {
 }
 
 .modal-card {
-  background: var(--gray-800);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius);
   padding: 32px;
@@ -926,13 +965,13 @@ body {
 }
 
 .modal-card h3 {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.15rem;
   margin-bottom: 16px;
 }
 
 .modal-card p {
-  color: var(--gray-400);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-bottom: 20px;
 }
@@ -985,4 +1024,148 @@ body {
   .profile-container {
     grid-template-columns: 1fr;
   }
+}
+
+/* ── Language Switcher ─────────────────────────────── */
+.lang-switcher {
+  position: relative;
+  z-index: 200;
+}
+
+.lang-switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  color: var(--text-primary, #f8fafc);
+  cursor: pointer;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.lang-switcher-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+  transform: scale(1.03);
+}
+
+.lang-switcher-code {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.lang-switcher-chevron {
+  transition: transform 0.25s ease;
+  opacity: 0.6;
+}
+
+.lang-switcher-chevron.open {
+  transform: rotate(180deg);
+}
+
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: rgba(15, 20, 40, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(168, 85, 247, 0.08);
+  animation: langDropIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes langDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: #cbd5e1;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.lang-option:hover {
+  background: rgba(168, 85, 247, 0.1);
+  color: #f8fafc;
+}
+
+.lang-option.active {
+  background: rgba(168, 85, 247, 0.15);
+  color: #e879f9;
+}
+
+.lang-option-flag {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.lang-option-label {
+  flex: 1;
+}
+
+.lang-option-check {
+  color: #a855f7;
+  flex-shrink: 0;
+}
+
+/* ── Light Mode — Language Switcher ─────────────────── */
+[data-theme='light'] .lang-switcher-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #1e293b;
+}
+
+[data-theme='light'] .lang-switcher-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+[data-theme='light'] .lang-dropdown {
+  background: rgba(255, 255, 255, 0.97);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='light'] .lang-option {
+  color: #475569;
+}
+
+[data-theme='light'] .lang-option:hover {
+  background: rgba(168, 85, 247, 0.08);
+  color: #1e293b;
+}
+
+[data-theme='light'] .lang-option.active {
+  background: rgba(168, 85, 247, 0.1);
+  color: #9333ea;
 }

@@ -115,7 +115,7 @@ const CustomerDetail: React.FC = () => {
     return (
         <div className="p-6 lg:p-8 animate-fade-in max-w-5xl mx-auto">
             {/* Back link */}
-            <a href="#/customers" className="inline-flex items-center text-sm text-slate-400 hover:text-indigo-400 transition-colors mb-6">
+            <a href="#/customers" className="inline-flex items-center text-sm text-[var(--text-secondary)] hover:text-indigo-400 transition-colors mb-6">
                 ← Back to Customers
             </a>
 
@@ -130,8 +130,8 @@ const CustomerDetail: React.FC = () => {
                                 {customer.name?.charAt(0)?.toUpperCase()}
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold text-white">{customer.name}</h1>
-                                <p className="text-slate-400">{customer.email}</p>
+                                <h1 className="text-2xl font-bold text-[var(--text-primary)]">{customer.name}</h1>
+                                <p className="text-[var(--text-secondary)]">{customer.email}</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-3">
@@ -147,39 +147,39 @@ const CustomerDetail: React.FC = () => {
                     </div>
 
                     {/* Loyalty progress */}
-                    <div className="mt-5 pt-5" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.1)' }}>
+                    <div className="mt-5 pt-5" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs font-medium text-slate-400">Loyalty Progress</span>
+                            <span className="text-xs font-medium text-[var(--text-secondary)]">Loyalty Progress</span>
                             <span className="text-xs font-semibold" style={{ color: customer.tier === 'Gold' ? '#eab308' : customer.tier === 'Silver' ? '#94a3b8' : '#ca8a04' }}>
                                 {customer.loyalty_score} / 100
                             </span>
                         </div>
-                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'rgba(148, 163, 184, 0.1)' }}>
+                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'var(--border-subtle)' }}>
                             <div className="h-full rounded-full transition-all duration-700" style={{ width: `${loyaltyPercent}%`, background: tierGradient }}></div>
                         </div>
                         <div className="flex justify-between mt-1.5">
-                            <span className="text-[10px] text-slate-500">Bronze (0-30)</span>
-                            <span className="text-[10px] text-slate-500">Silver (31-70)</span>
-                            <span className="text-[10px] text-slate-500">Gold (71-100)</span>
+                            <span className="text-[10px] text-[var(--text-muted)]">Bronze (0-30)</span>
+                            <span className="text-[10px] text-[var(--text-muted)]">Silver (31-70)</span>
+                            <span className="text-[10px] text-[var(--text-muted)]">Gold (71-100)</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex space-x-1 mb-6 p-1 rounded-xl w-fit" style={{ background: 'var(--bg-secondary)', border: '1px solid rgba(148, 163, 184, 0.1)' }}>
+            <div className="flex space-x-1 mb-6 p-1 rounded-xl w-fit" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
                 <button onClick={() => setActiveTab('info')}
-                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'info' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'info' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                     style={activeTab === 'info' ? { background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.2))' } : {}}>
                     ℹ️ Info
                 </button>
                 <button onClick={() => setActiveTab('interactions')}
-                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'interactions' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'interactions' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                     style={activeTab === 'interactions' ? { background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.2))' } : {}}>
                     💬 Interactions
                 </button>
                 <button onClick={() => setActiveTab('ml')}
-                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'ml' ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'ml' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                     style={activeTab === 'ml' ? { background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.2))' } : {}}>
                     🧠 ML Insights
                 </button>
@@ -188,23 +188,23 @@ const CustomerDetail: React.FC = () => {
             {/* Info tab */}
             {activeTab === 'info' && (
                 <div className="glass-card p-6 animate-slide-in">
-                    <h2 className="text-lg font-bold text-white mb-4">Customer Details</h2>
+                    <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">Customer Details</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="p-4 rounded-xl" style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.08)' }}>
-                            <span className="text-xs font-medium text-slate-500 uppercase">Phone</span>
-                            <p className="text-sm text-white mt-1">{customer.phone || 'Not provided'}</p>
+                        <div className="p-4 rounded-xl" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                            <span className="text-xs font-medium text-[var(--text-secondary)] uppercase">Phone</span>
+                            <p className="text-sm text-[var(--text-primary)] mt-1">{customer.phone || 'Not provided'}</p>
                         </div>
-                        <div className="p-4 rounded-xl" style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.08)' }}>
-                            <span className="text-xs font-medium text-slate-500 uppercase">Address</span>
-                            <p className="text-sm text-white mt-1">{customer.address || 'Not provided'}</p>
+                        <div className="p-4 rounded-xl" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                            <span className="text-xs font-medium text-[var(--text-secondary)] uppercase">Address</span>
+                            <p className="text-sm text-[var(--text-primary)] mt-1">{customer.address || 'Not provided'}</p>
                         </div>
-                        <div className="p-4 rounded-xl" style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.08)' }}>
-                            <span className="text-xs font-medium text-slate-500 uppercase">Loyalty Tier</span>
-                            <p className="text-sm text-white mt-1">{customer.tier || 'Bronze'}</p>
+                        <div className="p-4 rounded-xl" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                            <span className="text-xs font-medium text-[var(--text-secondary)] uppercase">Loyalty Tier</span>
+                            <p className="text-sm text-[var(--text-primary)] mt-1">{customer.tier || 'Bronze'}</p>
                         </div>
-                        <div className="p-4 rounded-xl" style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.08)' }}>
-                            <span className="text-xs font-medium text-slate-500 uppercase">Converted From Lead</span>
-                            <p className="text-sm text-white mt-1">
+                        <div className="p-4 rounded-xl" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                            <span className="text-xs font-medium text-[var(--text-secondary)] uppercase">Converted From Lead</span>
+                            <p className="text-sm text-[var(--text-primary)] mt-1">
                                 {customer.converted_from_lead_id
                                     ? <span className="text-indigo-400">Lead #{customer.converted_from_lead_id}</span>
                                     : 'Direct customer'}
@@ -218,8 +218,8 @@ const CustomerDetail: React.FC = () => {
             {activeTab === 'interactions' && (
                 <div className="glass-card p-6 animate-slide-in">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-lg font-bold text-white">Interaction Timeline</h2>
-                        <span className="text-xs text-slate-400">{interactionsPagination.total} total</span>
+                        <h2 className="text-lg font-bold text-[var(--text-primary)]">Interaction Timeline</h2>
+                        <span className="text-xs text-[var(--text-secondary)]">{interactionsPagination.total} total</span>
                     </div>
 
                     {loadingInteractions ? (
@@ -227,7 +227,7 @@ const CustomerDetail: React.FC = () => {
                             <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
                         </div>
                     ) : interactions.length === 0 ? (
-                        <div className="text-center py-12 text-slate-500">
+                        <div className="text-center py-12 text-[var(--text-muted)]">
                             <div className="text-4xl mb-3">💬</div>
                             <p className="font-medium">No interactions yet</p>
                             <p className="text-sm mt-1">Log a call, email, or meeting</p>
@@ -236,7 +236,7 @@ const CustomerDetail: React.FC = () => {
                         <div className="space-y-3">
                             {interactions.map((interaction: any, idx: number) => (
                                 <div key={interaction.id || idx}
-                                    className="flex items-start space-x-4 p-4 rounded-xl transition-all hover:bg-white/[0.02]"
+                                    className="flex items-start space-x-4 p-4 rounded-xl transition-all hover:bg-[var(--bg-secondary)]"
                                     style={{ background: typeColors[interaction.type]?.bg, border: `1px solid ${typeColors[interaction.type]?.border}20` }}>
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
                                         style={{ background: `${typeColors[interaction.type]?.border}20` }}>
@@ -244,12 +244,12 @@ const CustomerDetail: React.FC = () => {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-center mb-1">
-                                            <span className="text-sm font-semibold text-white capitalize">{interaction.type}</span>
-                                            <span className="text-xs text-slate-400">
+                                            <span className="text-sm font-semibold text-[var(--text-primary)] capitalize">{interaction.type}</span>
+                                            <span className="text-xs text-[var(--text-secondary)]">
                                                 {new Date(interaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-slate-300">{interaction.notes}</p>
+                                        <p className="text-sm text-[var(--text-secondary)]">{interaction.notes}</p>
                                     </div>
                                 </div>
                             ))}
@@ -263,7 +263,7 @@ const CustomerDetail: React.FC = () => {
                                 <button key={page} onClick={() => loadInteractions(page)}
                                     className={`px-3 py-1.5 text-sm rounded-lg transition-all ${page === interactionsPagination.current_page
                                         ? 'text-white font-semibold'
-                                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
                                         }`}
                                     style={page === interactionsPagination.current_page ? { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' } : {}}>
                                     {page}
@@ -282,8 +282,8 @@ const CustomerDetail: React.FC = () => {
                             🧠
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-white">AI Assistant Insights</h2>
-                            <p className="text-xs text-slate-400">Powered by Machine Learning</p>
+                            <h2 className="text-lg font-bold text-[var(--text-primary)]">AI Assistant Insights</h2>
+                            <p className="text-xs text-[var(--text-secondary)]">Powered by Machine Learning</p>
                         </div>
                     </div>
 
@@ -294,13 +294,13 @@ const CustomerDetail: React.FC = () => {
                     ) : mlInsights ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Churn Risk Card */}
-                            <div className="p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between" style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.1)' }}>
+                            <div className="p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
                                 <div className="absolute top-0 right-0 p-4 opacity-10 text-6xl">🏃</div>
                                 <div>
-                                    <h3 className="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Churn Probability</h3>
+                                    <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4 uppercase tracking-wider">Churn Probability</h3>
                                     
                                     <div className="flex items-end gap-3 mb-2">
-                                        <span className="text-4xl font-bold text-white">
+                                        <span className="text-4xl font-bold text-[var(--text-primary)]">
                                             {mlInsights.churn?.probability !== undefined 
                                                 ? Math.round(mlInsights.churn.probability * 100) 
                                                 : mlInsights.churn?.churn_risk_score !== undefined 
@@ -316,7 +316,7 @@ const CustomerDetail: React.FC = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mt-4">
+                                <div className="w-full h-1.5 bg-[var(--border-subtle)] rounded-full overflow-hidden mt-4">
                                     <div className="h-full rounded-full transition-all duration-1000" 
                                          style={{ 
                                              width: `${mlInsights.churn?.probability ? mlInsights.churn.probability * 100 : mlInsights.churn?.churn_risk_score || 0}%`,
@@ -328,10 +328,10 @@ const CustomerDetail: React.FC = () => {
                             </div>
                             
                             {/* Segmentation Card */}
-                            <div className="p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between" style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.1)' }}>
+                            <div className="p-5 rounded-2xl relative overflow-hidden flex flex-col justify-between" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
                                 <div className="absolute top-0 right-0 p-4 opacity-10 text-6xl">🎯</div>
                                 <div>
-                                    <h3 className="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">AI Customer Segment</h3>
+                                    <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4 uppercase tracking-wider">AI Customer Segment</h3>
                                     
                                     <div className="mt-2 text-center py-4">
                                         <h4 className="text-3xl font-bold bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #a855f7, #ec4899)' }}>
@@ -339,32 +339,32 @@ const CustomerDetail: React.FC = () => {
                                         </h4>
                                     </div>
                                 </div>
-                                <p className="text-xs text-slate-500 mt-4 text-center">
+                                <p className="text-xs text-[var(--text-muted)] mt-4 text-center">
                                     Based on K-Means clustering of RFM behavior and engagement metrics.
                                 </p>
                             </div>
                             
                             {/* Product Recommendations Card (Full Width) */}
-                            <div className="md:col-span-2 p-5 rounded-2xl relative overflow-hidden" style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.1)' }}>
-                                <h3 className="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">
+                            <div className="md:col-span-2 p-5 rounded-2xl relative overflow-hidden" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
+                                <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4 uppercase tracking-wider">
                                     ✨ Suggested Products
                                 </h3>
-                                <p className="text-xs text-slate-500 mb-4">
+                                <p className="text-xs text-[var(--text-muted)] mb-4">
                                     Predicted using Neural Collaborative Filtering based on purchase history.
                                 </p>
                                 
                                 {mlInsights.recommendations && mlInsights.recommendations.length > 0 ? (
                                     <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                                         {mlInsights.recommendations.map((rec: any, idx: number) => (
-                                            <div key={idx} className="p-3 rounded-xl bg-slate-800/50 border border-slate-700 hover:border-purple-500/50 transition-colors flex flex-col items-center text-center">
+                                            <div key={idx} className="p-3 rounded-xl border hover:border-purple-500/50 transition-colors flex flex-col items-center text-center" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)' }}>
                                                 <div className="text-2xl mb-2">📦</div>
-                                                <p className="text-sm font-semibold text-white truncate w-full">Product {rec.product_id}</p>
+                                                <p className="text-sm font-semibold text-[var(--text-primary)] truncate w-full">Product {rec.product_id}</p>
                                                 <p className="text-xs text-purple-400 mt-1">Match: {Math.min(99, Math.round(rec.score * 100))}%</p>
                                             </div>
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-6 text-slate-500 text-sm">
+                                    <div className="text-center py-6 text-[var(--text-muted)] text-sm">
                                         Not enough data for recommendations.
                                     </div>
                                 )}
@@ -372,7 +372,7 @@ const CustomerDetail: React.FC = () => {
                         </div>
                     ) : (
                         <div className="text-center py-10">
-                            <p className="text-slate-400">No AI insights available for this customer.</p>
+                            <p className="text-[var(--text-secondary)]">No AI insights available for this customer.</p>
                         </div>
                     )}
                 </div>

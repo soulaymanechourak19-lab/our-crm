@@ -1,9 +1,13 @@
 import React, { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import NotificationCenter from './common/NotificationCenter';
 
 interface LayoutProps {
     children: ReactNode;
+    titleKey?: string;
+    subtitleKey?: string;
     title?: string;
     subtitle?: string;
 }
@@ -136,13 +140,14 @@ const icons = {
     ),
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
+const Layout: React.FC<LayoutProps> = ({ children, title, subtitle, titleKey, subtitleKey }) => {
     const { user, logout } = useAuth();
     const location = useLocation();
+    const { t } = useTranslation();
 
     if (!user) return null;
 
-    const roleLabel = roleLabelMap[user.role] ?? user.role;
+    const roleLabel = t(`roles.${user.role}`, roleLabelMap[user.role] ?? user.role);
     const isActive = (path: string) => location.pathname === path;
     const isActiveSub = (path: string) => location.pathname.startsWith(path);
 
@@ -150,27 +155,27 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
     type NavEntry = { to: string; active: boolean; icon: React.ReactNode; label: string; accentColor: string; badge?: string };
     const navItems: NavEntry[] = [];
 
-    navItems.push({ to: '/dashboard', active: isActive('/dashboard'), icon: icons.dashboard, label: 'Dashboard', accentColor: '#6c5ce7' });
+    navItems.push({ to: '/dashboard', active: isActive('/dashboard'), icon: icons.dashboard, label: t('sidebar.dashboard'), accentColor: '#6c5ce7' });
 
     if (user.role === 'admin' || user.role === 'agent_commercial') {
-        navItems.push({ to: '/leads', active: isActive('/leads'), icon: icons.leads, label: 'Leads', accentColor: '#e84393' });
+        navItems.push({ to: '/leads', active: isActive('/leads'), icon: icons.leads, label: t('sidebar.leads'), accentColor: '#e84393' });
     }
     if (user.role === 'admin' || user.role === 'agent_commercial' || user.role === 'agent_sav') {
-        navItems.push({ to: '/customers', active: isActive('/customers') || isActiveSub('/customers/'), icon: icons.customers, label: 'Customers', accentColor: '#00cec9' });
+        navItems.push({ to: '/customers', active: isActive('/customers') || isActiveSub('/customers/'), icon: icons.customers, label: t('sidebar.customers'), accentColor: '#00cec9' });
     }
     if (user.role === 'admin' || user.role === 'agent_commercial') {
-        navItems.push({ to: '/products', active: isActive('/products'), icon: icons.products, label: 'Products', accentColor: '#fdcb6e' });
+        navItems.push({ to: '/products', active: isActive('/products'), icon: icons.products, label: t('sidebar.products'), accentColor: '#fdcb6e' });
     }
     if (user.role === 'admin' || user.role === 'agent_sav') {
-        navItems.push({ to: '/chatbot', active: isActive('/chatbot'), icon: icons.ai, label: 'AI Assistant', accentColor: '#a29bfe', badge: 'New' });
+        navItems.push({ to: '/chatbot', active: isActive('/chatbot'), icon: icons.ai, label: t('sidebar.aiAssistant'), accentColor: '#a29bfe', badge: t('sidebar.new') });
     }
 
     const settingsItems: NavEntry[] = [];
     if (user.role === 'admin') {
-        settingsItems.push({ to: '/admin/users', active: isActive('/admin/users'), icon: icons.users, label: 'Users', accentColor: '#74b9ff' });
-        settingsItems.push({ to: '/chatbot-training', active: isActive('/chatbot-training'), icon: icons.brain, label: 'AI Training', accentColor: '#00b894' });
+        settingsItems.push({ to: '/admin/users', active: isActive('/admin/users'), icon: icons.users, label: t('sidebar.users'), accentColor: '#74b9ff' });
+        settingsItems.push({ to: '/chatbot-training', active: isActive('/chatbot-training'), icon: icons.brain, label: t('sidebar.aiTraining'), accentColor: '#00b894' });
     }
-    settingsItems.push({ to: '/profile', active: isActive('/profile'), icon: icons.profile, label: 'Profile', accentColor: '#e17055' });
+    settingsItems.push({ to: '/profile', active: isActive('/profile'), icon: icons.profile, label: t('sidebar.profile'), accentColor: '#e17055' });
 
     return (
         <div className="dashboard-layout">
@@ -199,7 +204,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
                         marginTop: '24px', marginBottom: '8px', padding: '0 14px',
                         fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-secondary)',
                         textTransform: 'uppercase', letterSpacing: '1.5px', opacity: 0.6
-                    }}>Settings</div>
+                    }}>{t('sidebar.settingsSection')}</div>
 
                     {settingsItems.map(item => (
                         <SidebarLink key={item.to} {...item} />
@@ -242,7 +247,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
                         onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255, 118, 117, 0.08)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                     >
-                        <span style={{ opacity: 0.9 }}>{icons.logout}</span> Sign out
+                        <span style={{ opacity: 0.9 }}>{icons.logout}</span> {t('sidebar.logout')}
                     </button>
                 </div>
             </aside>
@@ -251,8 +256,8 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
             <main className="main-content">
                 <header className="top-bar">
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.3px', margin: 0 }}>{title}</h2>
-                        {subtitle && <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 500, marginTop: '2px' }}>{subtitle}</p>}
+                        <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.3px', margin: 0 }}>{titleKey ? t(titleKey) : title}</h2>
+                        {(subtitleKey || subtitle) && <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 500, marginTop: '2px' }}>{subtitleKey ? t(subtitleKey) : subtitle}</p>}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{
@@ -268,19 +273,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle }) => {
                                 color: 'var(--text-primary)', fontSize: '0.82rem', width: '140px', fontFamily: 'inherit',
                             }} />
                         </div>
-                        <button style={{
-                            width: '38px', height: '38px', borderRadius: '10px',
-                            background: 'var(--bg-primary)',
-                            border: '1px solid var(--border-subtle)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            cursor: 'pointer', position: 'relative', color: 'var(--text-secondary)',
-                        }}>
-                            {icons.bell}
-                            <span style={{
-                                position: 'absolute', top: '6px', right: '6px',
-                                width: '7px', height: '7px', borderRadius: '50%', background: '#e84393',
-                            }} />
-                        </button>
+                        <NotificationCenter />
                     </div>
                 </header>
                 <div className="layout-children">

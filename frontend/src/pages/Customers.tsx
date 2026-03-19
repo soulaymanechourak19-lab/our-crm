@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useCRM } from '../context/CRMContext';
 import LoyaltyBadge from '../components/customers/LoyaltyBadge';
+import Skeleton from '../components/common/Skeleton';
 
 const getPaginationGroup = (current: number, last: number) => {
     const pages: (number | string)[] = [];
@@ -100,15 +101,7 @@ const Customers: React.FC = () => {
                 </select>
             </div>
 
-            {/* Loading */}
-            {customersLoading && (
-                <div className="flex justify-center py-20">
-                    <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-            )}
-
             {/* Table */}
-            {!customersLoading && (
                 <div className="glass-card overflow-hidden animate-slide-in">
                     <div className="overflow-x-auto">
                         <table className="min-w-full whitespace-nowrap">
@@ -123,64 +116,88 @@ const Customers: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {customers.map((customer, idx) => (
-                                    <tr key={customer.id}
-                                        className="transition-colors hover:bg-[var(--bg-secondary)]"
-                                        style={{ borderBottom: idx < customers.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm font-semibold text-[var(--text-primary)]">{customer.name}</div>
-                                            {customer.converted_from_lead_id && (
-                                                <div className="text-xs text-[var(--text-muted)] mt-0.5">From Lead #{customer.converted_from_lead_id}</div>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{customer.email}</td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full ${
-                                                (customer as any).segment === 'VIP' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
-                                                (customer as any).segment === 'Nouveau' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
-                                                (customer as any).segment === 'Occasionnel' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
-                                                'bg-slate-500/10 text-[var(--text-secondary)] border border-slate-500/20'
-                                            }`}>
-                                                {(customer as any).segment || 'Standard'}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {/* Dynamic Churn Risk mockup (since live churn is per-customer fetch, we derive a mock score proportional to loyalty/segment for the list view or use the DB segment) */}
-                                            <div className="flex items-center space-x-2">
-                                                <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-subtle)' }}>
-                                                    <div className="h-full rounded-full transition-all"
-                                                        style={{
-                                                            width: `${Math.max(10, 100 - (customer.loyalty_score / 5))}%`,
-                                                            background: (100 - (customer.loyalty_score / 5)) >= 60 ? 'linear-gradient(90deg, #ef4444, #f87171)'
-                                                                : (100 - (customer.loyalty_score / 5)) >= 30 ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-                                                                    : 'linear-gradient(90deg, #10b981, #34d399)',
-                                                        }} />
+                                {customersLoading ? (
+                                    Array.from({ length: 5 }).map((_, i) => (
+                                        <tr key={`skel-${i}`} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                                            <td className="px-6 py-4">
+                                                <Skeleton height={20} width="60%" className="mb-2" />
+                                                <Skeleton height={14} width="40%" />
+                                            </td>
+                                            <td className="px-6 py-4"><Skeleton height={20} width="80%" /></td>
+                                            <td className="px-6 py-4"><Skeleton height={24} width="80px" borderRadius="9999px" /></td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center space-x-2">
+                                                    <Skeleton height={6} width="64px" borderRadius="9999px" />
+                                                    <Skeleton height={16} width="24px" />
                                                 </div>
-                                                <span className={`text-xs font-bold ${
-                                                    (100 - (customer.loyalty_score / 5)) >= 60 ? 'text-red-400' :
-                                                    (100 - (customer.loyalty_score / 5)) >= 30 ? 'text-amber-400' : 'text-emerald-400'
+                                            </td>
+                                            <td className="px-6 py-4"><Skeleton height={24} width="100px" borderRadius="12px" /></td>
+                                            <td className="px-6 py-4 flex justify-end gap-2 text-right">
+                                                <Skeleton height={30} width="50px" borderRadius="8px" />
+                                                <Skeleton height={30} width="60px" borderRadius="8px" />
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    customers.map((customer, idx) => (
+                                        <tr key={customer.id}
+                                            className="transition-colors hover:bg-[var(--bg-secondary)]"
+                                            style={{ borderBottom: idx < customers.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm font-semibold text-[var(--text-primary)]">{customer.name}</div>
+                                                {customer.converted_from_lead_id && (
+                                                    <div className="text-xs text-[var(--text-muted)] mt-0.5">From Lead #{customer.converted_from_lead_id}</div>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{customer.email}</td>
+                                            <td className="px-6 py-4">
+                                                <span className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full ${
+                                                    (customer as any).segment === 'VIP' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
+                                                    (customer as any).segment === 'Nouveau' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
+                                                    (customer as any).segment === 'Occasionnel' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
+                                                    'bg-slate-500/10 text-[var(--text-secondary)] border border-slate-500/20'
                                                 }`}>
-                                                    {Math.round(Math.max(5, 100 - (customer.loyalty_score / 5)))}%
+                                                    {(customer as any).segment || 'Standard'}
                                                 </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <LoyaltyBadge tier={customer.tier || 'Bronze'} score={customer.loyalty_score} />
-                                        </td>
-                                        <td className="px-6 py-4 text-right space-x-2">
-                                            <a href={`#/customers/${customer.id}`}
-                                                className="px-3 py-1.5 text-xs font-medium text-indigo-400 rounded-lg transition-all hover:bg-indigo-500/10 inline-block">
-                                                View
-                                            </a>
-                                            {currentUser?.role === 'admin' && (
-                                                <button onClick={() => setConfirmDelete(customer.id)}
-                                                    className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg transition-all hover:bg-red-500/10">
-                                                    Delete
-                                                </button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {/* Dynamic Churn Risk mockup (since live churn is per-customer fetch, we derive a mock score proportional to loyalty/segment for the list view or use the DB segment) */}
+                                                <div className="flex items-center space-x-2">
+                                                    <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-subtle)' }}>
+                                                        <div className="h-full rounded-full transition-all"
+                                                            style={{
+                                                                width: `${Math.max(10, 100 - (customer.loyalty_score / 5))}%`,
+                                                                background: (100 - (customer.loyalty_score / 5)) >= 60 ? 'linear-gradient(90deg, #ef4444, #f87171)'
+                                                                    : (100 - (customer.loyalty_score / 5)) >= 30 ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
+                                                                        : 'linear-gradient(90deg, #10b981, #34d399)',
+                                                            }} />
+                                                    </div>
+                                                    <span className={`text-xs font-bold ${
+                                                        (100 - (customer.loyalty_score / 5)) >= 60 ? 'text-red-400' :
+                                                        (100 - (customer.loyalty_score / 5)) >= 30 ? 'text-amber-400' : 'text-emerald-400'
+                                                    }`}>
+                                                        {Math.round(Math.max(5, 100 - (customer.loyalty_score / 5)))}%
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <LoyaltyBadge tier={customer.tier || 'Bronze'} score={customer.loyalty_score} />
+                                            </td>
+                                            <td className="px-6 py-4 text-right space-x-2">
+                                                <a href={`#/customers/${customer.id}`}
+                                                    className="px-3 py-1.5 text-xs font-medium text-indigo-400 rounded-lg transition-all hover:bg-indigo-500/10 inline-block">
+                                                    View
+                                                </a>
+                                                {currentUser?.role === 'admin' && (
+                                                    <button onClick={() => setConfirmDelete(customer.id)}
+                                                        className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg transition-all hover:bg-red-500/10">
+                                                        Delete
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                                 {customers.length === 0 && (
                                     <tr>
                                         <td colSpan={6} className="px-6 py-16 text-center text-[var(--text-secondary)]">
@@ -194,7 +211,6 @@ const Customers: React.FC = () => {
                         </table>
                     </div>
                 </div>
-            )}
 
             {/* Pagination */}
             {!customersLoading && customersPagination.total > 0 && (
