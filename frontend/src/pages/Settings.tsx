@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '../components/common/Toast';
 import { trainAllModels } from '../services/mlService';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
+import { useCurrency, Currency } from '../context/CurrencyContext';
 import './SettingsLogs.css';
 
 const Settings: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
+  const { currency, setCurrency } = useCurrency();
+  const navigate = useNavigate();
   
   const [profile, setProfile] = useState({
     name: 'Admin User',
@@ -17,6 +21,7 @@ const Settings: React.FC = () => {
   const [preferences, setPreferences] = useState({
     language: i18n.language || 'en',
     theme: theme,
+    currency: currency,
     notifications: true,
   });
 
@@ -43,6 +48,9 @@ const Settings: React.FC = () => {
     } else if (e.target.name === 'theme') {
       setTheme(value as any);
       showToast(t('settings.theme') + ' saved.', 'success');
+    } else if (e.target.name === 'currency') {
+      setCurrency(value as Currency);
+      showToast('Currency preference saved.', 'success');
     }
   };
 
@@ -147,7 +155,19 @@ const Settings: React.FC = () => {
                 </svg>
               </div>
             </div>
-
+            <div className="form-group">
+              <label>Currency</label>
+              <select
+                name="currency"
+                value={preferences.currency}
+                onChange={handlePreferenceChange}
+                className="form-select"
+              >
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="MAD">MAD (DH)</option>
+              </select>
+            </div>
             <div className="form-toggle-group">
               <label className="toggle-label">
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -213,6 +233,25 @@ const Settings: React.FC = () => {
               disabled={isTraining}
             >
               {isTraining ? 'Training Models...' : t('settings.forceRetrain')}
+            </button>
+          </div>
+        </div>
+
+        {/* AI Training Section */}
+        <div className="settings-card">
+          <div className="settings-card-header">
+            <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle'}}><path d="M9.5 2A5.5 5.5 0 0 0 4 7.5c0 1.14.35 2.2.94 3.08A5.5 5.5 0 0 0 7 18.5V22h4v-3.5" /><path d="M14.5 2A5.5 5.5 0 0 1 20 7.5c0 1.14-.35 2.2-.94 3.08A5.5 5.5 0 0 1 17 18.5V22h-4v-3.5" /><path d="M8 10h8" /><path d="M9 14h6" /></svg> {t('settings.aiTraining', 'AI Training')}</h3>
+          </div>
+          <div className="settings-card-body">
+            <p className="setting-help" style={{ marginBottom: '16px' }}>
+              Manage chatbot intents, add training examples, and train the ML model to improve AI assistant responses.
+            </p>
+            <button 
+              className="btn-primary" 
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              onClick={() => navigate('/chatbot-training')}
+            >
+              Open AI Training Dashboard
             </button>
           </div>
         </div>

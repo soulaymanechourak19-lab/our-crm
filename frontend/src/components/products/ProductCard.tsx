@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../../context/CurrencyContext';
 import { Product } from '../../services/products';
 import Badge from '../common/Badge';
 
@@ -10,6 +12,9 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete, onStockUpdate }) => {
+    const { t } = useTranslation();
+    const { formatCurrency } = useCurrency();
+
     const getStockVariant = (stock: number): 'success' | 'warning' | 'danger' => {
         if (stock > 10) return 'success';
         if (stock >= 5) return 'warning';
@@ -61,7 +66,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete, on
 
             {/* Price */}
             <div className="mb-4">
-                <span className="text-2xl font-bold text-[var(--text-primary)]">${product.price.toFixed(2)}</span>
+                <span className="text-2xl font-bold text-[var(--text-primary)]">{formatCurrency(product.price)}</span>
             </div>
 
             {/* Stock */}

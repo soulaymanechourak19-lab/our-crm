@@ -163,7 +163,7 @@ const ChatbotTraining: React.FC = () => {
         try {
             const { data } = await api.post('/chatbot-training/train');
             setTrainResult(data.result);
-            showToast('Model trained successfully! 🎉', 'success');
+            showToast('Model trained successfully!', 'success');
             loadModelInfo();
         } catch (e: any) {
             showToast(e.response?.data?.error || 'Training failed', 'error');
@@ -196,7 +196,7 @@ const ChatbotTraining: React.FC = () => {
             {/* Header + Model Status */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div>
-                    <h1 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">🧠 Chatbot Training</h1>
+                    <h1 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A5.5 5.5 0 0 0 4 7.5c0 1.14.35 2.2.94 3.08A5.5 5.5 0 0 0 7 18.5V22h4v-3.5" /><path d="M14.5 2A5.5 5.5 0 0 1 20 7.5c0 1.14-.35 2.2-.94 3.08A5.5 5.5 0 0 1 17 18.5V22h-4v-3.5" /><path d="M8 10h8" /><path d="M9 14h6" /></svg> Chatbot Training</h1>
                     <p className="text-sm text-[var(--text-secondary)] mt-1">Manage intents, add training examples, and train the ML model</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -208,7 +208,7 @@ const ChatbotTraining: React.FC = () => {
                         className="px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95 transition disabled:opacity-50 flex items-center gap-2">
                         {training ? (
                             <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Training...</>
-                        ) : '🚀 Train Model'}
+                        ) : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle'}}><path d="M22 2L11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7z" /></svg> Train Model</>}
                     </button>
                 </div>
             </div>
@@ -239,7 +239,7 @@ const ChatbotTraining: React.FC = () => {
                                 isActive ? 'text-indigo-500 dark:text-indigo-400' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                             }`}
                         >
-                            {tab === 'intents' ? '📋 Intents & Examples' : '📊 Prediction Logs'}
+                            {tab === 'intents' ? 'Intents & Examples' : 'Prediction Logs'}
                             {isActive && (
                                 <motion.div
                                     layoutId="chatbotTabInd"
@@ -342,7 +342,7 @@ const ChatbotTraining: React.FC = () => {
 
                                 {/* Bulk add */}
                                 <details className="group">
-                                    <summary className="text-xs text-[var(--text-secondary)] cursor-pointer hover:text-[var(--text-primary)]">📝 Bulk add (one per line)</summary>
+                                    <summary className="text-xs text-[var(--text-secondary)] cursor-pointer hover:text-[var(--text-primary)]">Bulk add (one per line)</summary>
                                     <div className="mt-2 space-y-2">
                                         <textarea value={bulkExamples} onChange={e => setBulkExamples(e.target.value)}
                                             placeholder="how many customers&#10;total customers&#10;customer count"
@@ -381,7 +381,7 @@ const ChatbotTraining: React.FC = () => {
                                 animate={{ opacity: 1 }}
                                 className="flex flex-col items-center justify-center h-full text-[var(--text-secondary)] text-sm py-20 gap-3"
                             >
-                                <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-dark-700/50 flex items-center justify-center text-xl shadow-inner">🎯</div>
+                                <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-dark-700/50 flex items-center justify-center shadow-inner"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg></div>
                                 <p>Select an intent to manage its examples</p>
                             </motion.div>
                         )}
@@ -435,7 +435,7 @@ const ChatbotTraining: React.FC = () => {
                                                 ) : '—'}
                                             </td>
                                             <td className="py-3 px-3">
-                                                {log.used_fallback ? <span className="text-amber-500 dark:text-amber-400 text-xs font-medium flex items-center gap-1"><span className="text-sm">⚠</span> Yes</span> : <span className="text-emerald-500 dark:text-emerald-400 text-xs font-medium flex items-center gap-1"><span className="text-sm">✓</span> ML</span>}
+                                                {log.used_fallback ? <span className="text-amber-500 dark:text-amber-400 text-xs font-medium flex items-center gap-1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg> Yes</span> : <span className="text-emerald-500 dark:text-emerald-400 text-xs font-medium flex items-center gap-1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg> ML</span>}
                                             </td>
                                             <td className="py-3 px-3 text-xs text-[var(--text-secondary)] font-medium">{new Date(log.created_at).toLocaleString()}</td>
                                         </motion.tr>

@@ -10,10 +10,13 @@ import StockUpdate from '../components/products/StockUpdate';
 import CategoryManager from '../components/products/CategoryManager';
 import ConfirmationDialog from '../components/common/ConfirmationDialog';
 import { Product, getProducts, deleteProduct } from '../services/products';
+import { useTheme } from '../context/ThemeContext';
+import { useCurrency } from '../context/CurrencyContext';
 import { useToast } from '../components/common/Toast';
 
 
 const Products: React.FC = () => {
+    const { formatCurrency, currency } = useCurrency();
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [search, setSearch] = useState('');

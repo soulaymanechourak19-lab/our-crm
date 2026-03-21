@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../context/CurrencyContext';
+import Skeleton from '../components/common/Skeleton';
 import {
     LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area,
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
@@ -18,6 +20,7 @@ interface Stats {
     lowStockCount: number;
     totalLeads: number;
     totalCustomers: number;
+    totalRevenue: number; // Added totalRevenue to Stats interface
 }
 
 /* ── Framer Motion Variants ───────────────────────────── */
@@ -119,7 +122,8 @@ const svgs = {
 const Dashboard: React.FC = React.memo(() => {
     const { user } = useAuth();
     const { t } = useTranslation();
-    const [stats, setStats] = useState<Stats>({ totalProducts: 0, lowStockCount: 0, totalLeads: 0, totalCustomers: 0 });
+    const { formatCurrency } = useCurrency();
+    const [stats, setStats] = useState<Stats>({ totalProducts: 0, lowStockCount: 0, totalLeads: 0, totalCustomers: 0, totalRevenue: 0 });
     const [productsByCategory, setProductsByCategory] = useState<{ category: string; count: number }[]>([]);
     const [chartData, setChartData] = useState({
         leadsOverTime: [] as any[],
@@ -158,7 +162,7 @@ const Dashboard: React.FC = React.memo(() => {
     // Memoize the chart colors and metric computations
     const { conversionRate, healthyStock, totalStatusValues, wonLeads } = useMemo(() => {
         const total = chartData.leadStatusData.reduce((sum: number, s: any) => sum + (s.value || 0), 0);
-        const won = chartData.leadStatusData.find((s: any) => s.name === 'Won')?.value || 0;
+        const won = chartData.leadStatusData.find((s: any) => s.name === 'Converted')?.value || 0;
         const conv = total > 0 ? Math.round((won / total) * 100) : 0;
         const health = stats.totalProducts > 0 ? Math.round(((stats.totalProducts - stats.lowStockCount) / stats.totalProducts) * 100) : 0;
         return { conversionRate: conv, healthyStock: health, totalStatusValues: total, wonLeads: won };
@@ -208,6 +212,7 @@ const Dashboard: React.FC = React.memo(() => {
         { label: t('dashboard.totalLeads') || 'Total Leads', value: stats.totalLeads, icon: svgs.target, iconClass: 'magenta', trend: '+12%', trendDir: 'up' },
         { label: t('dashboard.products') || 'Products', value: stats.totalProducts, icon: svgs.box, iconClass: 'cyan', trend: '+5%', trendDir: 'up' },
         { label: t('dashboard.customers') || 'Customers', value: stats.totalCustomers, icon: svgs.users, iconClass: 'amber', trend: '+8%', trendDir: 'up' },
+        { label: t('dashboard.totalRevenue') || 'Total Revenue', value: stats.totalRevenue, icon: svgs.chart, iconClass: 'green', trend: '+15%', trendDir: 'up' }, // Added Total Revenue
         { label: t('dashboard.lowStock') || 'Low Stock', value: stats.lowStockCount, icon: svgs.alert, iconClass: 'red', trend: stats.lowStockCount > 0 ? t('dashboard.attention') || 'Attention' : t('dashboard.ok') || 'OK', trendDir: stats.lowStockCount > 0 ? 'down' : 'up' },
     ];
 
@@ -237,14 +242,16 @@ const Dashboard: React.FC = React.memo(() => {
                         className="db-stat-card"
                         whileHover={hoverCardStyle}
                         whileTap={{ scale: 0.98 }}
-                        style={{ '--accent-gradient': `linear-gradient(90deg, ${i === 0 ? '#e84393' : i === 1 ? '#00cec9' : i === 2 ? '#fdcb6e' : '#ff7675'}, transparent)` } as React.CSSProperties}
+                        style={{ '--accent-gradient': `linear-gradient(90deg, ${i === 0 ? '#e84393' : i === 1 ? '#00cec9' : i === 2 ? '#fdcb6e' : i === 3 ? '#00b894' : '#ff7675'}, transparent)` } as React.CSSProperties}
                     >
                         <div className={`db-stat-icon ${s.iconClass}`}>
                             <span>{s.icon}</span>
                         </div>
                         <div className="db-stat-info">
                             <div className="db-stat-label">{s.label}</div>
-                            <div className="db-stat-value">{s.value}</div>
+                            <div className="db-stat-value">
+                                {s.label === (t('dashboard.totalRevenue') || 'Total Revenue') ? formatCurrency(s.value) : s.value}
+                            </div>
                             <span className={`db-stat-trend ${s.trendDir}`}>
                                 {s.trendDir === 'up' ? '↑' : '↓'} {s.trend}
                             </span>
@@ -409,7 +416,7 @@ const Dashboard: React.FC = React.memo(() => {
                                 <motion.div 
                                     className="db-big-stat-bar-fill" 
                                     initial={{ width: 0 }}
-                                    animate={{ width: `${Math.max(healthyStock - 10, 0)}%` }}
+                                    animate={{ width: `${Math.max(healthyStock - 10, 100)}%` }}
                                     transition={{ duration: 1, delay: 0.7, ease: "easeOut" }}
                                     style={{ background: 'linear-gradient(90deg, #e84393, #fd79a8)' }} 
                                 />
@@ -450,9 +457,9 @@ const Dashboard: React.FC = React.memo(() => {
                         <div className="db-activity-title">{t('dashboard.recentActivity') || 'Recent Activity'}</div>
                         {chartData.recentActivity.slice(0, 5).map((a: any) => {
                             // Map the backend emojis to our frontend SVGs
-                            const activityIcon = a.icon === '🎯' ? svgs.target : 
-                                                 a.icon === '👤' ? svgs.user : 
-                                                 a.icon === '🛒' ? svgs.box : 
+                            const activityIcon = a.icon === 'target' ? svgs.target : 
+                                                 a.icon === 'user' ? svgs.user : 
+                                                 a.icon === 'box' ? svgs.box : 
                                                  svgs.activity;
                                                  
                             return (

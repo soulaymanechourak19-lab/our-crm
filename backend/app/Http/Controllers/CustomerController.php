@@ -7,8 +7,11 @@ use Modules\User\Entities\Interaction;
 use Modules\User\Entities\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class CustomerController extends Controller
 {
@@ -49,9 +52,52 @@ class CustomerController extends Controller
         $perPage = $request->input('per_page', 15);
         $customers = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
-        // Append tier to each customer
-        $customers->getCollection()->transform(function ($customer) {
+        // Append tier and churn risk to each customer
+        $aiUrl = env('AI_SERVICE_URL', 'http://ml-service:8001');
+        $customers->getCollection()->transform(function ($customer) use ($aiUrl) {
             $customer->tier = $customer->getLoyaltyTier();
+
+            // Compute churn risk via ML service (same as CustomerDetail)
+            try {
+                $lastInteraction = DB::table('interactions')
+                    ->where('customer_id', $customer->id)
+                    ->max('date');
+
+                $recency = $lastInteraction
+                    ? Carbon::parse($lastInteraction)->diffInDays(now())
+                    : 999;
+
+                $frequency = DB::table('interactions')
+                    ->where('customer_id', $customer->id)
+                    ->count();
+
+                $transactionCount = DB::table('transactions')->where('client_id', $customer->id)->count();
+                $feedbackCount = DB::table('feedback')->where('client_id', $customer->id)->count();
+                $engagementRate = $frequency + $transactionCount + $feedbackCount;
+
+                $response = Http::timeout(3)->post("{$aiUrl}/predict/churn", [
+                    'recency' => $recency,
+                    'frequency' => $frequency,
+                    'monetary' => (float) ($customer->loyalty_score ?? 0),
+                    'loyalty_score' => (int) ($customer->loyalty_score ?? 0),
+                    'age' => (int) ($customer->age ?? 30),
+                    'gender' => $customer->gender ?? 'M',
+                    'segment' => $customer->segment ?? 'Standard',
+                    'engagement_rate' => $engagementRate,
+                ]);
+
+                $data = $response->json();
+                if (isset($data['probability'])) {
+                    $customer->churn_risk = round($data['probability'] * 100);
+                } elseif (isset($data['churn_risk_score'])) {
+                    $customer->churn_risk = round($data['churn_risk_score']);
+                } else {
+                    $customer->churn_risk = null;
+                }
+            } catch (\Exception $e) {
+                $customer->churn_risk = null;
+            }
+
             return $customer;
         });
 

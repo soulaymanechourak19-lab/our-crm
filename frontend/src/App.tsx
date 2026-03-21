@@ -7,6 +7,7 @@ import { ToastProvider } from './components/common/Toast';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 import { ThemeProvider } from './context/ThemeContext';
+import { CurrencyProvider } from './context/CurrencyContext';
 import LoadingScreen from './components/common/LoadingScreen';
 import PageTransition from './components/common/PageTransition';
 import './App.css';
@@ -20,12 +21,17 @@ const Users = lazy(() => import('./pages/admin/Users'));
 const Leads = lazy(() => import('./pages/Leads'));
 const Customers = lazy(() => import('./pages/Customers'));
 const CustomerDetail = lazy(() => import('./pages/CustomerDetail'));
+const Quotations = lazy(() => import('./pages/Quotations'));
+const Discounts = lazy(() => import('./pages/Discounts'));
 const Products = lazy(() => import('./pages/Products'));
 const Chatbot = lazy(() => import('./pages/Chatbot'));
 const ChatbotTraining = lazy(() => import('./pages/ChatbotTraining'));
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Logs = lazy(() => import('./pages/Logs'));
+const Tasks = lazy(() => import('./pages/Tasks'));
+const Analytics = lazy(() => import('./pages/Analytics'));
+const EmailTemplates = lazy(() => import('./pages/EmailTemplates'));
 
 // ── Lazy-loaded routes (code splitting — smaller initial bundle) ──
 
@@ -127,6 +133,56 @@ const AnimatedRoutes = () => {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/tasks"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout title="Tasks" subtitle="Manage activities and follow-ups">
+                  <Tasks />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout title="Analytics" subtitle="Sales pipeline insights">
+                  <Analytics />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+
+        {/* Sales & CRM addons */}
+        <Route
+          path="/quotations"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="Quotations" subtitleKey="Manage sales quotations">
+                  <Quotations />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/discounts"
+          element={
+            <PrivateRoute adminOnly>
+              <PageTransition>
+                <Layout titleKey="Discounts" subtitleKey="Manage promotional discount codes">
+                  <Discounts />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
 
         {/* Sales routes */}
         <Route
@@ -179,6 +235,18 @@ const AnimatedRoutes = () => {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/email-templates"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout title="Email Templates" subtitle="Create and manage email templates">
+                  <EmailTemplates />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
 
         {/* Default redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -192,13 +260,15 @@ const App: React.FC = () => {
     <HashRouter>
       <AuthProvider>
         <CRMProvider>
-          <ThemeProvider>
-            <ToastProvider>
-              <Suspense fallback={<LoadingScreen />}>
-                <AnimatedRoutes />
-              </Suspense>
-            </ToastProvider>
-          </ThemeProvider>
+          <CurrencyProvider>
+            <ThemeProvider>
+              <ToastProvider>
+                <Suspense fallback={<LoadingScreen />}>
+                  <AnimatedRoutes />
+                </Suspense>
+              </ToastProvider>
+            </ThemeProvider>
+          </CurrencyProvider>
         </CRMProvider>
       </AuthProvider>
     </HashRouter>

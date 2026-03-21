@@ -6,10 +6,10 @@ interface InteractionFormProps {
     onClose: () => void;
 }
 
-const typeOptions = [
-    { value: 'call', label: 'Call', icon: '📞', color: '#3b82f6' },
-    { value: 'email', label: 'Email', icon: '📧', color: '#8b5cf6' },
-    { value: 'meeting', label: 'Meeting', icon: '👥', color: '#10b981' },
+const typeOptions: { value: string; label: string; icon: React.ReactNode; color: string }[] = [
+    { value: 'call', label: 'Call', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></svg>, color: '#3b82f6' },
+    { value: 'email', label: 'Email', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>, color: '#8b5cf6' },
+    { value: 'meeting', label: 'Meeting', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>, color: '#10b981' },
 ];
 
 const InteractionForm: React.FC<InteractionFormProps> = ({ customerId, onClose }) => {
@@ -53,7 +53,7 @@ const InteractionForm: React.FC<InteractionFormProps> = ({ customerId, onClose }
                                         border: `1px solid ${type === opt.value ? `${opt.color}50` : 'var(--border-subtle)'}`,
                                         color: type === opt.value ? opt.color : 'var(--text-secondary)',
                                     }}>
-                                    <span className="text-xl mb-1">{opt.icon}</span>
+                                    <span className="mb-1">{opt.icon}</span>
                                     <span className="text-xs">{opt.label}</span>
                                 </button>
                             ))}

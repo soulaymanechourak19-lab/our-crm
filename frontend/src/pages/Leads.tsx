@@ -24,7 +24,26 @@ const statusColors: Record<string, { bg: string; text: string; dot: string }> = 
     new: { bg: 'rgba(59, 130, 246, 0.1)', text: '#60a5fa', dot: '#3b82f6' },
     contacted: { bg: 'rgba(245, 158, 11, 0.1)', text: '#fbbf24', dot: '#f59e0b' },
     qualified: { bg: 'rgba(139, 92, 246, 0.1)', text: '#a78bfa', dot: '#8b5cf6' },
+    hot: { bg: 'rgba(239, 68, 68, 0.1)', text: '#ef4444', dot: '#dc2626' },
     converted: { bg: 'rgba(16, 185, 129, 0.1)', text: '#34d399', dot: '#10b981' },
+    expired: { bg: 'rgba(107, 114, 128, 0.1)', text: '#9ca3af', dot: '#6b7280' },
+};
+
+const getExpirationBadge = (lead: Lead) => {
+    if (!lead.expires_at) return <span className="text-[var(--text-muted)] text-xs">—</span>;
+    if (lead.expired || lead.status === 'expired') return <span className="text-red-400 font-medium text-xs">Expired</span>;
+    
+    const expiryDate = new Date(lead.expires_at);
+    const today = new Date();
+    const diffTime = Math.abs(expiryDate.getTime() - today.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (expiryDate < today) {
+        return <span className="text-red-400 font-medium text-xs">Expired</span>;
+    } else if (diffDays <= 3) {
+        return <span className="text-orange-400 font-medium text-xs border border-orange-500/30 px-2 py-0.5 rounded">Expiring: {diffDays}d</span>;
+    }
+    return <span className="text-emerald-400 font-medium text-xs">{diffDays} days</span>;
 };
 
 const Leads: React.FC = () => {
@@ -37,11 +56,12 @@ const Leads: React.FC = () => {
     const [editingLead, setEditingLead] = useState<Lead | null>(null);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
+    const [sourceFilter, setSourceFilter] = useState('');
     const [confirmAction, setConfirmAction] = useState<{ type: string; lead: Lead } | null>(null);
 
     const loadLeads = useCallback(() => {
-        fetchLeads(1, { status: statusFilter, search });
-    }, [fetchLeads, statusFilter, search]);
+        fetchLeads(1, { status: statusFilter, search, ...(sourceFilter ? { source: sourceFilter } : {}) });
+    }, [fetchLeads, statusFilter, search, sourceFilter]);
 
     useEffect(() => {
         loadLeads();
@@ -55,8 +75,12 @@ const Leads: React.FC = () => {
         setStatusFilter(value);
     };
 
+    const handleSourceFilter = (value: string) => {
+        setSourceFilter(value);
+    };
+
     const handlePageChange = (page: number) => {
-        fetchLeads(page, { status: statusFilter, search });
+        fetchLeads(page, { status: statusFilter, search, ...(sourceFilter ? { source: sourceFilter } : {}) });
     };
 
     const handleEdit = (lead: Lead) => {
@@ -119,7 +143,7 @@ const Leads: React.FC = () => {
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <div className="relative flex-1 max-w-md">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">🔍</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg></span>
                     <input
                         placeholder="Search by company or email..."
                         className="w-full pl-11 pr-4 py-2.5 rounded-xl border-0 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
@@ -138,7 +162,22 @@ const Leads: React.FC = () => {
                     <option value="new">New</option>
                     <option value="contacted">Contacted</option>
                     <option value="qualified">Qualified</option>
+                    <option value="hot">Hot</option>
                     <option value="converted">Converted</option>
+                    <option value="expired">Expired</option>
+                </select>
+                <select
+                    className="px-4 py-2.5 rounded-xl text-sm text-[var(--text-secondary)] cursor-pointer outline-none focus:ring-2 focus:ring-indigo-500/50"
+                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}
+                    value={sourceFilter}
+                    onChange={e => handleSourceFilter(e.target.value)}
+                >
+                    <option value="">All Sources</option>
+                    <option value="website">Website</option>
+                    <option value="referral">Referral</option>
+                    <option value="event">Event</option>
+                    <option value="nearby">Nearby</option>
+                    <option value="manual">Manual</option>
                 </select>
             </div>
 
@@ -159,7 +198,8 @@ const Leads: React.FC = () => {
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Company</th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Contact</th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Email</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Phone</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Source</th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Expires</th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Status</th>
                                 {currentUser?.role === 'admin' && (
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Created By</th>
@@ -174,6 +214,7 @@ const Leads: React.FC = () => {
                                         <td className="px-6 py-4"><Skeleton height={20} width="70%" /></td>
                                         <td className="px-6 py-4"><Skeleton height={20} width="60%" /></td>
                                         <td className="px-6 py-4"><Skeleton height={20} width="80%" /></td>
+                                        <td className="px-6 py-4"><Skeleton height={20} width="60%" /></td>
                                         <td className="px-6 py-4"><Skeleton height={20} width="60%" /></td>
                                         <td className="px-6 py-4"><Skeleton height={24} width="80px" borderRadius="12px" /></td>
                                         {currentUser?.role === 'admin' && (
@@ -195,7 +236,10 @@ const Leads: React.FC = () => {
                                         </td>
                                         <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.contact_name}</td>
                                         <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.email}</td>
-                                        <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{lead.phone || '—'}</td>
+                                        <td className="px-6 py-4 text-sm text-[var(--text-secondary)] capitalize">{lead.source || '—'}</td>
+                                        <td className="px-6 py-4">
+                                            {getExpirationBadge(lead)}
+                                        </td>
                                         <td className="px-6 py-4">
                                             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
                                                 style={{ background: statusColors[lead.status]?.bg, color: statusColors[lead.status]?.text }}>
@@ -217,18 +261,14 @@ const Leads: React.FC = () => {
                                                     Convert
                                                 </button>
                                             )}
-                                            <button onClick={() => setConfirmAction({ type: 'delete', lead })}
-                                                className="px-3 py-1.5 text-xs font-medium text-red-400 rounded-lg transition-all hover:bg-red-500/10">
-                                                Delete
-                                            </button>
                                         </td>
                                     </tr>
                                 ))
                             )}
                             {!leadsLoading && leads.length === 0 && (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-16 text-center text-[var(--text-secondary)]">
-                                        <div className="text-4xl mb-3">🎯</div>
+                                    <td colSpan={8} className="px-6 py-16 text-center text-[var(--text-secondary)]">
+                                        <div className="mb-3 flex justify-center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg></div>
                                         <p className="font-medium">No leads found</p>
                                         <p className="text-sm mt-1">Try adjusting your filters or add a new lead</p>
                                     </td>

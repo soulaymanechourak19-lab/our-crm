@@ -14,7 +14,7 @@ class DashboardController extends Controller
         $totalLeads = DB::table('leads')->whereNull('deleted_at')->count();
         $totalCustomers = DB::table('customers')->whereNull('deleted_at')->count();
         $totalProducts = DB::table('products')->count();
-        $lowStockCount = DB::table('products')->where('stock', '<', 5)->count();
+        $lowStockCount = DB::table('products')->where('stock', '<=', 10)->count();
 
         // Leads over time (last 6 months)
         $leadsOverTime = [];
@@ -72,7 +72,7 @@ class DashboardController extends Controller
                 'detail' => $lead->contact_name ?? ($lead->first_name ?? '') . ' ' . ($lead->last_name ?? ''),
                 'time_raw' => $lead->created_at,
                 'time' => Carbon::parse($lead->created_at)->diffForHumans(),
-                'icon' => '🎯'
+                'icon' => 'target'
             ]);
         }
 
@@ -88,7 +88,7 @@ class DashboardController extends Controller
                 'detail' => $customer->name ?? ($customer->first_name ?? '') . ' ' . ($customer->last_name ?? ''),
                 'time_raw' => $customer->created_at,
                 'time' => Carbon::parse($customer->created_at)->diffForHumans(),
-                'icon' => '👤'
+                'icon' => 'user'
             ]);
         }
 
@@ -103,7 +103,7 @@ class DashboardController extends Controller
                 'detail' => $product->name,
                 'time_raw' => $product->created_at,
                 'time' => Carbon::parse($product->created_at)->diffForHumans(),
-                'icon' => '🛒'
+                'icon' => 'box'
             ]);
         }
 

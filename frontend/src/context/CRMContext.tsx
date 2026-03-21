@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
+import { quotationService, Quotation } from '../services/quotationService';
+import { discountService, Discount } from '../services/discountService';
 
 // Types
 export interface User {
@@ -9,13 +11,25 @@ export interface User {
     role: 'admin' | 'agent_commercial' | 'agent_sav';
 }
 
+export interface Product {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+    is_active: boolean;
+}
+
 export interface Lead {
     id: number;
     company_name: string;
     contact_name: string;
     email: string;
     phone?: string;
-    status: 'new' | 'contacted' | 'qualified' | 'converted';
+    status: 'new' | 'contacted' | 'qualified' | 'converted' | 'hot' | 'expired';
+    source?: 'website' | 'referral' | 'event' | 'manual' | 'nearby';
+    expires_at?: string;
+    expired?: boolean;
     created_by: number;
     created_at: string;
     creator?: User;
@@ -82,6 +96,18 @@ interface CRMContextType {
     clearError: () => void;
     toast: { message: string; type: 'success' | 'error' } | null;
     showToast: (message: string, type: 'success' | 'error') => void;
+    
+    // Quotations
+    quotations: Quotation[];
+    quotationsPagination: PaginationMeta;
+    quotationsLoading: boolean;
+    fetchQuotations: (page?: number, filters?: { status?: string; search?: string }) => Promise<void>;
+    
+    // Discounts
+    discounts: Discount[];
+    discountsPagination: PaginationMeta;
+    discountsLoading: boolean;
+    fetchDiscounts: (page?: number, filters?: { active?: boolean; search?: string }) => Promise<void>;
 }
 
 const defaultPagination: PaginationMeta = { current_page: 1, last_page: 1, per_page: 15, total: 0 };
@@ -99,6 +125,14 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+    const [quotations, setQuotations] = useState<Quotation[]>([]);
+    const [quotationsPagination, setQuotationsPagination] = useState<PaginationMeta>(defaultPagination);
+    const [quotationsLoading, setQuotationsLoading] = useState(false);
+
+    const [discounts, setDiscounts] = useState<Discount[]>([]);
+    const [discountsPagination, setDiscountsPagination] = useState<PaginationMeta>(defaultPagination);
+    const [discountsLoading, setDiscountsLoading] = useState(false);
 
     const clearError = () => setError(null);
 
@@ -310,6 +344,42 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         loadUser();
     }, []);
 
+    // ─── Quotations & Discounts ──────────────────────────────────────
+
+    const fetchQuotations = useCallback(async (page = 1, filters: { status?: string; search?: string } = {}) => {
+        setQuotationsLoading(true);
+        try {
+            const data = await quotationService.getQuotations({ ...filters, page });
+            setQuotations(data.data || []);
+            setQuotationsPagination({
+                current_page: data.current_page || 1,
+                last_page: data.last_page || 1,
+                per_page: data.per_page || 15,
+                total: data.total || 0,
+            });
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to fetch quotations');
+        }
+        setQuotationsLoading(false);
+    }, []);
+
+    const fetchDiscounts = useCallback(async (page = 1, filters: { active?: boolean; search?: string } = {}) => {
+        setDiscountsLoading(true);
+        try {
+            const data = await discountService.getDiscounts({ ...filters, page });
+            setDiscounts(data.data || []);
+            setDiscountsPagination({
+                current_page: data.current_page || 1,
+                last_page: data.last_page || 1,
+                per_page: data.per_page || 15,
+                total: data.total || 0,
+            });
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to fetch discounts');
+        }
+        setDiscountsLoading(false);
+    }, []);
+
     return (
         <CRMContext.Provider value={{
             currentUser, setCurrentUser,
@@ -321,6 +391,8 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             addInteraction, fetchInteractions,
             error, clearError,
             toast, showToast,
+            quotations, quotationsPagination, quotationsLoading, fetchQuotations,
+            discounts, discountsPagination, discountsLoading, fetchDiscounts
         }}>
             {children}
         </CRMContext.Provider>

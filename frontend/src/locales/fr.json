@@ -1,7 +1,12 @@
 {
   "sidebar": {
     "dashboard": "Tableau de bord",
-    "leads": "Pistes",
+    "leads": "Prospects",
+    "quotations": "Devis",
+    "discounts": "Réductions",
+    "tasks": "Tâches",
+    "analytics": "Analytique",
+    "emailTemplates": "Modèles d'email",
     "products": "Produits",
     "customers": "Clients",
     "settings": "Paramètres",

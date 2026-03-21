@@ -2,6 +2,11 @@
   "sidebar": {
     "dashboard": "Dashboard",
     "leads": "Leads",
+    "quotations": "Quotations",
+    "discounts": "Discounts",
+    "tasks": "Tasks",
+    "analytics": "Analytics",
+    "emailTemplates": "Email Templates",
     "products": "Products",
     "customers": "Customers",
     "settings": "Settings",

@@ -1,0 +1,136 @@
+node_modules/i18next/typescript/t.d.ts(335,5): error TS1139: Type parameter declaration expected.
+node_modules/i18next/typescript/t.d.ts(335,15): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(335,32): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(335,35): error TS1005: '>' expected.
+node_modules/i18next/typescript/t.d.ts(335,76): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(336,5): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(336,16): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(337,9): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(337,32): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(337,35): error TS1005: '>' expected.
+node_modules/i18next/typescript/t.d.ts(337,97): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(338,3): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(339,8): error TS1005: ')' expected.
+node_modules/i18next/typescript/t.d.ts(339,20): error TS1011: An element access expression should take an argument.
+node_modules/i18next/typescript/t.d.ts(340,13): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(341,3): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(341,4): error TS1128: Declaration or statement expected.
+node_modules/i18next/typescript/t.d.ts(343,11): error TS1005: '>' expected.
+node_modules/i18next/typescript/t.d.ts(343,15): error TS1005: ';' expected.
+node_modules/i18next/typescript/t.d.ts(344,5): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(344,16): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(345,9): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(345,32): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(345,35): error TS1005: '>' expected.
+node_modules/i18next/typescript/t.d.ts(345,97): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(346,3): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(347,8): error TS1005: ')' expected.
+node_modules/i18next/typescript/t.d.ts(347,20): error TS1011: An element access expression should take an argument.
+node_modules/i18next/typescript/t.d.ts(348,17): error TS1005: ';' expected.
+node_modules/i18next/typescript/t.d.ts(349,13): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(350,3): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(350,4): error TS1128: Declaration or statement expected.
+node_modules/i18next/typescript/t.d.ts(351,1): error TS1128: Declaration or statement expected.
+node_modules/i18next/typescript/t.d.ts(358,5): error TS1139: Type parameter declaration expected.
+node_modules/i18next/typescript/t.d.ts(358,15): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(358,32): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(358,35): error TS1005: '>' expected.
+node_modules/i18next/typescript/t.d.ts(358,76): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(359,5): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(359,16): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(360,9): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(360,32): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(360,35): error TS1005: '>' expected.
+node_modules/i18next/typescript/t.d.ts(360,97): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(361,5): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(361,25): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(361,38): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(361,62): error TS1005: ';' expected.
+node_modules/i18next/typescript/t.d.ts(362,18): error TS1005: ';' expected.
+node_modules/i18next/typescript/t.d.ts(363,3): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(364,5): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(365,7): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(365,13): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(365,25): error TS1011: An element access expression should take an argument.
+node_modules/i18next/typescript/t.d.ts(365,36): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(366,13): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(366,31): error TS1011: An element access expression should take an argument.
+node_modules/i18next/typescript/t.d.ts(366,41): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(367,13): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(367,31): error TS1011: An element access expression should take an argument.
+node_modules/i18next/typescript/t.d.ts(367,46): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(367,70): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(368,3): error TS1128: Declaration or statement expected.
+node_modules/i18next/typescript/t.d.ts(368,4): error TS1128: Declaration or statement expected.
+node_modules/i18next/typescript/t.d.ts(369,1): error TS1128: Declaration or statement expected.
+node_modules/i18next/typescript/t.d.ts(396,5): error TS1139: Type parameter declaration expected.
+node_modules/i18next/typescript/t.d.ts(396,17): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(396,30): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(396,35): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(397,5): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(397,16): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(397,39): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(397,46): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(398,12): error TS1005: ';' expected.
+node_modules/i18next/typescript/t.d.ts(399,3): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(400,13): error TS1005: ')' expected.
+node_modules/i18next/typescript/t.d.ts(401,7): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(402,18): error TS1005: ';' expected.
+node_modules/i18next/typescript/t.d.ts(403,12): error TS1005: ';' expected.
+node_modules/i18next/typescript/t.d.ts(404,3): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(404,4): error TS1128: Declaration or statement expected.
+node_modules/i18next/typescript/t.d.ts(407,41): error TS1005: '?' expected.
+node_modules/i18next/typescript/t.d.ts(408,5): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(408,17): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(408,30): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(408,35): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(409,5): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(409,16): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(409,39): error TS1005: ',' expected.
+node_modules/i18next/typescript/t.d.ts(409,47): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(410,3): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(411,13): error TS1005: ')' expected.
+node_modules/i18next/typescript/t.d.ts(412,7): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(413,18): error TS1005: ';' expected.
+node_modules/i18next/typescript/t.d.ts(414,13): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(415,3): error TS1109: Expression expected.
+node_modules/i18next/typescript/t.d.ts(415,4): error TS1128: Declaration or statement expected.
+node_modules/i18next/typescript/t.d.ts(416,1): error TS1128: Declaration or statement expected.
+node_modules/react-i18next/index.d.ts(228,5): error TS1139: Type parameter declaration expected.
+node_modules/react-i18next/index.d.ts(228,14): error TS1005: ',' expected.
+node_modules/react-i18next/index.d.ts(228,36): error TS1005: ',' expected.
+node_modules/react-i18next/index.d.ts(228,72): error TS1005: ';' expected.
+node_modules/react-i18next/index.d.ts(229,5): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(229,19): error TS1005: ',' expected.
+node_modules/react-i18next/index.d.ts(229,36): error TS1005: ',' expected.
+node_modules/react-i18next/index.d.ts(229,53): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(230,3): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(231,8): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(232,13): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(233,3): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(233,4): error TS1005: ';' expected.
+node_modules/react-i18next/index.d.ts(234,1): error TS1128: Declaration or statement expected.
+node_modules/react-i18next/index.d.ts(238,5): error TS1139: Type parameter declaration expected.
+node_modules/react-i18next/index.d.ts(238,14): error TS1005: ',' expected.
+node_modules/react-i18next/index.d.ts(238,36): error TS1005: ',' expected.
+node_modules/react-i18next/index.d.ts(238,72): error TS1005: ';' expected.
+node_modules/react-i18next/index.d.ts(239,5): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(240,3): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(241,8): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(242,13): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(243,3): error TS1109: Expression expected.
+node_modules/react-i18next/index.d.ts(243,4): error TS1005: ';' expected.
+node_modules/react-i18next/index.d.ts(244,1): error TS1128: Declaration or statement expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(84,5): error TS1139: Type parameter declaration expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(84,14): error TS1005: ',' expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(86,14): error TS1005: ',' expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(86,29): error TS1005: ',' expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(86,41): error TS1005: ';' expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(87,10): error TS1005: ';' expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(87,52): error TS1005: ';' expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(87,75): error TS1128: Declaration or statement expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(89,3): error TS1109: Expression expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(90,10): error TS1005: ')' expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(91,3): error TS1109: Expression expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(91,4): error TS1128: Declaration or statement expected.
+node_modules/react-i18next/TransWithoutContext.d.ts(92,1): error TS1128: Declaration or statement expected.

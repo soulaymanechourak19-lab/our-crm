@@ -138,6 +138,42 @@ const icons = {
             <polyline points="22 4 12 14.01 9 11.01" />
         </svg>
     ),
+    quotations: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+        </svg>
+    ),
+    discounts: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+            <line x1="7" y1="7" x2="7.01" y2="7" />
+        </svg>
+    ),
+    tasks: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+        </svg>
+    ),
+    analytics: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 21H3" />
+            <path d="M18 17V9" />
+            <path d="M14 17V5" />
+            <path d="M10 17v-4" />
+            <path d="M6 17v-2" />
+        </svg>
+    ),
+    email: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+        </svg>
+    ),
 };
 
 const Layout: React.FC<LayoutProps> = ({ children, title, subtitle, titleKey, subtitleKey }) => {
@@ -158,24 +194,32 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle, titleKey, su
     navItems.push({ to: '/dashboard', active: isActive('/dashboard'), icon: icons.dashboard, label: t('sidebar.dashboard'), accentColor: '#6c5ce7' });
 
     if (user.role === 'admin' || user.role === 'agent_commercial') {
-        navItems.push({ to: '/leads', active: isActive('/leads'), icon: icons.leads, label: t('sidebar.leads'), accentColor: '#e84393' });
+        navItems.push({ to: '/leads', active: isActive('/leads'), icon: icons.leads, label: t('sidebar.leads', 'Leads'), accentColor: '#e84393' });
+        navItems.push({ to: '/quotations', active: isActive('/quotations'), icon: icons.quotations, label: t('sidebar.quotations', 'Quotations'), accentColor: '#0984e3' });
     }
     if (user.role === 'admin' || user.role === 'agent_commercial' || user.role === 'agent_sav') {
         navItems.push({ to: '/customers', active: isActive('/customers') || isActiveSub('/customers/'), icon: icons.customers, label: t('sidebar.customers'), accentColor: '#00cec9' });
     }
     if (user.role === 'admin' || user.role === 'agent_commercial') {
-        navItems.push({ to: '/products', active: isActive('/products'), icon: icons.products, label: t('sidebar.products'), accentColor: '#fdcb6e' });
+        navItems.push({ to: '/products', active: isActive('/products'), icon: icons.products, label: t('sidebar.products', 'Products'), accentColor: '#fdcb6e' });
+        navItems.push({ to: '/discounts', active: isActive('/discounts'), icon: icons.discounts, label: t('sidebar.discounts', 'Discounts'), accentColor: '#ff7675' });
     }
     if (user.role === 'admin' || user.role === 'agent_sav') {
         navItems.push({ to: '/chatbot', active: isActive('/chatbot'), icon: icons.ai, label: t('sidebar.aiAssistant'), accentColor: '#a29bfe', badge: t('sidebar.new') });
+    }
+    navItems.push({ to: '/tasks', active: isActive('/tasks'), icon: icons.tasks, label: t('sidebar.tasks', 'Tasks'), accentColor: '#e17055' });
+    if (user.role === 'admin' || user.role === 'agent_commercial') {
+        navItems.push({ to: '/analytics', active: isActive('/analytics'), icon: icons.analytics, label: t('sidebar.analytics', 'Analytics'), accentColor: '#0984e3' });
     }
 
     const settingsItems: NavEntry[] = [];
     if (user.role === 'admin') {
         settingsItems.push({ to: '/admin/users', active: isActive('/admin/users'), icon: icons.users, label: t('sidebar.users'), accentColor: '#74b9ff' });
-        settingsItems.push({ to: '/chatbot-training', active: isActive('/chatbot-training'), icon: icons.brain, label: t('sidebar.aiTraining'), accentColor: '#00b894' });
     }
     settingsItems.push({ to: '/profile', active: isActive('/profile'), icon: icons.profile, label: t('sidebar.profile'), accentColor: '#e17055' });
+    if (user.role === 'admin') {
+        settingsItems.push({ to: '/email-templates', active: isActive('/email-templates'), icon: icons.email, label: t('sidebar.emailTemplates', 'Email Templates'), accentColor: '#e84393' });
+    }
 
     return (
         <div className="dashboard-layout">

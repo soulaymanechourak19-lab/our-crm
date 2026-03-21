@@ -79,7 +79,7 @@ const Customers: React.FC = () => {
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <div className="relative flex-1 max-w-md">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">🔍</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg></span>
                     <input
                         placeholder="Search by name or email..."
                         className="w-full pl-11 pr-4 py-2.5 rounded-xl border-0 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
@@ -161,24 +161,28 @@ const Customers: React.FC = () => {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                {/* Dynamic Churn Risk mockup (since live churn is per-customer fetch, we derive a mock score proportional to loyalty/segment for the list view or use the DB segment) */}
-                                                <div className="flex items-center space-x-2">
-                                                    <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-subtle)' }}>
-                                                        <div className="h-full rounded-full transition-all"
-                                                            style={{
-                                                                width: `${Math.max(10, 100 - (customer.loyalty_score / 5))}%`,
-                                                                background: (100 - (customer.loyalty_score / 5)) >= 60 ? 'linear-gradient(90deg, #ef4444, #f87171)'
-                                                                    : (100 - (customer.loyalty_score / 5)) >= 30 ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-                                                                        : 'linear-gradient(90deg, #10b981, #34d399)',
-                                                            }} />
-                                                    </div>
-                                                    <span className={`text-xs font-bold ${
-                                                        (100 - (customer.loyalty_score / 5)) >= 60 ? 'text-red-400' :
-                                                        (100 - (customer.loyalty_score / 5)) >= 30 ? 'text-amber-400' : 'text-emerald-400'
-                                                    }`}>
-                                                        {Math.round(Math.max(5, 100 - (customer.loyalty_score / 5)))}%
-                                                    </span>
-                                                </div>
+                                                {(() => {
+                                                    const churnValue = (customer as any).churn_risk ?? Math.round(Math.max(5, 100 - (customer.loyalty_score / 5)));
+                                                    return (
+                                                        <div className="flex items-center space-x-2">
+                                                            <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-subtle)' }}>
+                                                                <div className="h-full rounded-full transition-all"
+                                                                    style={{
+                                                                        width: `${churnValue}%`,
+                                                                        background: churnValue >= 60 ? 'linear-gradient(90deg, #ef4444, #f87171)'
+                                                                            : churnValue >= 30 ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
+                                                                                : 'linear-gradient(90deg, #10b981, #34d399)',
+                                                                    }} />
+                                                            </div>
+                                                            <span className={`text-xs font-bold ${
+                                                                churnValue >= 60 ? 'text-red-400' :
+                                                                churnValue >= 30 ? 'text-amber-400' : 'text-emerald-400'
+                                                            }`}>
+                                                                {churnValue}%
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                })()}
                                             </td>
                                             <td className="px-6 py-4">
                                                 <LoyaltyBadge tier={customer.tier || 'Bronze'} score={customer.loyalty_score} />
@@ -201,7 +205,7 @@ const Customers: React.FC = () => {
                                 {customers.length === 0 && (
                                     <tr>
                                         <td colSpan={6} className="px-6 py-16 text-center text-[var(--text-secondary)]">
-                                            <div className="text-4xl mb-3">👥</div>
+                                            <div className="mb-3 flex justify-center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg></div>
                                             <p className="font-medium">No customers found</p>
                                             <p className="text-sm mt-1">Try adjusting your search or convert a lead</p>
                                         </td>

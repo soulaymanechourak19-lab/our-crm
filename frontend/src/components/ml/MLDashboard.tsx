@@ -225,8 +225,8 @@ export default function MLDashboard() {
                     display: 'flex', alignItems: 'center', gap: '8px'
                 }}>
                     {trainResult.error
-                        ? <><span style={{ fontSize: '16px' }}>❌</span> Training failed. Check logs.</>
-                        : <><span style={{ fontSize: '16px' }}>✅</span> {trainResult.status === 'success' ? 'All models trained successfully!' : JSON.stringify(trainResult.status)}</>
+                        ? <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle'}}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg> Training failed. Check logs.</>
+                        : <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00b894" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle'}}><polyline points="20 6 9 17 4 12" /></svg> {trainResult.status === 'success' ? 'All models trained successfully!' : JSON.stringify(trainResult.status)}</>
                     }
                 </div>
             )}
