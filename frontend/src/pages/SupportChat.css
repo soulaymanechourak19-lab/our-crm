@@ -533,3 +533,190 @@
     .sc-chips { padding: 8px 16px; }
     .sc-msg-bubble { max-width: 90%; }
 }
+
+/* ── Theme toggle button ───────────────────────────────────────── */
+.sc-theme-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0 !important;
+    border-radius: 10px !important;
+    cursor: pointer;
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    transition: all 0.3s ease;
+}
+.sc-theme-toggle:hover {
+    background: rgba(255,255,255,0.14) !important;
+    transform: rotate(20deg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LIGHT THEME OVERRIDES
+   ═══════════════════════════════════════════════════════════════════ */
+.support-page.sc-light {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8ecf4 50%, #f5f7fb 100%);
+}
+
+.support-page.sc-light::before {
+    background: radial-gradient(circle, #a5b4fc, transparent);
+    opacity: 0.12;
+}
+.support-page.sc-light::after {
+    background: radial-gradient(circle, #f472b6, transparent);
+    opacity: 0.08;
+}
+
+/* Navbar */
+.sc-light .sc-navbar {
+    background: rgba(255, 255, 255, 0.75);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.sc-light .sc-logo {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+.sc-light .sc-nav-link {
+    color: #64748b;
+}
+.sc-light .sc-nav-link:hover {
+    color: #1e293b;
+    background: rgba(0, 0, 0, 0.04);
+}
+.sc-light .sc-theme-toggle {
+    background: rgba(0, 0, 0, 0.06) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: #475569;
+}
+.sc-light .sc-theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.1) !important;
+    color: #1e293b;
+}
+
+/* Chat window */
+.sc-light .sc-window {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow:
+        0 4px 60px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Header */
+.sc-light .sc-header {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.05));
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.sc-light .sc-header-info h2 {
+    color: #1e293b;
+}
+.sc-light .sc-header-status {
+    color: #64748b;
+}
+
+/* Messages */
+.sc-light .sc-msg.bot .sc-msg-bubble {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.sc-light .sc-msg.bot .sc-msg-bubble strong {
+    color: #4f46e5;
+}
+.sc-light .sc-msg.user .sc-msg-bubble strong {
+    color: #e0e7ff;
+}
+.sc-light .sc-msg-time {
+    color: #94a3b8;
+}
+
+/* Typing */
+.sc-light .sc-typing-dots {
+    background: #f1f5f9;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Chips */
+.sc-light .sc-chips {
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+.sc-light .sc-chip {
+    color: #475569;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.sc-light .sc-chip:hover {
+    color: #1e293b;
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* Input area */
+.sc-light .sc-input-area {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.5);
+}
+.sc-light .sc-input {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1e293b;
+}
+.sc-light .sc-input::placeholder {
+    color: #94a3b8;
+}
+.sc-light .sc-input:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Messages scrollbar */
+.sc-light .sc-messages::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Modal */
+.sc-light .sc-modal-overlay {
+    background: rgba(0, 0, 0, 0.3);
+}
+.sc-light .sc-modal {
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.sc-light .sc-modal h3 {
+    color: #1e293b;
+}
+.sc-light .sc-modal p {
+    color: #64748b;
+}
+.sc-light .sc-modal-field label {
+    color: #64748b;
+}
+.sc-light .sc-modal-field input,
+.sc-light .sc-modal-field textarea {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1e293b;
+}
+.sc-light .sc-modal-cancel {
+    background: rgba(0, 0, 0, 0.04) !important;
+    color: #64748b !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+.sc-light .sc-modal-cancel:hover {
+    color: #1e293b !important;
+    background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Ticket card */
+.sc-light .sc-ticket-detail {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+.sc-light .sc-ticket-label {
+    color: #64748b;
+}
+.sc-light .sc-ticket-value {
+    color: #1e293b;
+}

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -75,5 +76,13 @@ class User extends Authenticatable
     public function isAgentSav(): bool
     {
         return $this->role === self::ROLE_AGENT_SAV;
+    }
+
+    /**
+     * Tickets assigned to this user (agent).
+     */
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(\Modules\Ticketing\Entities\Ticket::class, 'assigned_to');
     }
 }

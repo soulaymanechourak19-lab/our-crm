@@ -1,0 +1,50 @@
+
+Compiled with warnings.
+
+[eslint] 
+src/components/quotes/QuotationFormModal.tsx
+  Line 4:10:  'Product' is defined but never used      @typescript-eslint/no-unused-vars
+  Line 4:19:  'getProducts' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Discounts.tsx
+  Line 2:10:   'motion' is defined but never used                @typescript-eslint/no-unused-vars
+  Line 2:18:   'AnimatePresence' is defined but never used       @typescript-eslint/no-unused-vars
+  Line 6:8:    'Skeleton' is defined but never used              @typescript-eslint/no-unused-vars
+  Line 25:90:  'currentUser' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Quotations.tsx
+  Line 3:10:   'motion' is defined but never used                  @typescript-eslint/no-unused-vars
+  Line 3:18:   'AnimatePresence' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 38:21:  'crmQuotations' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 39:26:  'currentUser' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  Line 42:24:  'setQuotations' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Tasks.tsx
+  Line 125:11:  'cs' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint] 
+src/components/quotes/QuotationFormModal.tsx
+  Line 4:10:  'Product' is defined but never used      @typescript-eslint/no-unused-vars
+  Line 4:19:  'getProducts' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Discounts.tsx
+  Line 2:10:   'motion' is defined but never used                @typescript-eslint/no-unused-vars
+  Line 2:18:   'AnimatePresence' is defined but never used       @typescript-eslint/no-unused-vars
+  Line 6:8:    'Skeleton' is defined but never used              @typescript-eslint/no-unused-vars
+  Line 25:90:  'currentUser' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Quotations.tsx
+  Line 3:10:   'motion' is defined but never used                  @typescript-eslint/no-unused-vars
+  Line 3:18:   'AnimatePresence' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 38:21:  'crmQuotations' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 39:26:  'currentUser' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  Line 42:24:  'setQuotations' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Tasks.tsx
+  Line 125:11:  'cs' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 1 warning
+No issues found.

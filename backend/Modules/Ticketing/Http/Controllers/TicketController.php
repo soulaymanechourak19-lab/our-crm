@@ -229,42 +229,51 @@ class TicketController extends Controller
 
     public function stats(): JsonResponse
     {
-        $stats = [
-            'total'       => Ticket::count(),
-            'open'        => Ticket::where('status', 'open')->count(),
-            'in_progress' => Ticket::where('status', 'in_progress')->count(),
-            'resolved'    => Ticket::where('status', 'resolved')->count(),
-            'closed'      => Ticket::where('status', 'closed')->count(),
+        try {
+            $stats = [
+                'total'       => Ticket::count(),
+                'open'        => Ticket::where('status', 'open')->count(),
+                'in_progress' => Ticket::where('status', 'in_progress')->count(),
+                'resolved'    => Ticket::where('status', 'resolved')->count(),
+                'closed'      => Ticket::where('status', 'closed')->count(),
 
-            // Par priorité
-            'by_priority' => [
-                'low'      => Ticket::where('priority', 'low')->count(),
-                'medium'   => Ticket::where('priority', 'medium')->count(),
-                'high'     => Ticket::where('priority', 'high')->count(),
-                'critical' => Ticket::where('priority', 'critical')->count(),
-            ],
+                // Par priorité
+                'by_priority' => [
+                    'low'      => Ticket::where('priority', 'low')->count(),
+                    'medium'   => Ticket::where('priority', 'medium')->count(),
+                    'high'     => Ticket::where('priority', 'high')->count(),
+                    'critical' => Ticket::where('priority', 'critical')->count(),
+                ],
 
-            // Temps moyen de résolution (en heures)
-            'avg_resolution_hours' => round(
-                Ticket::whereNotNull('resolved_at')
-                    ->selectRaw('AVG(TIMESTAMPDIFF(HOUR, created_at, resolved_at)) as avg_hours')
-                    ->value('avg_hours') ?? 0,
-                1
-            ),
+                // Temps moyen de résolution (en heures)
+                'avg_resolution_hours' => round(
+                    Ticket::whereNotNull('resolved_at')
+                        ->selectRaw('AVG(TIMESTAMPDIFF(HOUR, created_at, resolved_at)) as avg_hours')
+                        ->value('avg_hours') ?? 0,
+                    1
+                ),
 
-            // Tickets par agent
-            'by_agent' => DB::table('tickets')
-                ->join('users', 'tickets.assigned_to', '=', 'users.id')
-                ->select('users.name', DB::raw('COUNT(*) as total'))
-                ->whereIn('tickets.status', ['open', 'in_progress'])
-                ->groupBy('users.name')
-                ->get(),
+                // Tickets par agent
+                'by_agent' => DB::table('tickets')
+                    ->join('users', 'tickets.assigned_to', '=', 'users.id')
+                    ->select('users.name', DB::raw('COUNT(*) as total'))
+                    ->whereIn('tickets.status', ['open', 'in_progress'])
+                    ->groupBy('users.name')
+                    ->get(),
 
-            // Tickets récents (7 derniers jours)
-            'recent_count' => Ticket::where('created_at', '>=', now()->subDays(7))->count(),
-        ];
+                // Tickets récents (7 derniers jours)
+                'recent_count' => Ticket::where('created_at', '>=', now()->subDays(7))->count(),
+            ];
 
-        return response()->json($stats);
+            return response()->json($stats);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => substr($e->getTraceAsString(), 0, 500)
+            ], 500);
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -331,12 +340,9 @@ class TicketController extends Controller
     {
         $agents = \Modules\User\Entities\User::whereIn('role', ['agent_sav', 'admin'])
             ->select('id', 'name', 'email', 'role')
-            ->withCount(['tickets as open_tickets_count' => function ($q) {
-                // This will only work if we define the relation on User
-            }])
             ->get();
 
-        // Manually add open ticket count
+        // Add open ticket count for each agent
         $agents->each(function ($agent) {
             $agent->open_tickets_count = Ticket::where('assigned_to', $agent->id)
                 ->whereIn('status', ['open', 'in_progress'])

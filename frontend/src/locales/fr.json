@@ -22,6 +22,18 @@
     "collapse": "Réduire"
   },
   "pages": {
+    "savDashboard": {
+      "title": "Tableau de bord SAV",
+      "subtitle": "Vue d'ensemble et statistiques du support client"
+    },
+    "tickets": {
+      "title": "Tickets de support",
+      "subtitle": "Gérez et suivez les demandes clients"
+    },
+    "ticketDetail": {
+      "title": "Détails du ticket",
+      "subtitle": "Consultez et répondez au ticket"
+    },
     "dashboard": {
       "title": "Tableau de bord",
       "subtitle": "Aperçu des performances de votre entreprise"

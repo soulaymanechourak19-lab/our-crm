@@ -17,10 +17,10 @@ use Modules\Ticketing\Http\Controllers\TicketCommentController;
 Route::middleware('auth:sanctum')->group(function () {
 
     // ── Statistiques SAV ────────────────────────────────────────────
-    Route::get('tickets/stats', [TicketController::class, 'stats']);
+    Route::get('sav-stats', [TicketController::class, 'stats']);
 
     // ── Liste des agents SAV (pour assignation) ─────────────────────
-    Route::get('tickets/agents', [TicketController::class, 'agents']);
+    Route::get('sav-agents', [TicketController::class, 'agents']);
 
     // ── CRUD Tickets ────────────────────────────────────────────────
     Route::apiResource('tickets', TicketController::class);

@@ -22,6 +22,18 @@
     "collapse": "Collapse"
   },
   "pages": {
+    "savDashboard": {
+      "title": "SAV Dashboard",
+      "subtitle": "Overview and statistics of your customer support"
+    },
+    "tickets": {
+      "title": "Support Tickets",
+      "subtitle": "Manage and track customer support requests"
+    },
+    "ticketDetail": {
+      "title": "Ticket Details",
+      "subtitle": "View and reply to the ticket"
+    },
     "dashboard": {
       "title": "Dashboard",
       "subtitle": "Overview of your business performance"

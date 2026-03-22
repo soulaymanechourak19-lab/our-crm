@@ -1,0 +1,94 @@
+On branch integration-all-modules
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Changes to be committed:
+	new file:   backend/Modules/Ticketing/Config/config.php
+	new file:   backend/Modules/Ticketing/Database/Migrations/2026_03_20_000001_create_tickets_table.php
+	new file:   backend/Modules/Ticketing/Database/Migrations/2026_03_20_000002_create_ticket_comments_table.php
+	new file:   backend/Modules/Ticketing/Database/Migrations/2026_03_20_000003_create_ticket_history_table.php
+	new file:   backend/Modules/Ticketing/Entities/Ticket.php
+	new file:   backend/Modules/Ticketing/Entities/TicketComment.php
+	new file:   backend/Modules/Ticketing/Entities/TicketHistory.php
+	new file:   backend/Modules/Ticketing/Events/TicketAssigned.php
+	new file:   backend/Modules/Ticketing/Events/TicketCreated.php
+	new file:   backend/Modules/Ticketing/Events/TicketStatusChanged.php
+	new file:   backend/Modules/Ticketing/Http/Controllers/TicketCommentController.php
+	new file:   backend/Modules/Ticketing/Http/Controllers/TicketController.php
+	new file:   backend/Modules/Ticketing/Listeners/LogTicketStatusChange.php
+	new file:   backend/Modules/Ticketing/Listeners/SendTicketAssignedNotification.php
+	new file:   backend/Modules/Ticketing/Listeners/SendTicketCreatedNotification.php
+	new file:   backend/Modules/Ticketing/Listeners/SendTicketStatusNotification.php
+	new file:   backend/Modules/Ticketing/Providers/TicketingServiceProvider.php
+	new file:   backend/Modules/Ticketing/Routes/api.php
+	new file:   backend/Modules/Ticketing/Services/TicketAssignmentService.php
+	new file:   backend/Modules/Ticketing/Services/TicketNotificationService.php
+	new file:   backend/Modules/Ticketing/Services/TicketPriorityService.php
+	new file:   backend/Modules/Ticketing/module.json
+	modified:   backend/Modules/User/Entities/Customer.php
+	modified:   backend/app/Http/Controllers/ChatbotController.php
+	new file:   backend/app/Http/Controllers/SupportChatController.php
+	new file:   backend/database/seeders/LeadSeeder.php
+	modified:   backend/modules_statuses.json
+	modified:   backend/routes/api.php
+	new file:   branches.txt
+	new file:   container_logs.txt
+	new file:   container_logs_utf8.txt
+	modified:   docker-compose.yml
+	new file:   f_logs.txt
+	new file:   f_logs3.txt
+	new file:   f_logs4.txt
+	new file:   frontend/eslint-output.txt
+	new file:   frontend/eslint-report.txt
+	new file:   frontend/eslint-results.json
+	new file:   frontend/lint-check.js
+	modified:   frontend/package-lock.json
+	modified:   frontend/src/components/Layout.tsx
+	modified:   frontend/src/components/auth/AuthSidePanel.tsx
+	modified:   frontend/src/components/products/CategoryManager.tsx
+	modified:   frontend/src/pages/Chatbot.tsx
+	modified:   frontend/src/pages/Dashboard.tsx
+	modified:   frontend/src/pages/LandingPage.tsx
+	modified:   frontend/src/pages/Leads.tsx
+	modified:   frontend/src/pages/Profile.tsx
+	new file:   frontend/src/pages/SAVDashboard.tsx
+	new file:   frontend/src/pages/SupportChat.css
+	new file:   frontend/src/pages/SupportChat.tsx
+	new file:   frontend/src/pages/TicketDetail.tsx
+	new file:   frontend/src/pages/TicketsList.tsx
+	modified:   frontend/src/pages/admin/Users.tsx
+	modified:   frontend/src/services/mlApi.ts
+	new file:   frontend/src/services/ticketService.ts
+	new file:   frontend_logs.txt
+	new file:   frontend_logs_2.txt
+	new file:   git_status.txt
+	new file:   git_status2.txt
+	modified:   ml-service/__pycache__/main.cpython-311.pyc
+	new file:   ml-service/debug_churn.py
+	modified:   ml-service/models/__pycache__/__init__.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/churn_predictor.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/customer_segmentation.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/intent_classifier.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/lead_scorer.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/recommender.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/sentiment.cpython-311.pyc
+	modified:   ml-service/requirements.txt
+	new file:   ml-service/test_churn_api.py
+	new file:   ps.txt
+	new file:   ps_all.txt
+	new file:   reflog.txt
+	new file:   reflog_tickets.txt
+	new file:   stash.txt
+	new file:   stash_list.txt
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+	both modified:   frontend/src/App.tsx
+	both modified:   frontend/src/components/Sidebar.tsx
+	both modified:   frontend/src/pages/CustomerDetail.tsx
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	git_status3.txt
+

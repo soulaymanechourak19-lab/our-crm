@@ -64,6 +64,7 @@ const LandingPage: React.FC = () => {
           <li><a href="#about" onClick={() => setMenuOpen(false)}>{t('landing.nav.about')}</a></li>
           <li><a href="#features" onClick={() => setMenuOpen(false)}>{t('landing.nav.features')}</a></li>
           <li><a href="#implementation" onClick={() => setMenuOpen(false)}>{t('landing.nav.implementation')}</a></li>
+          <li><a href="#/support" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>💬 Support</a></li>
           <li><a href="#contact" onClick={() => setMenuOpen(false)}>{t('landing.nav.contact')}</a></li>
         </ul>
 
@@ -344,6 +345,16 @@ const LandingPage: React.FC = () => {
           <li><a href="#contact">{t('landing.nav.contact')}</a></li>
         </ul>
       </footer>
+
+      {/* ── Support Chatbot Float ────────────────────── */}
+      <div 
+        className="fixed bottom-6 right-6 z-50 cursor-pointer w-14 h-14 rounded-full flex items-center justify-center transition-all hover:scale-110"
+        style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '0 10px 25px -5px rgba(99, 102, 241, 0.5)' }}
+        onClick={() => navigate('/support')}
+        title="Contactez le support"
+      >
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      </div>
     </div>
   );
 };

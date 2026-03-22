@@ -132,13 +132,13 @@ export const ticketService = {
 
     // Statistiques SAV
     getStats: async (): Promise<TicketStats> => {
-        const { data } = await api.get('/tickets/stats');
+        const { data } = await api.get('/sav-stats');
         return data;
     },
 
     // Liste des agents SAV
     getAgents: async (): Promise<Agent[]> => {
-        const { data } = await api.get('/tickets/agents');
+        const { data } = await api.get('/sav-agents');
         return data;
     },
 

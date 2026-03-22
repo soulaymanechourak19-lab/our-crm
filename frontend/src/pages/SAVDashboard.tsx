@@ -19,10 +19,19 @@ const SAVDashboard: React.FC = () => {
         load();
     }, []);
 
-    if (loading || !stats) {
+    if (loading) {
         return (
             <div className="p-6 lg:p-8 flex justify-center py-20">
                 <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
+    if (!stats) {
+        return (
+            <div className="p-6 lg:p-8 text-center text-red-500 py-20">
+                <h2>Erreur de chargement</h2>
+                <p>Impossible de charger les statistiques SAV.</p>
             </div>
         );
     }
