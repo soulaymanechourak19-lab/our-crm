@@ -1,9 +1,8 @@
 import React, { useState, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Profile: React.FC = () => {
-    const { user, updateProfile, logout } = useAuth();
+    const { user, updateProfile } = useAuth();
 
     const [name, setName] = useState(user?.name ?? '');
     const [email, setEmail] = useState(user?.email ?? '');

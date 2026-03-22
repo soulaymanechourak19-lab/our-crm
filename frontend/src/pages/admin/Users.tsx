@@ -1,5 +1,4 @@
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth, User } from '../../context/AuthContext';
 import api from '../../services/api';
 
@@ -17,7 +16,7 @@ const roleLabelMap: Record<string, string> = {
 };
 
 const Users: React.FC = () => {
-    const { user: currentUser, logout } = useAuth();
+    const { user: currentUser } = useAuth();
 
     const [users, setUsers] = useState<PaginatedUsers | null>(null);
     const [page, setPage] = useState(1);

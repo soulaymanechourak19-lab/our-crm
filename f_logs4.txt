@@ -1,0 +1,50 @@
+
+src/pages/Chatbot.tsx
+  Line 55:11:  'defaultGreeting' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/CustomerDetail.tsx
+  Line 38:13:  'formatCurrency' is assigned a value but never used                                                                  @typescript-eslint/no-unused-vars
+  Line 65:8:   React Hook useEffect has a missing dependency: 'loadInteractions'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/Dashboard.tsx
+  Line 5:8:   'Skeleton' is defined but never used   @typescript-eslint/no-unused-vars
+  Line 7:5:   'LineChart' is defined but never used  @typescript-eslint/no-unused-vars
+  Line 7:16:  'Line' is defined but never used       @typescript-eslint/no-unused-vars
+
+src/pages/Discounts.tsx
+  Line 2:10:   'motion' is defined but never used                @typescript-eslint/no-unused-vars
+  Line 2:18:   'AnimatePresence' is defined but never used       @typescript-eslint/no-unused-vars
+  Line 6:8:    'Skeleton' is defined but never used              @typescript-eslint/no-unused-vars
+  Line 25:90:  'currentUser' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/LandingPage.tsx
+  Line 5:18:  'AnimatePresence' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Leads.tsx
+  Line 52:21:  'updateLeadStatus' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Products.tsx
+  Line 13:10:  'useTheme' is defined but never used                 @typescript-eslint/no-unused-vars
+  Line 19:13:  'formatCurrency' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 19:29:  'currency' is assigned a value but never used        @typescript-eslint/no-unused-vars
+
+src/pages/Profile.tsx
+  Line 2:10:  'Link' is defined but never used             @typescript-eslint/no-unused-vars
+  Line 6:34:  'logout' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Quotations.tsx
+  Line 3:10:   'motion' is defined but never used                  @typescript-eslint/no-unused-vars
+  Line 3:18:   'AnimatePresence' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 38:21:  'crmQuotations' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 39:26:  'currentUser' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  Line 42:24:  'setQuotations' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/Tasks.tsx
+  Line 125:11:  'cs' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/pages/admin/Users.tsx
+  Line 2:10:   'Link' is defined but never used             @typescript-eslint/no-unused-vars
+  Line 20:32:  'logout' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 1 warning
+No issues found.

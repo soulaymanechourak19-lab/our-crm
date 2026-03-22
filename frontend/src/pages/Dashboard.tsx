@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../context/CurrencyContext';
 import Skeleton from '../components/common/Skeleton';
 import {
-    LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area,
+    BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area,
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import { motion } from 'framer-motion';

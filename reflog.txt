@@ -1,0 +1,20 @@
+1ef2a71 HEAD@{0}: pull origin integration-all-modules: Fast-forward
+d7910c3 HEAD@{1}: checkout: moving from feature/tickets-module to integration-all-modules
+d7910c3 HEAD@{2}: reset: moving to HEAD
+d7910c3 HEAD@{3}: checkout: moving from integration-all-modules to feature/tickets-module
+d7910c3 HEAD@{4}: checkout: moving from integration-all-modules to integration-all-modules
+d7910c3 HEAD@{5}: pull origin integration-all-modules: Fast-forward
+1679a8f HEAD@{6}: checkout: moving from integration-all-modules to integration-all-modules
+1679a8f HEAD@{7}: reset: moving to HEAD
+1679a8f HEAD@{8}: checkout: moving from integration-all-modules to integration-all-modules
+1679a8f HEAD@{9}: pull origin integration-all-modules: Fast-forward
+158bb52 HEAD@{10}: reset: moving to HEAD
+158bb52 HEAD@{11}: checkout: moving from integration-all-modules to integration-all-modules
+158bb52 HEAD@{12}: pull origin integration-all-modules: Fast-forward
+b084965 HEAD@{13}: checkout: moving from integration-all-modules to integration-all-modules
+b084965 HEAD@{14}: reset: moving to HEAD
+b084965 HEAD@{15}: reset: moving to HEAD
+b084965 HEAD@{16}: commit: Final fixes: [describe what you fixed]
+4464379 HEAD@{17}: commit: fix: Wrap App with ToastProvider to resolve useToast error
+46e971c HEAD@{18}: commit (merge): Merge branch 'feature/sales-module' into integration-al
+9012964 HEAD@{19}: checkout: moving from feature/sales-module to integration-all-modules

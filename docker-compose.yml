@@ -1,4 +1,4 @@
-﻿services:
+services:
   mysql:
     image: mysql:8
     ports:
@@ -72,7 +72,7 @@
       # ── Vite users: also add these ──
       - VITE_API_URL=http://localhost:8000/api
       - VITE_ML_URL=http://localhost:8001
-    command: sh -c "[ -d node_modules/.bin ] || npm install && npm start"
+    command: sh -c "[ -d node_modules/.bin ] || npm install --legacy-peer-deps && npm start"
     depends_on:
       - backend
     networks:
@@ -93,7 +93,7 @@
       - PYTHONUNBUFFERED=1
     # ── Health check so backend waits for ML to be ready ──
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8001/health" ]
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:8001/health" ]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -32,6 +32,10 @@ const Logs = lazy(() => import('./pages/Logs'));
 const Tasks = lazy(() => import('./pages/Tasks'));
 const Analytics = lazy(() => import('./pages/Analytics'));
 const EmailTemplates = lazy(() => import('./pages/EmailTemplates'));
+const TicketsList = lazy(() => import('./pages/TicketsList'));
+const TicketDetail = lazy(() => import('./pages/TicketDetail'));
+const SAVDashboard = lazy(() => import('./pages/SAVDashboard'));
+const SupportChat = lazy(() => import('./pages/SupportChat'));
 
 // ── Lazy-loaded routes (code splitting — smaller initial bundle) ──
 
@@ -43,6 +47,7 @@ const AnimatedRoutes = () => {
       <Routes location={location} key={location.pathname}>
         {/* Public routes */}
         <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
+        <Route path="/support" element={<SupportChat />} />
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
 
@@ -192,6 +197,44 @@ const AnimatedRoutes = () => {
               <PageTransition>
                 <Layout titleKey="pages.products.title" subtitleKey="pages.products.subtitle">
                   <Products />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+
+        {/* Ticketing routes */}
+        <Route
+          path="/tickets"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.tickets.title" subtitleKey="pages.tickets.subtitle">
+                  <TicketsList />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/tickets/:id"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.ticketDetail.title" subtitleKey="pages.ticketDetail.subtitle">
+                  <TicketDetail />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/sav-dashboard"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout titleKey="pages.savDashboard.title" subtitleKey="pages.savDashboard.subtitle">
+                  <SAVDashboard />
                 </Layout>
               </PageTransition>
             </PrivateRoute>

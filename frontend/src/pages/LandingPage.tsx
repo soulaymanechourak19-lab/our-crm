@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import ThemeToggleBtn from '../components/common/ThemeToggleBtn';
 import LanguageSwitcher from '../components/common/LanguageSwitcher';
 import './LandingPage.css';
