@@ -1,0 +1,47 @@
+On branch feature/tickets-module
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   ml-service/__pycache__/main.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/__init__.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/churn_predictor.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/customer_segmentation.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/intent_classifier.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/lead_scorer.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/recommender.cpython-311.pyc
+	modified:   ml-service/models/__pycache__/sentiment.cpython-311.pyc
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	backend/Modules/Ticketing/
+	backend/app/Http/Controllers/SupportChatController.php
+	backend/database/seeders/LeadSeeder.php
+	branches.txt
+	container_logs.txt
+	container_logs_utf8.txt
+	f_logs.txt
+	f_logs3.txt
+	f_logs4.txt
+	frontend/eslint-output.txt
+	frontend/eslint-report.txt
+	frontend/eslint-results.json
+	frontend/lint-check.js
+	frontend/src/pages/SAVDashboard.tsx
+	frontend/src/pages/SupportChat.css
+	frontend/src/pages/SupportChat.tsx
+	frontend/src/pages/TicketDetail.tsx
+	frontend/src/pages/TicketsList.tsx
+	frontend/src/services/ticketService.ts
+	frontend_logs.txt
+	frontend_logs_2.txt
+	git_status.txt
+	ml-service/debug_churn.py
+	ml-service/test_churn_api.py
+	ps.txt
+	ps_all.txt
+	reflog.txt
+	reflog_tickets.txt
+	stash.txt
+	stash_list.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

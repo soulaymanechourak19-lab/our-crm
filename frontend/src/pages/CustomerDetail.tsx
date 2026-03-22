@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCRM } from '../context/CRMContext';
 import LoyaltyBadge from '../components/customers/LoyaltyBadge';
 import InteractionForm from '../components/customers/InteractionForm';
+import { ticketService, Ticket } from '../services/ticketService';
 
 const typeIcons: Record<string, string> = {
     call: '📞',
@@ -18,7 +19,7 @@ const typeColors: Record<string, { bg: string; border: string }> = {
 const CustomerDetail: React.FC = () => {
     const { selectedCustomer, fetchCustomerDetail, fetchInteractions, currentUser } = useCRM();
     const [showInteractionForm, setShowInteractionForm] = useState(false);
-    const [activeTab, setActiveTab] = useState<'info' | 'interactions' | 'ml'>('info');
+    const [activeTab, setActiveTab] = useState<'info' | 'interactions' | 'ml' | 'tickets'>('info');
     const [interactions, setInteractions] = useState<any[]>([]);
     const [interactionsPagination, setInteractionsPagination] = useState({ current_page: 1, last_page: 1, total: 0, per_page: 10 });
     const [loadingInteractions, setLoadingInteractions] = useState(false);
@@ -26,6 +27,10 @@ const CustomerDetail: React.FC = () => {
     // ML Data State
     const [mlInsights, setMlInsights] = useState<any>(null);
     const [loadingML, setLoadingML] = useState(false);
+
+    // Tickets State
+    const [customerTickets, setCustomerTickets] = useState<Ticket[]>([]);
+    const [loadingTickets, setLoadingTickets] = useState(false);
 
     const id = parseInt(window.location.hash.split('/').pop() || '0');
 
@@ -39,6 +44,7 @@ const CustomerDetail: React.FC = () => {
         if (id && activeTab === 'interactions') {
             loadInteractions(1);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, activeTab]);
 
     const loadInteractions = async (page: number) => {
@@ -86,6 +92,18 @@ const CustomerDetail: React.FC = () => {
     useEffect(() => {
         if (id && activeTab === 'ml') {
             loadMLInsights(id);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id, activeTab]);
+
+    // Load tickets when tab is active
+    useEffect(() => {
+        if (id && activeTab === 'tickets') {
+            setLoadingTickets(true);
+            ticketService.getCustomerTickets(id)
+                .then(setCustomerTickets)
+                .catch(() => setCustomerTickets([]))
+                .finally(() => setLoadingTickets(false));
         }
     }, [id, activeTab]);
 
@@ -182,6 +200,11 @@ const CustomerDetail: React.FC = () => {
                     className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'ml' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                     style={activeTab === 'ml' ? { background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.2))' } : {}}>
                     🧠 ML Insights
+                </button>
+                <button onClick={() => setActiveTab('tickets')}
+                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'tickets' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+                    style={activeTab === 'tickets' ? { background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.2))' } : {}}>
+                    🎫 Tickets
                 </button>
             </div>
 
@@ -381,6 +404,58 @@ const CustomerDetail: React.FC = () => {
             {/* Interaction Form Modal */}
             {showInteractionForm && (
                 <InteractionForm customerId={customer.id} onClose={handleInteractionAdded} />
+            )}
+
+            {/* Tickets tab */}
+            {activeTab === 'tickets' && (
+                <div className="glass-card p-6 animate-slide-in">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-lg font-bold text-[var(--text-primary)]">🎫 Support Tickets</h2>
+                        <a href="#/tickets" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">Voir tous →</a>
+                    </div>
+                    {loadingTickets ? (
+                        <div className="flex justify-center py-12">
+                            <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    ) : customerTickets.length === 0 ? (
+                        <div className="text-center py-12 text-[var(--text-muted)]">
+                            <div className="text-4xl mb-3">🎫</div>
+                            <p className="font-medium">Aucun ticket pour ce client</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {customerTickets.map((ticket) => {
+                                const statusColors: Record<string, string> = { open: '#3b82f6', in_progress: '#f59e0b', resolved: '#10b981', closed: '#6b7280' };
+                                const statusLabels: Record<string, string> = { open: 'Ouvert', in_progress: 'En cours', resolved: 'Résolu', closed: 'Fermé' };
+                                const prioColors: Record<string, string> = { low: '#6b7280', medium: '#3b82f6', high: '#f59e0b', critical: '#ef4444' };
+                                return (
+                                    <a key={ticket.id} href={`#/tickets/${ticket.id}`}
+                                        className="block p-4 rounded-xl transition-all hover:bg-[var(--bg-secondary)] cursor-pointer"
+                                        style={{ border: `1px solid ${statusColors[ticket.status]}20` }}>
+                                        <div className="flex justify-between items-center mb-1">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-mono text-[var(--text-muted)]">{ticket.ticket_number}</span>
+                                                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full"
+                                                    style={{ color: statusColors[ticket.status], background: `${statusColors[ticket.status]}15` }}>
+                                                    {statusLabels[ticket.status]}
+                                                </span>
+                                                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full"
+                                                    style={{ color: prioColors[ticket.priority], background: `${prioColors[ticket.priority]}15` }}>
+                                                    {ticket.priority}
+                                                </span>
+                                            </div>
+                                            <span className="text-xs text-[var(--text-muted)]">
+                                                {new Date(ticket.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm font-semibold text-[var(--text-primary)]">{ticket.title}</p>
+                                        <p className="text-xs text-[var(--text-secondary)] truncate mt-0.5">{ticket.description}</p>
+                                    </a>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
             )}
         </div>
     );

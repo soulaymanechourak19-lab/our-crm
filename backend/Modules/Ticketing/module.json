@@ -1,0 +1,11 @@
+{
+    "name": "Ticketing",
+    "alias": "ticketing",
+    "description": "SAV Ticketing module for support ticket management",
+    "keywords": ["ticketing", "sav", "support"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Ticketing\\Providers\\TicketingServiceProvider"
+    ],
+    "files": []
+}

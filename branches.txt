@@ -1,0 +1,13 @@
+  feature/crm-module
+  feature/sales-module
+  feature/tickets-module
++ feature/user-module
+  integration
+* integration-all-modules
+  main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/feature/crm-module
+  remotes/origin/feature/sales-module
+  remotes/origin/feature/user-module
+  remotes/origin/integration-all-modules
+  remotes/origin/main

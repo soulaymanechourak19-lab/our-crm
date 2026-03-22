@@ -33,6 +33,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/ml/export-features', [MLDataExportController::class, 'exportCustomerFeatures']);
 Route::get('/ml/export-transactions', [MLDataExportController::class, 'exportTransactions']);
 
+// ── Public Support Chatbot (no auth — client-facing) ────────────────────
+Route::post('/support/chat', [\App\Http\Controllers\SupportChatController::class, 'handle']);
+Route::post('/support/ticket', [\App\Http\Controllers\SupportChatController::class, 'createTicket']);
+
 // ── Protected routes (require valid Sanctum token) ──────────────────────
 
 Route::middleware('auth:sanctum')->group(function () {

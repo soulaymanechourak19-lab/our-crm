@@ -30,7 +30,7 @@ const statusColors: Record<string, { bg: string; text: string; dot: string }> = 
 const Leads: React.FC = () => {
     const {
         leads, leadsPagination, leadsLoading,
-        fetchLeads, updateLeadStatus, convertLead, deleteLead, currentUser
+        fetchLeads, convertLead, deleteLead, currentUser
     } = useCRM();
     const [view, setView] = useState<'list' | 'kanban'>('list');
     const [showForm, setShowForm] = useState(false);

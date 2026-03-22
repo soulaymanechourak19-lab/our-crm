@@ -35,6 +35,11 @@ class Customer extends Model
         return $this->hasMany(Interaction::class);
     }
 
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(\Modules\Ticketing\Entities\Ticket::class);
+    }
+
     public function transactions(): HasMany
     {
         return $this->hasMany(\App\Models\Transaction::class, 'client_id');

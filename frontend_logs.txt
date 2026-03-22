@@ -1,0 +1,50 @@
+frontend-1  | npm error
+frontend-1  | npm error For a full report see:
+frontend-1  | npm error /root/.npm/_logs/2026-03-22T00_10_23_315Z-eresolve-report.txt
+frontend-1  | npm notice
+frontend-1  | npm notice New major version of npm available! 10.8.2 -> 11.12.0
+frontend-1  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.0
+frontend-1  | npm notice To update run: npm install -g npm@11.12.0
+frontend-1  | npm notice
+frontend-1  | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-03-22T00_10_23_315Z-debug-0.log
+frontend-1  | npm error code ERESOLVE
+frontend-1  | npm error ERESOLVE could not resolve
+frontend-1  | npm error
+frontend-1  | npm error While resolving: i18next@25.8.18
+frontend-1  | npm error Found: typescript@4.9.5
+frontend-1  | npm error node_modules/typescript
+frontend-1  | npm error   typescript@"^4.9.5" from the root project
+frontend-1  | npm error   peer typescript@">= 2.7" from fork-ts-checker-webpack-plugin@6.5.3
+frontend-1  | npm error   node_modules/fork-ts-checker-webpack-plugin
+frontend-1  | npm error     fork-ts-checker-webpack-plugin@"^6.5.0" from react-dev-utils@12.0.1
+frontend-1  | npm error     node_modules/react-dev-utils
+frontend-1  | npm error       react-dev-utils@"^12.0.1" from react-scripts@5.0.1
+frontend-1  | npm error       node_modules/react-scripts
+frontend-1  | npm error         dev react-scripts@"^5.0.1" from the root project
+frontend-1  | npm error   2 more (react-scripts, tsutils)
+frontend-1  | npm error
+frontend-1  | npm error Could not resolve dependency:
+frontend-1  | npm error peerOptional typescript@"^5" from i18next@25.8.18
+frontend-1  | npm error node_modules/i18next
+frontend-1  | npm error   i18next@"^25.8.18" from the root project
+frontend-1  | npm error   peer i18next@">= 25.6.2" from react-i18next@16.5.8
+frontend-1  | npm error   node_modules/react-i18next
+frontend-1  | npm error     react-i18next@"^16.5.8" from the root project
+frontend-1  | npm error
+frontend-1  | npm error Conflicting peer dependency: typescript@5.9.3
+frontend-1  | npm error node_modules/typescript
+frontend-1  | npm error   peerOptional typescript@"^5" from i18next@25.8.18
+frontend-1  | npm error   node_modules/i18next
+frontend-1  | npm error     i18next@"^25.8.18" from the root project
+frontend-1  | npm error     peer i18next@">= 25.6.2" from react-i18next@16.5.8
+frontend-1  | npm error     node_modules/react-i18next
+frontend-1  | npm error       react-i18next@"^16.5.8" from the root project
+frontend-1  | npm error
+frontend-1  | npm error Fix the upstream dependency conflict, or retry
+frontend-1  | npm error this command with --force or --legacy-peer-deps
+frontend-1  | npm error to accept an incorrect (and potentially broken) dependency resolution.
+frontend-1  | npm error
+frontend-1  | npm error
+frontend-1  | npm error For a full report see:
+frontend-1  | npm error /root/.npm/_logs/2026-03-22T00_12_07_595Z-eresolve-report.txt
+frontend-1  | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-03-22T00_12_07_595Z-debug-0.log

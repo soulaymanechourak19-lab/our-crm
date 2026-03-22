@@ -25,8 +25,7 @@ const AuthSidePanel: React.FC = () => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
         }, 5000);
         return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [slides.length]);
 
     return (
         <div className="auth-side-panel">

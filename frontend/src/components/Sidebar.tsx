@@ -34,6 +34,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, isMobileOpen, 
         { path: '/leads', label: t('sidebar.leads'), icon: '👥' },
         { path: '/products', label: t('sidebar.products'), icon: '🛒' },
         { path: '/customers', label: t('sidebar.customers'), icon: '👤' },
+        { path: '/tickets', label: t('sidebar.tickets', 'Tickets'), icon: '🎫' },
+        { path: '/sav-dashboard', label: t('sidebar.savDashboard', 'SAV Dashboard'), icon: '📊' },
         { path: '/settings', label: t('sidebar.settings'), icon: '⚙️' },
         { path: '/logs', label: t('sidebar.logs'), icon: '📋' },
     ];

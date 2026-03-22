@@ -1,0 +1,5 @@
+stash@{0}: On feature/tickets-module: Mon travail sur le module tickets avant pull
+stash@{1}: WIP on integration-all-modules: 1679a8f good design
+stash@{2}: WIP on integration-all-modules: 158bb52 Add ML and Chatbot modules to integration branch
+stash@{3}: WIP on main: 17fd0d6 Refactor: Move User module to modular structure with proper namespaces
+stash@{4}: WIP on main: 75e733c Merge feature/user-module: resolved Dockerfile conflict with combined improvements

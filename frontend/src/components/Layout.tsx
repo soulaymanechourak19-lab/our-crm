@@ -166,6 +166,12 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle, titleKey, su
     if (user.role === 'admin' || user.role === 'agent_commercial') {
         navItems.push({ to: '/products', active: isActive('/products'), icon: icons.products, label: t('sidebar.products'), accentColor: '#fdcb6e' });
     }
+    if (user.role === 'admin' || user.role === 'agent_sav' || user.role === 'agent_commercial') {
+        navItems.push({ to: '/tickets', active: isActive('/tickets') || isActiveSub('/tickets/'), icon: icons.ticket, label: t('sidebar.tickets', 'Tickets'), accentColor: '#fd79a8' });
+    }
+    if (user.role === 'admin' || user.role === 'agent_sav') {
+        navItems.push({ to: '/sav-dashboard', active: isActive('/sav-dashboard'), icon: icons.performance, label: t('sidebar.savDashboard', 'SAV Dashboard'), accentColor: '#00b894' });
+    }
     if (user.role === 'admin' || user.role === 'agent_sav') {
         navItems.push({ to: '/chatbot', active: isActive('/chatbot'), icon: icons.ai, label: t('sidebar.aiAssistant'), accentColor: '#a29bfe', badge: t('sidebar.new') });
     }

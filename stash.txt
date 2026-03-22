@@ -1,0 +1,29 @@
+ backend/Modules/User/Entities/Customer.php         |   5 ++
+ backend/app/Http/Controllers/ChatbotController.php |  72 +++++++++++++++++++
+ backend/modules_statuses.json                      |   3 +-
+ backend/routes/api.php                             |   4 ++
+ docker-compose.yml                                 |   6 +-
+ frontend/package-lock.json                         |  18 +++++
+ frontend/src/App.tsx                               |  43 ++++++++++++
+ frontend/src/components/Layout.tsx                 |   6 ++
+ frontend/src/components/Sidebar.tsx                |   2 +
+ frontend/src/components/auth/AuthSidePanel.tsx     |   3 +-
+ .../src/components/products/CategoryManager.tsx    |   1 -
+ frontend/src/pages/Chatbot.tsx                     |   4 --
+ frontend/src/pages/CustomerDetail.tsx              |  77 ++++++++++++++++++++-
+ frontend/src/pages/Dashboard.tsx                   |   2 +-
+ frontend/src/pages/LandingPage.tsx                 |   2 +-
+ frontend/src/pages/Leads.tsx                       |   2 +-
+ frontend/src/pages/Profile.tsx                     |   3 +-
+ frontend/src/pages/admin/Users.tsx                 |   3 +-
+ frontend/src/services/mlApi.ts                     |   1 -
+ ml-service/__pycache__/main.cpython-311.pyc        | Bin 18927 -> 18927 bytes
+ .../models/__pycache__/__init__.cpython-311.pyc    | Bin 132 -> 132 bytes
+ .../__pycache__/churn_predictor.cpython-311.pyc    | Bin 3793 -> 3793 bytes
+ .../customer_segmentation.cpython-311.pyc          | Bin 3392 -> 3392 bytes
+ .../__pycache__/intent_classifier.cpython-311.pyc  | Bin 15096 -> 15096 bytes
+ .../models/__pycache__/lead_scorer.cpython-311.pyc | Bin 3766 -> 3766 bytes
+ .../models/__pycache__/recommender.cpython-311.pyc | Bin 13957 -> 13957 bytes
+ .../models/__pycache__/sentiment.cpython-311.pyc   | Bin 5028 -> 5028 bytes
+ ml-service/requirements.txt                        |   1 +
+ 28 files changed, 238 insertions(+), 20 deletions(-)

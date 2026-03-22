@@ -149,6 +149,9 @@ class ChatbotController extends Controller
             'list_customers' => $this->topCustomers(10),
             'list_leads' => $this->recentLeads(10),
 
+            // Escalation vers le ticketing
+            'escalate_to_human', 'create_ticket', 'talk_to_agent' => $this->escalateToTicket($msg, $entities),
+
             default => $this->handleCustomIntent($intent) ?? $this->fallbackPatternMatch($msg, $name),
         };
     }
@@ -222,6 +225,9 @@ class ChatbotController extends Controller
         if ($this->is($msg, ['list product','all product','show product'])) return $this->listProducts();
         if ($this->is($msg, ['list customer','all customer','show customer'])) return $this->topCustomers(10);
         if ($this->is($msg, ['list lead','all lead','show lead'])) return $this->recentLeads(10);
+
+        // Escalation to human / ticket creation
+        if ($this->is($msg, ['parler à un humain','parler a un humain','agent humain','créer un ticket','creer un ticket','talk to human','create ticket','escalate','support humain','besoin d\'aide humaine','agent réel','agent reel'])) return $this->escalateToTicket($msg, []);
 
         // Universal search
         return $this->universalSearch($msg, $name);
@@ -475,6 +481,72 @@ class ChatbotController extends Controller
         }
 
         return $this->say("🤔 I couldn't find anything for that. Try asking about a customer, lead, or product by name — or say \"summary\" for a full overview!");
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  TICKET ESCALATION (Chatbot → Ticketing)
+    // ═══════════════════════════════════════════════════════════════════
+
+    private function escalateToTicket(string $msg, array $entities)
+    {
+        $user = auth()->user();
+        $customerId = $entities['customer_id'] ?? null;
+
+        // Essayer de trouver le client par l'utilisateur connecté
+        if (!$customerId && $user) {
+            $customer = DB::table('customers')->where('email', $user->email)->first();
+            if ($customer) {
+                $customerId = $customer->id;
+            }
+        }
+
+        // Analyser le sentiment pour la priorité
+        $sentimentUrgency = null;
+        try {
+            $mlUrl = env('ML_SERVICE_URL', 'http://ml-service:8001');
+            $sentimentRes = Http::timeout(3)->post("{$mlUrl}/predict/sentiment", ['text' => $msg]);
+            if ($sentimentRes->successful()) {
+                $sentimentData = $sentimentRes->json();
+                $sentimentUrgency = $sentimentData['urgency'] ?? $sentimentData['sentiment'] ?? null;
+            }
+        } catch (\Exception $e) {
+            Log::info('Sentiment analysis skipped during escalation: ' . $e->getMessage());
+        }
+
+        // Créer le ticket via le module Ticketing
+        try {
+            $ticket = \Modules\Ticketing\Entities\Ticket::create([
+                'ticket_number' => \Modules\Ticketing\Entities\Ticket::generateTicketNumber(),
+                'title'         => 'Escalade chatbot - ' . mb_substr($msg, 0, 80),
+                'description'   => "Message du client :\n{$msg}\n\n--- Créé automatiquement par le chatbot ---",
+                'customer_id'   => $customerId,
+                'priority'      => (new \Modules\Ticketing\Services\TicketPriorityService())->detectPriority($msg, $sentimentUrgency),
+                'source'        => 'chatbot',
+                'category'      => $entities['intent'] ?? 'escalation',
+                'created_by'    => $user?->id,
+            ]);
+
+            // Auto-attribution
+            $agent = (new \Modules\Ticketing\Services\TicketAssignmentService())->assignToLeastBusyAgent($ticket);
+
+            // Déclencher les événements
+            event(new \Modules\Ticketing\Events\TicketCreated($ticket));
+            if ($agent) {
+                event(new \Modules\Ticketing\Events\TicketAssigned($ticket, null, $agent->id));
+            }
+
+            $agentName = $agent ? $agent->name : 'notre équipe';
+            return $this->say(
+                "🎫 J'ai créé un ticket pour vous !\n\n" .
+                "**Ticket #{$ticket->ticket_number}**\n" .
+                "Priorité : **{$ticket->priority}**\n" .
+                "Assigné à : **{$agentName}**\n\n" .
+                "Un agent va prendre en charge votre demande très rapidement. 🙏"
+            );
+        } catch (\Exception $e) {
+            Log::error('Failed to create ticket from chatbot: ' . $e->getMessage());
+            return $this->say("😓 Désolé, je n'ai pas pu créer le ticket. Veuillez contacter le support directement.");
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════

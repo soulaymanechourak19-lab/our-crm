@@ -51,10 +51,6 @@ const Chatbot: React.FC = () => {
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     
-    // Using translation keys directly for the initial bot greeting
-    const defaultGreeting = t('sidebar.aiAssistant') === 'sidebar.aiAssistant' 
-        ? "Hey! I'm your CRM assistant with full database access.\n\nAsk me anything — customer details, lead stats, stock alerts, or just search for any name!"
-        : `${t('chat.greeting', "Hey! I'm your CRM assistant with full database access.\n\nAsk me anything — customer details, lead stats, stock alerts, or just search for any name!")}`;
 
     const [messages, setMessages] = useState<Message[]>([
         {
