@@ -72,6 +72,16 @@ class DiscountService
      */
     public function applyDiscount(Discount $discount, float $amount, int $customerId, ?int $orderId = null): float
     {
+        // Check if this customer already used this discount
+        $alreadyUsed = CustomerDiscount::where('customer_id', $customerId)
+            ->where('discount_id', $discount->id)
+            ->whereNotNull('applied_at')
+            ->exists();
+
+        if ($alreadyUsed) {
+            throw new \RuntimeException('This discount code has already been used by this customer.');
+        }
+
         $discountAmount = $discount->calculateDiscount($amount);
 
         // Increment usage

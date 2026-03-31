@@ -4,6 +4,7 @@
  */
 import { useEffect, useState } from 'react';
 import { checkMLHealth, trainAllModels } from '../../services/mlService';
+import { Timer } from 'lucide-react';
 
 /* ── SVG Icons (Lucide/Feather) ───────────────────────── */
 const svgs = {
@@ -167,7 +168,7 @@ export default function MLDashboard() {
                 onMouseLeave={(e) => { if(!training) e.currentTarget.style.transform = 'none'; }}
             >
                 {training ? (
-                    <>⏳ Training models...</>
+                    <><Timer size={16} className="animate-spin" /> Training models...</>
                 ) : (
                     <>{svgs.refresh} Retrain All Models</>
                 )}

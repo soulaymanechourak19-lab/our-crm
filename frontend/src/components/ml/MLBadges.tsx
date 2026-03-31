@@ -4,6 +4,7 @@
  */
 import { useEffect, useState } from 'react';
 import { predictChurn, scoreLead, segmentCustomer } from '../../services/mlService';
+import { Timer } from 'lucide-react';
 
 // ═══════════════════════════════════════════════════════════════════
 //  Churn Risk Badge
@@ -24,7 +25,7 @@ export function ChurnBadge({ customerId }: ChurnBadgeProps) {
             .finally(() => setLoading(false));
     }, [customerId]);
 
-    if (loading) return <span style={{ color: '#9ca3af', fontSize: '12px' }}>⏳</span>;
+    if (loading) return <Timer size={14} className="animate-spin text-gray-400" />;
     if (!data || data.risk_level === undefined) return <span style={{ color: '#9ca3af', fontSize: '12px' }}>—</span>;
 
     const config: Record<string, { color: string; bg: string; label: React.ReactNode }> = {
@@ -71,7 +72,7 @@ export function LeadScoreBadge({ leadId }: LeadScoreBadgeProps) {
             .finally(() => setLoading(false));
     }, [leadId]);
 
-    if (loading) return <span style={{ color: '#9ca3af', fontSize: '12px' }}>⏳</span>;
+    if (loading) return <Timer size={14} className="animate-spin text-gray-400" />;
     if (!data || data.score === undefined) return <span style={{ color: '#9ca3af', fontSize: '12px' }}>—</span>;
 
     const score = data.score;
@@ -119,7 +120,7 @@ export function SegmentBadge({ customerId }: SegmentBadgeProps) {
             .finally(() => setLoading(false));
     }, [customerId]);
 
-    if (loading) return <span style={{ color: '#9ca3af', fontSize: '12px' }}>⏳</span>;
+    if (loading) return <Timer size={14} className="animate-spin text-gray-400" />;
     if (!data || !data.segment) return <span style={{ color: '#9ca3af', fontSize: '12px' }}>—</span>;
 
     const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];

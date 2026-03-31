@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:users',
+            'email'    => 'required|string|email:rfc|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'role'     => 'sometimes|string|in:admin,agent_commercial,agent_sav',
         ]);
@@ -94,10 +94,36 @@ class AuthController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'name'     => 'sometimes|string|max:255',
-            'email'    => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'sometimes|string|min:8|confirmed',
+            'name'            => 'sometimes|string|max:255',
+            'email'           => 'sometimes|string|email:rfc|max:255|unique:users,email,' . $user->id,
+            'password'        => 'sometimes|string|min:8|confirmed',
+            'phone'           => ['sometimes', 'nullable', 'regex:/^0[5-7]\d{8}$/'],
+            'address'         => 'sometimes|nullable|string|max:255',
+            'city'            => 'sometimes|nullable|string|max:100',
+            'profile_picture' => 'sometimes|nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+        ], [
+            'phone.regex' => 'Phone number must be 10 digits in Moroccan format (e.g., 0612345678).',
+            'profile_picture.image' => 'The file must be an image.',
+            'profile_picture.mimes' => 'Only JPEG, PNG, and WebP images are allowed.',
+            'profile_picture.max'   => 'Image must not exceed 2MB.',
         ]);
+
+        // Handle profile picture upload
+        if ($request->hasFile('profile_picture')) {
+            if ($user->profile_picture) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_picture);
+            }
+            $path = $request->file('profile_picture')->store('profile-pictures', 'public');
+            $validated['profile_picture'] = $path;
+        }
+
+        // Handle profile picture removal
+        if ($request->has('remove_profile_picture') && $request->remove_profile_picture) {
+            if ($user->profile_picture) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_picture);
+            }
+            $validated['profile_picture'] = null;
+        }
 
         if (isset($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);

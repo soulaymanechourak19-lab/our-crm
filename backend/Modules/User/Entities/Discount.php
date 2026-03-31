@@ -4,7 +4,9 @@ namespace Modules\User\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Modules\Sales\Entities\Product;
 
 class Discount extends Model
 {
@@ -18,6 +20,8 @@ class Discount extends Model
         'max_uses',
         'used_count',
         'is_active',
+        'product_id',
+        'customer_id',
     ];
 
     protected $casts = [
@@ -32,6 +36,16 @@ class Discount extends Model
     public function customerDiscounts(): HasMany
     {
         return $this->hasMany(CustomerDiscount::class);
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function isValid(): bool
@@ -50,4 +64,17 @@ class Discount extends Model
         }
         return min($this->value, $amount);
     }
+
+    /**
+     * Return suggested discount percentage based on loyalty tier.
+     */
+    public static function loyaltyDiscountPercent(string $tier): float
+    {
+        return match ($tier) {
+            'Gold'   => 15,
+            'Silver' => 10,
+            default  => 5, // Bronze
+        };
+    }
 }
+

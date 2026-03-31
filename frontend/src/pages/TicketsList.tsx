@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { ticketService, Ticket, Agent } from '../services/ticketService';
+import { Circle, CheckCircle, TicketIcon, Search, User, Wrench } from 'lucide-react';
     // Removed unused useAuth import
 
-const statusConfig: Record<string, { label: string; color: string; bg: string; icon: string }> = {
-    open:        { label: 'Ouvert',    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)',  icon: '🔵' },
-    in_progress: { label: 'En cours',  color: '#f59e0b', bg: 'rgba(245,158,11,0.15)',  icon: '🟡' },
-    resolved:    { label: 'Résolu',    color: '#10b981', bg: 'rgba(16,185,129,0.15)',   icon: '🟢' },
-    closed:      { label: 'Fermé',     color: '#6b7280', bg: 'rgba(107,114,128,0.15)', icon: '⚫' },
+const statusConfig: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
+    open:        { label: 'Ouvert',    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)',  icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
+    in_progress: { label: 'En cours',  color: '#f59e0b', bg: 'rgba(245,158,11,0.15)',  icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
+    resolved:    { label: 'Résolu',    color: '#10b981', bg: 'rgba(16,185,129,0.15)',   icon: <CheckCircle fill="currentColor" size={10} strokeWidth={0} /> },
+    closed:      { label: 'Fermé',     color: '#6b7280', bg: 'rgba(107,114,128,0.15)', icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
 };
 
-const priorityConfig: Record<string, { label: string; color: string; bg: string; icon: string }> = {
-    low:      { label: 'Basse',    color: '#6b7280', bg: 'rgba(107,114,128,0.15)', icon: '▽' },
-    medium:   { label: 'Moyenne',  color: '#3b82f6', bg: 'rgba(59,130,246,0.15)',  icon: '◆' },
-    high:     { label: 'Haute',    color: '#f59e0b', bg: 'rgba(245,158,11,0.15)',  icon: '▲' },
-    critical: { label: 'Critique', color: '#ef4444', bg: 'rgba(239,68,68,0.15)',   icon: '🔴' },
+const priorityConfig: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
+    low:      { label: 'Basse',    color: '#6b7280', bg: 'rgba(107,114,128,0.15)', icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
+    medium:   { label: 'Moyenne',  color: '#3b82f6', bg: 'rgba(59,130,246,0.15)',  icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
+    high:     { label: 'Haute',    color: '#f59e0b', bg: 'rgba(245,158,11,0.15)',  icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
+    critical: { label: 'Critique', color: '#ef4444', bg: 'rgba(239,68,68,0.15)',   icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
 };
 
 const TicketsList: React.FC = () => {
@@ -87,7 +88,7 @@ const TicketsList: React.FC = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-[var(--text-primary)]">🎫 Tickets Support</h1>
+                    <h1 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2"><TicketIcon size={24} className="text-indigo-500" /> Tickets Support</h1>
                     <p className="text-sm text-[var(--text-secondary)] mt-1">{pagination.total} tickets au total</p>
                 </div>
                 <button
@@ -103,13 +104,18 @@ const TicketsList: React.FC = () => {
             <div className="glass-card p-4 mb-6">
                 <div className="flex flex-wrap gap-3 items-center">
                     <form onSubmit={handleSearch} className="flex-1 min-w-[200px]">
-                        <input
-                            type="text"
-                            placeholder="🔍 Rechercher par titre, numéro..."
-                            value={filters.search}
-                            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                            className="w-full px-4 py-2 text-sm rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-indigo-500 focus:outline-none transition-colors"
-                        />
+                        <div className="relative w-full">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
+                                <Search size={16} />
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Rechercher par titre, numéro..."
+                                value={filters.search}
+                                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                                className="w-full pl-10 pr-4 py-2 text-sm rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-indigo-500 focus:outline-none transition-colors"
+                            />
+                        </div>
                     </form>
                     <select
                         value={filters.status}
@@ -117,10 +123,10 @@ const TicketsList: React.FC = () => {
                         className="px-3 py-2 text-sm rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-indigo-500 focus:outline-none"
                     >
                         <option value="">Tous les statuts</option>
-                        <option value="open">🔵 Ouvert</option>
-                        <option value="in_progress">🟡 En cours</option>
-                        <option value="resolved">🟢 Résolu</option>
-                        <option value="closed">⚫ Fermé</option>
+                        <option value="open">Ouvert</option>
+                        <option value="in_progress">En cours</option>
+                        <option value="resolved">Résolu</option>
+                        <option value="closed">Fermé</option>
                     </select>
                     <select
                         value={filters.priority}
@@ -128,10 +134,10 @@ const TicketsList: React.FC = () => {
                         className="px-3 py-2 text-sm rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:border-indigo-500 focus:outline-none"
                     >
                         <option value="">Toutes priorités</option>
-                        <option value="low">▽ Basse</option>
-                        <option value="medium">◆ Moyenne</option>
-                        <option value="high">▲ Haute</option>
-                        <option value="critical">🔴 Critique</option>
+                        <option value="low">Basse</option>
+                        <option value="medium">Moyenne</option>
+                        <option value="high">Haute</option>
+                        <option value="critical">Critique</option>
                     </select>
                     <select
                         value={filters.assigned_to}
@@ -153,7 +159,7 @@ const TicketsList: React.FC = () => {
                 </div>
             ) : tickets.length === 0 ? (
                 <div className="glass-card p-12 text-center">
-                    <div className="text-5xl mb-4">🎫</div>
+                    <div className="mb-4 flex justify-center"><TicketIcon size={48} className="text-indigo-400 stroke-1" /></div>
                     <p className="text-lg font-semibold text-[var(--text-primary)]">Aucun ticket trouvé</p>
                     <p className="text-sm text-[var(--text-secondary)] mt-1">Créez votre premier ticket ou modifiez les filtres</p>
                 </div>
@@ -166,37 +172,37 @@ const TicketsList: React.FC = () => {
                             <a
                                 key={ticket.id}
                                 href={`#/tickets/${ticket.id}`}
-                                className="glass-card p-4 flex items-center gap-4 transition-all hover:border-indigo-500/30 hover:shadow-lg cursor-pointer group block"
+                                className="glass-card p-5 flex items-start gap-5 transition-all hover:border-indigo-500/30 hover:shadow-lg cursor-pointer group"
                             >
                                 {/* Priority indicator */}
-                                <div className="w-1 h-12 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }}></div>
+                                <div className="w-1.5 h-auto min-h-[4rem] self-stretch rounded-full flex-shrink-0" style={{ backgroundColor: p.color }}></div>
 
                                 {/* Main info */}
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <span className="text-xs font-mono text-[var(--text-muted)]">{ticket.ticket_number}</span>
-                                        <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full" style={{ color: s.color, background: s.bg }}>
+                                <div className="flex-1 min-w-0 py-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="text-xs font-mono font-semibold text-[var(--text-muted)]">{ticket.ticket_number}</span>
+                                        <span className="px-2.5 py-0.5 text-xs font-bold rounded-full flex items-center gap-1.5" style={{ color: s.color, background: s.bg }}>
                                             {s.icon} {s.label}
                                         </span>
-                                        <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full" style={{ color: p.color, background: p.bg }}>
+                                        <span className="px-2.5 py-0.5 text-xs font-bold rounded-full flex items-center gap-1.5" style={{ color: p.color, background: p.bg }}>
                                             {p.icon} {p.label}
                                         </span>
                                     </div>
-                                    <h3 className="text-sm font-semibold text-[var(--text-primary)] truncate group-hover:text-indigo-400 transition-colors">
+                                    <h3 className="text-base font-bold text-[var(--text-primary)] group-hover:text-indigo-400 transition-colors line-clamp-1">
                                         {ticket.title}
                                     </h3>
-                                    <p className="text-xs text-[var(--text-secondary)] truncate mt-0.5">{ticket.description}</p>
+                                    <p className="text-sm font-medium text-[var(--text-secondary)] mt-1.5 line-clamp-2 leading-relaxed">{ticket.description}</p>
                                 </div>
 
                                 {/* Meta */}
-                                <div className="flex items-center gap-4 flex-shrink-0 text-xs text-[var(--text-secondary)]">
+                                <div className="flex flex-col items-end gap-2 flex-shrink-0 text-xs font-medium text-[var(--text-secondary)] py-1">
                                     {ticket.customer && (
-                                        <span className="hidden sm:block">👤 {ticket.customer.name}</span>
+                                        <span className="hidden sm:flex items-center gap-1.5"><User size={14} /> {ticket.customer.name}</span>
                                     )}
                                     {ticket.assigned_agent && (
-                                        <span className="hidden md:block">🛠️ {ticket.assigned_agent.name}</span>
+                                        <span className="hidden md:flex items-center gap-1.5"><Wrench size={14} /> {ticket.assigned_agent.name}</span>
                                     )}
-                                    <span>{timeAgo(ticket.created_at)}</span>
+                                    <span className="mt-auto">{timeAgo(ticket.created_at)}</span>
                                 </div>
                             </a>
                         );
@@ -229,7 +235,7 @@ const TicketsList: React.FC = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowCreateForm(false)} />
                     <div className="relative w-full max-w-lg glass-card p-6 animate-slide-in" style={{ border: '1px solid rgba(99,102,241,0.3)' }}>
-                        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">🎫 Nouveau Ticket</h2>
+                        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2"><TicketIcon size={20} className="text-indigo-500" /> Nouveau Ticket</h2>
                         <form onSubmit={handleCreate} className="space-y-4">
                             <div>
                                 <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Titre *</label>

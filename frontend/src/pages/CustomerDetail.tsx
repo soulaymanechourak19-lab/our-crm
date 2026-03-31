@@ -20,6 +20,7 @@ const svgIcon = {
     target: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>,
     sparkle: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z" /></svg>,
     product: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>,
+    ticket: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5v2" /><path d="M15 11v2" /><path d="M15 17v2" /><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z" /></svg>,
 };
 
 const typeIcons: Record<string, React.ReactNode> = {
@@ -250,7 +251,7 @@ const CustomerDetail: React.FC = () => {
                 <button onClick={() => setActiveTab('tickets')}
                     className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'tickets' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                     style={activeTab === 'tickets' ? { background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.2))' } : {}}>
-                    🎫 Tickets
+                    <span style={{ display: 'inline-flex', verticalAlign: 'middle', marginRight: '4px' }}>{svgIcon.ticket}</span> Tickets
                 </button>
             </div>
 
@@ -515,7 +516,7 @@ const CustomerDetail: React.FC = () => {
             {activeTab === 'tickets' && (
                 <div className="glass-card p-6 animate-slide-in">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-lg font-bold text-[var(--text-primary)]">🎫 Support Tickets</h2>
+                        <h2 className="text-lg font-bold text-[var(--text-primary)]"><span style={{ display: 'inline-flex', verticalAlign: 'middle', marginRight: '6px' }}>{svgIcon.ticket}</span>Support Tickets</h2>
                         <a href="#/tickets" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">Voir tous →</a>
                     </div>
                     {loadingTickets ? (
@@ -524,7 +525,7 @@ const CustomerDetail: React.FC = () => {
                         </div>
                     ) : customerTickets.length === 0 ? (
                         <div className="text-center py-12 text-[var(--text-muted)]">
-                            <div className="text-4xl mb-3">🎫</div>
+                            <div className="text-4xl mb-3 flex justify-center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5v2" /><path d="M15 11v2" /><path d="M15 17v2" /><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z" /></svg></div>
                             <p className="font-medium">Aucun ticket pour ce client</p>
                         </div>
                     ) : (

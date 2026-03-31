@@ -115,11 +115,12 @@ class CustomerController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255', // Removed unique here to catch it in try-catch for custom message
-            'phone' => 'nullable|string|max:50',
+            'email' => 'required|email:rfc|max:255|unique:customers,email',
+            'phone' => ['nullable', 'regex:/^0[5-7]\d{8}$/'],
             'address' => 'nullable|string',
         ], [
-            'email.unique' => 'This email address is already registered. Please use a different email or login to your existing account.'
+            'email.unique' => 'This email address is already registered. Please use a different email or login to your existing account.',
+            'phone.regex' => 'Phone number must be 10 digits in Moroccan format (e.g., 0612345678).',
         ]);
 
         try {
@@ -163,11 +164,12 @@ class CustomerController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255', // Removed unique here as well
-            'phone' => 'nullable|string|max:50',
+            'email' => 'required|email:rfc|max:255|unique:customers,email,' . $customer->id,
+            'phone' => ['nullable', 'regex:/^0[5-7]\d{8}$/'],
             'address' => 'nullable|string',
         ], [
-            'email.unique' => 'This email address is already registered. Please use a different email or login to your existing account.'
+            'email.unique' => 'This email address is already registered. Please use a different email or login to your existing account.',
+            'phone.regex' => 'Phone number must be 10 digits in Moroccan format (e.g., 0612345678).',
         ]);
 
         try {
@@ -190,6 +192,12 @@ class CustomerController extends Controller
     {
         if ((Auth::user() ?? User::first())->role !== User::ROLE_ADMIN) {
             return response()->json(['message' => 'Forbidden - Admin only'], 403);
+        }
+
+        if ($customer->hasActiveTransactions()) {
+            return response()->json([
+                'message' => 'Cannot delete customer with existing transactions. Please archive the customer instead.'
+            ], 422);
         }
 
         $customer->delete();

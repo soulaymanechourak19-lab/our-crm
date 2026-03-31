@@ -7,6 +7,11 @@ export interface User {
     name: string;
     email: string;
     role: 'admin' | 'agent_commercial' | 'agent_sav';
+    phone?: string | null;
+    address?: string | null;
+    city?: string | null;
+    profile_picture?: string | null;
+    profile_picture_url?: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -18,7 +23,7 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;
     register: (name: string, email: string, password: string, password_confirmation: string) => Promise<void>;
     logout: () => Promise<void>;
-    updateProfile: (data: Record<string, string>) => Promise<void>;
+    updateProfile: (data: Record<string, string> | FormData) => Promise<void>;
 }
 
 // ── Context ────────────────────────────────────────────
@@ -96,9 +101,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     // ── Update profile ──
-    const updateProfile = async (profileData: Record<string, string>) => {
-        const { data } = await api.put('/profile', profileData);
-        setUser(data.user);
+    const updateProfile = async (profileData: Record<string, string> | FormData) => {
+        const isFormData = profileData instanceof FormData;
+        if (isFormData) {
+            // For file uploads, use POST with _method=PUT
+            profileData.append('_method', 'PUT');
+            const { data } = await api.post('/profile', profileData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            setUser(data.user);
+        } else {
+            const { data } = await api.put('/profile', profileData);
+            setUser(data.user);
+        }
     };
 
     return (

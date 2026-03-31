@@ -107,6 +107,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── CRM: Discounts ──────────────────────────────────────────────────
     Route::post('/discounts/validate', [DiscountController::class, 'validateCode']);
+    Route::post('/discounts/loyalty-suggestion', [DiscountController::class, 'loyaltySuggestion']);
+    Route::get('/discounts/search-customers', [DiscountController::class, 'searchCustomers']);
     Route::apiResource('discounts', DiscountController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
 
     // ── Chatbot Training (admin) ────────────────────────────────────

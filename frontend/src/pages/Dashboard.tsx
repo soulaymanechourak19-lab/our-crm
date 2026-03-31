@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { getDashboardStats } from '../services/api';
 import { getProducts } from '../services/products';
@@ -123,6 +124,12 @@ const Dashboard: React.FC = React.memo(() => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const { formatCurrency } = useCurrency();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const chartGrid = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.08)';
+    const chartTooltip = { backgroundColor: isDark ? '#1a1f35' : '#ffffff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`, borderRadius: '10px', color: isDark ? '#f1f5f9' : '#1e293b', fontSize: '12px' };
+    const chartAxis = isDark ? '#64748b' : '#94a3b8';
+    const legendColor = isDark ? '#94a3b8' : '#64748b';
     const [stats, setStats] = useState<Stats>({ totalProducts: 0, lowStockCount: 0, totalLeads: 0, totalCustomers: 0, totalRevenue: 0 });
     const [productsByCategory, setProductsByCategory] = useState<{ category: string; count: number }[]>([]);
     const [chartData, setChartData] = useState({
@@ -334,12 +341,10 @@ const Dashboard: React.FC = React.memo(() => {
                                             <stop offset="100%" stopColor="#e84393" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                                    <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: '#1a1f35', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#f1f5f9', fontSize: '12px' }}
-                                    />
+                                    <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
+                                    <XAxis dataKey="month" stroke={chartAxis} fontSize={11} tickLine={false} axisLine={false} />
+                                    <YAxis stroke={chartAxis} fontSize={11} tickLine={false} axisLine={false} />
+                                    <Tooltip contentStyle={chartTooltip} />
                                     <Area type="monotone" dataKey="leads" stroke="#e84393" strokeWidth={2.5} fill="url(#leadGrad)" dot={{ fill: '#e84393', r: 4, strokeWidth: 0 }} activeDot={{ r: 6, stroke: '#e84393', strokeWidth: 2 }} />
                                 </AreaChart>
                             </ResponsiveContainer>
@@ -353,12 +358,10 @@ const Dashboard: React.FC = React.memo(() => {
                             </div>
                             <ResponsiveContainer width="100%" height={220}>
                                 <BarChart data={productsByCategory.length > 0 ? productsByCategory : [{ category: 'No data', count: 0 }]}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                                    <XAxis dataKey="category" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: '#1a1f35', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#f1f5f9', fontSize: '12px' }}
-                                    />
+                                    <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
+                                    <XAxis dataKey="category" stroke={chartAxis} fontSize={11} tickLine={false} axisLine={false} />
+                                    <YAxis stroke={chartAxis} fontSize={11} tickLine={false} axisLine={false} />
+                                    <Tooltip contentStyle={chartTooltip} />
                                     <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                                         {(productsByCategory.length > 0 ? productsByCategory : [{ category: 'No data', count: 0 }]).map((_, i) => (
                                             <Cell key={i} fill={barColors[i % barColors.length]} />
@@ -442,11 +445,9 @@ const Dashboard: React.FC = React.memo(() => {
                                         <Cell key={`cell-${index}`} fill={entry.color || barColors[index % barColors.length]} />
                                     ))}
                                 </Pie>
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#1a1f35', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#f1f5f9', fontSize: '12px' }}
-                                />
+                                <Tooltip contentStyle={chartTooltip} />
                                 <Legend
-                                    formatter={(value: any) => <span style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 500 }}>{value}</span>}
+                                    formatter={(value: any) => <span style={{ color: legendColor, fontSize: '11px', fontWeight: 500 }}>{value}</span>}
                                 />
                             </PieChart>
                         </ResponsiveContainer>

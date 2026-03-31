@@ -25,6 +25,21 @@ class Customer extends Model
         'loyalty_score' => 'integer',
     ];
 
+    /**
+     * Boot the model — enforce business rules on save.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($customer) {
+            // Loyalty score cannot be negative
+            if ($customer->loyalty_score < 0) {
+                $customer->loyalty_score = 0;
+            }
+        });
+    }
+
     public function lead(): BelongsTo
     {
         return $this->belongsTo(Lead::class, 'converted_from_lead_id');
@@ -55,11 +70,19 @@ class Customer extends Model
         return $this->hasMany(\App\Models\Campaign::class, 'client_id');
     }
 
+    /**
+     * Check if this customer has any transactions.
+     */
+    public function hasActiveTransactions(): bool
+    {
+        return $this->transactions()->exists();
+    }
+
     public function updateLoyaltyScore(): void
     {
         // Simple logic: +1 per interaction.
-        // In a real app, you might sum interaction types or transaction values.
-        $this->loyalty_score = $this->interactions()->count();
+        $score = $this->interactions()->count();
+        $this->loyalty_score = max(0, $score);
         $this->save();
     }
 

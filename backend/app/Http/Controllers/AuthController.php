@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email:rfc|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -87,7 +87,10 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $request->user()->id,
+            'email' => 'sometimes|required|string|email:rfc|max:255|unique:users,email,' . $request->user()->id,
+            'phone' => ['nullable', 'regex:/^0[5-7]\d{8}$/'],
+        ], [
+            'phone.regex' => 'Phone number must be 10 digits in Moroccan format (e.g., 0612345678).',
         ]);
 
         $request->user()->update($validated);

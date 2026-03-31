@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ticketService, TicketStats } from '../services/ticketService';
+import { Ticket, Circle, CheckCircle, Calendar, BarChart2, Timer, Target, Users, Wrench } from 'lucide-react';
 
 const SAVDashboard: React.FC = () => {
     const [stats, setStats] = useState<TicketStats | null>(null);
@@ -37,12 +38,12 @@ const SAVDashboard: React.FC = () => {
     }
 
     const statCards = [
-        { label: 'Total Tickets',   value: stats.total,       icon: '🎫', color: '#6366f1', gradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
-        { label: 'Ouverts',         value: stats.open,        icon: '🔵', color: '#3b82f6', gradient: 'linear-gradient(135deg, #3b82f6, #2563eb)' },
-        { label: 'En cours',        value: stats.in_progress, icon: '🟡', color: '#f59e0b', gradient: 'linear-gradient(135deg, #f59e0b, #d97706)' },
-        { label: 'Résolus',         value: stats.resolved,    icon: '🟢', color: '#10b981', gradient: 'linear-gradient(135deg, #10b981, #059669)' },
-        { label: 'Fermés',          value: stats.closed,      icon: '⚫', color: '#6b7280', gradient: 'linear-gradient(135deg, #6b7280, #4b5563)' },
-        { label: 'Cette semaine',   value: stats.recent_count, icon: '📅', color: '#8b5cf6', gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' },
+        { label: 'Total Tickets',   value: stats.total,       icon: <Ticket size={24} />, color: '#6366f1', gradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
+        { label: 'Ouverts',         value: stats.open,        icon: <Circle size={24} fill="currentColor" strokeWidth={0} />, color: '#3b82f6', gradient: 'linear-gradient(135deg, #3b82f6, #2563eb)' },
+        { label: 'En cours',        value: stats.in_progress, icon: <Circle size={24} fill="currentColor" strokeWidth={0} />, color: '#f59e0b', gradient: 'linear-gradient(135deg, #f59e0b, #d97706)' },
+        { label: 'Résolus',         value: stats.resolved,    icon: <CheckCircle size={24} />, color: '#10b981', gradient: 'linear-gradient(135deg, #10b981, #059669)' },
+        { label: 'Fermés',          value: stats.closed,      icon: <Circle size={24} fill="currentColor" strokeWidth={0} />, color: '#6b7280', gradient: 'linear-gradient(135deg, #6b7280, #4b5563)' },
+        { label: 'Cette semaine',   value: stats.recent_count, icon: <Calendar size={24} />, color: '#8b5cf6', gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' },
     ];
 
     return (
@@ -50,7 +51,7 @@ const SAVDashboard: React.FC = () => {
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-[var(--text-primary)]">📊 Dashboard SAV</h1>
+                    <h1 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2"><BarChart2 size={24} className="text-indigo-500" /> Dashboard SAV</h1>
                     <p className="text-sm text-[var(--text-secondary)] mt-1">Vue d'ensemble du support client</p>
                 </div>
                 <a href="#/tickets"
@@ -65,7 +66,7 @@ const SAVDashboard: React.FC = () => {
                 {statCards.map((card, i) => (
                     <div key={i} className="glass-card p-5 relative overflow-hidden group hover:shadow-lg transition-all animate-slide-in"
                         style={{ animationDelay: `${i * 80}ms` }}>
-                        <div className="absolute top-0 right-0 p-3 opacity-10 text-4xl">{card.icon}</div>
+                        <div className="absolute top-0 right-0 p-4 opacity-10 flex text-black dark:text-white" style={{ color: card.color }}>{card.icon}</div>
                         <p className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">{card.label}</p>
                         <p className="text-3xl font-bold mt-2" style={{ color: card.color }}>{card.value}</p>
                     </div>
@@ -76,7 +77,7 @@ const SAVDashboard: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Average resolution time */}
                 <div className="glass-card p-6">
-                    <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">⏱️ Temps moyen de résolution</h2>
+                    <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4 flex items-center gap-1.5"><Timer size={16} /> Temps moyen de résolution</h2>
                     <div className="flex items-end gap-2">
                         <span className="text-5xl font-bold text-[var(--text-primary)]">{stats.avg_resolution_hours}</span>
                         <span className="text-lg text-[var(--text-secondary)] mb-1">heures</span>
@@ -98,20 +99,20 @@ const SAVDashboard: React.FC = () => {
 
                 {/* Priority breakdown */}
                 <div className="glass-card p-6">
-                    <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">🎯 Répartition par priorité</h2>
+                    <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4 flex items-center gap-1.5"><Target size={16} /> Répartition par priorité</h2>
                     <div className="space-y-3">
                         {[
-                            { key: 'critical', label: 'Critique', color: '#ef4444', icon: '🔴' },
-                            { key: 'high', label: 'Haute', color: '#f59e0b', icon: '▲' },
-                            { key: 'medium', label: 'Moyenne', color: '#3b82f6', icon: '◆' },
-                            { key: 'low', label: 'Basse', color: '#6b7280', icon: '▽' },
+                            { key: 'critical', label: 'Critique', color: '#ef4444', icon: <Circle size={10} fill="currentColor" strokeWidth={0} /> },
+                            { key: 'high', label: 'Haute', color: '#f59e0b', icon: <Circle size={10} fill="currentColor" strokeWidth={0} /> },
+                            { key: 'medium', label: 'Moyenne', color: '#3b82f6', icon: <Circle size={10} fill="currentColor" strokeWidth={0} /> },
+                            { key: 'low', label: 'Basse', color: '#6b7280', icon: <Circle size={10} fill="currentColor" strokeWidth={0} /> },
                         ].map((p) => {
                             const count = stats.by_priority[p.key as keyof typeof stats.by_priority] || 0;
                             const pct = stats.total > 0 ? (count / stats.total) * 100 : 0;
                             return (
                                 <div key={p.key}>
                                     <div className="flex justify-between items-center mb-1">
-                                        <span className="text-sm text-[var(--text-primary)]">{p.icon} {p.label}</span>
+                                        <span className="text-sm text-[var(--text-primary)] flex items-center gap-1.5">{p.icon} {p.label}</span>
                                         <span className="text-sm font-semibold" style={{ color: p.color }}>{count}</span>
                                     </div>
                                     <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-subtle)' }}>
@@ -126,7 +127,7 @@ const SAVDashboard: React.FC = () => {
 
             {/* Tickets par agent */}
             <div className="glass-card p-6 mt-6">
-                <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">👥 Tickets ouverts par agent</h2>
+                <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4 flex items-center gap-1.5"><Users size={16} /> Tickets ouverts par agent</h2>
                 {stats.by_agent && stats.by_agent.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         {stats.by_agent.map((agent, i) => {
@@ -134,7 +135,7 @@ const SAVDashboard: React.FC = () => {
                             return (
                                 <div key={i} className="p-4 rounded-xl" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="text-sm font-semibold text-[var(--text-primary)]">🛠️ {agent.name}</span>
+                                        <span className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-1.5"><Wrench size={16} className="text-indigo-400" /> {agent.name}</span>
                                         <span className="text-lg font-bold text-indigo-400">{agent.total}</span>
                                     </div>
                                     <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-subtle)' }}>

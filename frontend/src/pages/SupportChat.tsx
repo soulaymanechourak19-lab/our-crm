@@ -1,5 +1,51 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './SupportChat.css';
+import { 
+    CheckCircle, Package, RefreshCw, Lock, MessageCircle, Lightbulb, Key, Ticket, 
+    DollarSign, Bot, Shield, XCircle, CreditCard, Bell, Wrench, Trash2, Globe, Smartphone, 
+    Plug, Zap, Truck, Gift, Hand, ArrowDown, Star, HelpCircle, Smile, Heart, Frown, Mail, User
+} from 'lucide-react';
+
+/* ── Emoji Map ───────────────────────────── */
+const EMOJI_MAP: Record<string, React.ReactElement> = {
+    '✅': <CheckCircle size={16} />,
+    '📦': <Package size={16} />,
+    '🔄': <RefreshCw size={16} />,
+    '🔐': <Lock size={16} />,
+    '🛠️': <Wrench size={16} />,
+    '🛠': <Wrench size={16} />,
+    '💬': <MessageCircle size={16} />,
+    '💡': <Lightbulb size={16} />,
+    '🔑': <Key size={16} />,
+    '🎫': <Ticket size={16} />,
+    '💰': <DollarSign size={16} />,
+    '🤖': <Bot size={16} />,
+    '🛡️': <Shield size={16} />,
+    '🛡': <Shield size={16} />,
+    '❌': <XCircle size={16} />,
+    '💳': <CreditCard size={16} />,
+    '🔔': <Bell size={16} />,
+    '🔧': <Wrench size={16} />,
+    '🗑️': <Trash2 size={16} />,
+    '🗑': <Trash2 size={16} />,
+    '🌐': <Globe size={16} />,
+    '📱': <Smartphone size={16} />,
+    '🔌': <Plug size={16} />,
+    '⚡': <Zap size={16} />,
+    '🚚': <Truck size={16} />,
+    '🎉': <Gift size={16} />,
+    '👋': <Hand size={16} />,
+    '👇': <ArrowDown size={16} />,
+    '🌟': <Star size={16} />,
+    '🤔': <HelpCircle size={16} />,
+    '😅': <Smile size={16} />,
+    '🙏': <Heart size={16} />,
+    '😔': <Frown size={16} />,
+    '📧': <Mail size={16} />,
+    '👤': <User size={16} />,
+};
+
+const emojiRegex = /([✅📦🔄🔐🛠💬💡🔑🎫💰🤖🛡❌💳🔔🔧🗑🌐📱🔌⚡🚚🎉👋👇🌟🤔😅🙏😔📧👤]|🛠️|🛡️|🗑️)/g;
 
 /* ── Types ──────────────────────────────────────────────────────── */
 interface Message {
@@ -33,12 +79,16 @@ const FormattedText: React.FC<{ text: string }> = ({ text }) => {
                 if (part.startsWith('**') && part.endsWith('**')) {
                     return <strong key={i}>{part.slice(2, -2)}</strong>;
                 }
-                return part.split('\n').map((line, j) => (
-                    <React.Fragment key={`${i}-${j}`}>
-                        {j > 0 && <br />}
-                        {line}
-                    </React.Fragment>
-                ));
+                const lines = part.split('\n');
+                return lines.map((line, j) => {
+                    const lineParts = line.split(emojiRegex);
+                    return (
+                        <React.Fragment key={`${i}-${j}`}>
+                            {j > 0 && <br />}
+                            {lineParts.map((lp, k) => EMOJI_MAP[lp] ? <span key={k} className="inline-flex items-center align-bottom mx-[2px] text-indigo-400">{EMOJI_MAP[lp]}</span> : lp)}
+                        </React.Fragment>
+                    );
+                });
             })}
         </>
     );
@@ -47,7 +97,7 @@ const FormattedText: React.FC<{ text: string }> = ({ text }) => {
 /* ── Ticket Success Card ────────────────────────────────────────── */
 const TicketCard: React.FC<{ data: { ticket_number: string; priority: string; agent: string } }> = ({ data }) => (
     <div className="sc-ticket-card">
-        <h4>✅ Ticket Created Successfully!</h4>
+        <h4 className="flex items-center gap-2 mb-3 text-emerald-500"><CheckCircle size={18} /> Ticket Created Successfully!</h4>
         <div className="sc-ticket-detail"><span className="sc-ticket-label">Ticket #</span><span className="sc-ticket-value">{data.ticket_number}</span></div>
         <div className="sc-ticket-detail"><span className="sc-ticket-label">Priority</span><span className="sc-ticket-value" style={{ textTransform: 'capitalize' }}>{data.priority}</span></div>
         <div className="sc-ticket-detail"><span className="sc-ticket-label">Assigned to</span><span className="sc-ticket-value">{data.agent}</span></div>
@@ -447,8 +497,8 @@ const SupportChat: React.FC = () => {
                     <div className="sc-messages">
                         {messages.map(msg => (
                             <div key={msg.id} className={`sc-msg ${msg.sender}`}>
-                                <div className="sc-msg-avatar">
-                                    {msg.sender === 'bot' ? <BotIcon /> : '👤'}
+                                <div className="sc-msg-avatar flex items-center justify-center">
+                                    {msg.sender === 'bot' ? <BotIcon /> : <User size={18} />}
                                 </div>
                                 <div>
                                     <div className="sc-msg-bubble">
@@ -479,10 +529,11 @@ const SupportChat: React.FC = () => {
                     {activeChips.length > 0 && (
                         <div className="sc-chips">
                             {activeChips.map(c => {
-                                const icon = c.includes('order') ? '📦' : c.includes('return') ? '🔄' : c.includes('account') || c.includes('login') ? '🔐' : c.includes('broken') || c.includes('product') || c.includes('Product') ? '🛠️' : c.includes('agent') || c.includes('ticket') || c.includes('Ticket') || c.includes('Create') ? '🎫' : c.includes('warranty') || c.includes('Warranty') ? '🛡️' : c.includes('another') ? '💬' : c.includes('thanks') || c.includes("That's all") ? '👋' : c.includes('Try') ? '🔄' : '💡';
+                                const rawIcon = c.includes('order') ? '📦' : c.includes('return') ? '🔄' : c.includes('account') || c.includes('login') ? '🔐' : c.includes('broken') || c.includes('product') || c.includes('Product') ? '🛠️' : c.includes('agent') || c.includes('ticket') || c.includes('Ticket') || c.includes('Create') ? '🎫' : c.includes('warranty') || c.includes('Warranty') ? '🛡️' : c.includes('another') ? '💬' : c.includes('thanks') || c.includes("That's all") ? '👋' : c.includes('Try') ? '🔄' : '💡';
+                                const chipIcon = EMOJI_MAP[rawIcon] || <Lightbulb size={16} />;
                                 return (
-                                    <button key={c} className="sc-chip" onClick={() => sendMessage(c)}>
-                                        <span>{icon}</span> {c}
+                                    <button key={c} className="sc-chip flex items-center gap-1.5" onClick={() => sendMessage(c)}>
+                                        <span className="text-indigo-400 flex items-center">{chipIcon}</span> <span className="pt-px">{c}</span>
                                     </button>
                                 );
                             })}
@@ -510,7 +561,7 @@ const SupportChat: React.FC = () => {
             {showEmailModal && (
                 <div className="sc-modal-overlay" onClick={() => setShowEmailModal(false)}>
                     <div className="sc-modal" onClick={e => e.stopPropagation()}>
-                        <h3>🎫 Create Support Ticket</h3>
+                        <h3 className="flex items-center justify-center gap-2 mb-4 text-center"><Ticket size={24} className="text-indigo-500" /> Create Support Ticket</h3>
                         <p>Please provide your details so our team can follow up with you. We typically respond within a few hours!</p>
 
                         <div className="sc-modal-field">
@@ -553,7 +604,7 @@ const SupportChat: React.FC = () => {
                         <div className="sc-modal-btns">
                             <button className="sc-modal-cancel" onClick={() => setShowEmailModal(false)}>Cancel</button>
                             <button className="sc-modal-submit" onClick={submitTicket} disabled={!emailForm.email || !emailForm.subject || submittingTicket}>
-                                {submittingTicket ? 'Creating...' : '🎫 Create Ticket'}
+                                {submittingTicket ? 'Creating...' : <div className="flex items-center gap-1"><Ticket size={16} /> Create Ticket</div>}
                             </button>
                         </div>
                     </div>

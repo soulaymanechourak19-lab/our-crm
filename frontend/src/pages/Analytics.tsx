@@ -7,6 +7,7 @@ import {
     AreaChart, Area, Cell, PieChart, Pie, Legend, LineChart, Line
 } from 'recharts';
 import api from '../services/api';
+import { useTheme } from '../context/ThemeContext';
 
 /* ─── Palette ──────────────────────────────────────────────────── */
 const C = ['#6c5ce7','#a29bfe','#00cec9','#fdcb6e','#e84393','#00b894','#ff7675','#74b9ff','#fab1a0','#55efc4'];
@@ -42,12 +43,14 @@ const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
 /* ─── Custom tooltip ──────────────────────────────────────────── */
 const CustomTooltip = ({ active, payload, label }: any) => {
     const { formatCurrency } = useCurrency();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     if (!active || !payload?.length) return null;
     return (
-        <div style={{ background: '#1a1f35', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 14px' }}>
-            <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginBottom: '4px' }}>{label}</div>
+        <div style={{ background: isDark ? '#1a1f35' : '#ffffff', border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`, borderRadius: '10px', padding: '10px 14px', boxShadow: isDark ? 'none' : '0 4px 12px rgba(0,0,0,0.08)' }}>
+            <div style={{ fontSize: '0.72rem', color: isDark ? '#94a3b8' : '#64748b', marginBottom: '4px' }}>{label}</div>
             {payload.map((p: any, i: number) => (
-                <div key={i} style={{ fontSize: '0.8rem', fontWeight: 700, color: p.color || '#f1f5f9' }}>
+                <div key={i} style={{ fontSize: '0.8rem', fontWeight: 700, color: p.color || (isDark ? '#f1f5f9' : '#1e293b') }}>
                     {p.name}: {typeof p.value === 'number' && p.value > 100 ? formatCurrency(p.value) : p.value}
                 </div>
             ))}
@@ -71,6 +74,11 @@ const Sparkline: React.FC<{ data: number[]; color: string }> = ({ data, color })
 const Analytics: React.FC = () => {
     const { formatCurrency } = useCurrency();
     const { t } = useTranslation();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const chartGrid = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.08)';
+    const chartAxis = isDark ? '#64748b' : '#94a3b8';
+    const legendColor = isDark ? '#94a3b8' : '#64748b';
     const [tab, setTab] = useState<Tab>('overview');
     const [overview, setOverview] = useState<any>(null);
     const [funnel, setFunnel] = useState<any>(null);
@@ -239,7 +247,7 @@ const Analytics: React.FC = () => {
                                                 <stop offset="100%" stopColor="#00b894" stopOpacity={0} />
                                             </linearGradient>
                                         </defs>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                        <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
                                         <XAxis dataKey="month_short" stroke="#64748b" fontSize={11} />
                                         <YAxis stroke="#64748b" fontSize={11} tickFormatter={(v: number) => formatCurrency(v)} />
                                         <Tooltip content={<CustomTooltip />} />
@@ -255,7 +263,7 @@ const Analytics: React.FC = () => {
                                             {sourcePerf.map((_, i) => <Cell key={i} fill={C[i % C.length]} />)}
                                         </Pie>
                                         <Tooltip content={<CustomTooltip />} />
-                                        <Legend formatter={(v: any) => <span style={{ color: '#94a3b8', fontSize: '10px' }}>{v}</span>} />
+                                        <Legend formatter={(v: any) => <span style={{ color: legendColor, fontSize: '10px' }}>{v}</span>} />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </div>
@@ -266,7 +274,7 @@ const Analytics: React.FC = () => {
                             <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>{svgIcons.trendUp} Customer Growth</h3>
                             <ResponsiveContainer width="100%" height={180}>
                                 <BarChart data={custGrowth}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                    <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
                                     <XAxis dataKey="month" stroke="#64748b" fontSize={11} />
                                     <YAxis stroke="#64748b" fontSize={11} />
                                     <Tooltip content={<CustomTooltip />} />
@@ -282,9 +290,10 @@ const Analytics: React.FC = () => {
                     <motion.div key="funnel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
                         <div style={card}>
                             <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>{svgIcons.funnel} Sales Funnel — {funnel.total_leads} total leads</h3>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center', maxWidth: '900px', margin: '0 auto', width: '100%' }}>
                                 {funnel.funnel.map((stage: any, i: number) => {
-                                    const width = funnel.funnel[0]?.count > 0 ? Math.max(20, (stage.count / funnel.funnel[0].count) * 100) : 20;
+                                    const maxCount = Math.max(...funnel.funnel.map((s: any) => s.count), 1);
+                                    const width = Math.max(20, (stage.count / maxCount) * 100);
                                     return (
                                         <motion.div key={stage.stage}
                                             initial={{ width: 0, opacity: 0 }}
@@ -292,14 +301,14 @@ const Analytics: React.FC = () => {
                                             transition={{ duration: 0.7, delay: i * 0.12 }}
                                             style={{
                                                 background: `linear-gradient(135deg, ${C[i]}, ${C[i]}99)`,
-                                                borderRadius: '12px', padding: '14px 20px',
-                                                display: 'flex', justifyContent: 'space-between', alignItems: 'center', minWidth: '220px',
+                                                borderRadius: '10px', padding: '10px 18px',
+                                                display: 'flex', justifyContent: 'space-between', alignItems: 'center', minWidth: '200px',
                                             }}>
-                                            <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.85rem' }}>{stage.stage}</span>
-                                            <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-                                                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.75rem', fontWeight: 600 }}>{stage.count} leads</span>
-                                                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem' }}>~{stage.avg_days}d avg</span>
-                                                <span style={{ color: '#fff', fontWeight: 800, fontSize: '0.9rem' }}>{stage.percentage}%</span>
+                                            <span style={{ color: '#fff', fontWeight: 700, fontSize: '0.8rem' }}>{stage.stage}</span>
+                                            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', fontWeight: 600 }}>{stage.count} leads</span>
+                                                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.68rem' }}>~{stage.avg_days}d avg</span>
+                                                <span style={{ color: '#fff', fontWeight: 800, fontSize: '0.85rem' }}>{stage.percentage}%</span>
                                             </div>
                                         </motion.div>
                                     );
@@ -336,7 +345,7 @@ const Analytics: React.FC = () => {
                                 {revByRep.length > 0 ? (
                                     <ResponsiveContainer width="100%" height={220}>
                                         <BarChart data={revByRep} layout="vertical">
-                                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                            <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
                                             <XAxis type="number" stroke="#64748b" fontSize={11} tickFormatter={(v: number) => formatCurrency(v)} />
                                             <YAxis type="category" dataKey="name" stroke="#64748b" fontSize={11} width={90} />
                                             <Tooltip content={<CustomTooltip />} />
@@ -353,7 +362,7 @@ const Analytics: React.FC = () => {
                                 {revByProduct?.by_quotation?.length > 0 ? (
                                     <ResponsiveContainer width="100%" height={220}>
                                         <BarChart data={revByProduct.by_quotation.slice(0, 8)}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                            <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
                                             <XAxis dataKey="name" stroke="#64748b" fontSize={10} angle={-20} textAnchor="end" height={50} />
                                             <YAxis stroke="#64748b" fontSize={11} tickFormatter={(v: number) => formatCurrency(v)} />
                                             <Tooltip content={<CustomTooltip />} />
@@ -372,8 +381,8 @@ const Analytics: React.FC = () => {
                                 <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>{svgIcons.trendUp} Monthly Revenue + Deals</h3>
                                 <ResponsiveContainer width="100%" height={240}>
                                     <LineChart data={revTrend}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                                        <XAxis dataKey="month_short" stroke="#64748b" fontSize={11} />
+                                        <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
+                                        <XAxis dataKey="month_short" stroke={chartAxis} fontSize={11} />
                                         <YAxis yAxisId="left" stroke="#64748b" fontSize={11} tickFormatter={(v: number) => formatCurrency(v)} />
                                         <YAxis yAxisId="right" orientation="right" stroke="#64748b" fontSize={11} />
                                         <Tooltip content={<CustomTooltip />} />
@@ -441,7 +450,7 @@ const Analytics: React.FC = () => {
                                 {revByRep.length > 0 ? (
                                     <ResponsiveContainer width="100%" height={240}>
                                         <BarChart data={revByRep.filter((r: any) => r.total_leads > 0)}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                            <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
                                             <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
                                             <YAxis stroke="#64748b" fontSize={11} unit="%" />
                                             <Tooltip content={<CustomTooltip />} />
@@ -571,7 +580,7 @@ const Analytics: React.FC = () => {
                                             {(reportConfig.chartType === 'bar') && (
                                                 <ResponsiveContainer width="100%" height={280}>
                                                     <BarChart data={reportResult.data}>
-                                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                                        <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
                                                         <XAxis dataKey="label" stroke="#64748b" fontSize={11} />
                                                         <YAxis stroke="#64748b" fontSize={11} tickFormatter={(v: number) => formatCurrency(v)} />
                                                         <Tooltip content={<CustomTooltip />} />
@@ -584,7 +593,7 @@ const Analytics: React.FC = () => {
                                             {(reportConfig.chartType === 'line') && (
                                                 <ResponsiveContainer width="100%" height={280}>
                                                     <LineChart data={reportResult.data}>
-                                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                                        <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
                                                         <XAxis dataKey="label" stroke="#64748b" fontSize={11} />
                                                         <YAxis stroke="#64748b" fontSize={11} tickFormatter={(v: number) => formatCurrency(v)} />
                                                         <Tooltip content={<CustomTooltip />} />
@@ -599,7 +608,7 @@ const Analytics: React.FC = () => {
                                                             {reportResult.data.map((_: any, i: number) => <Cell key={i} fill={C[i % C.length]} />)}
                                                         </Pie>
                                                         <Tooltip content={<CustomTooltip />} />
-                                                        <Legend formatter={(v: any) => <span style={{ color: '#94a3b8', fontSize: '10px' }}>{v}</span>} />
+                                                        <Legend formatter={(v: any) => <span style={{ color: legendColor, fontSize: '10px' }}>{v}</span>} />
                                                     </PieChart>
                                                 </ResponsiveContainer>
                                             )}
@@ -612,7 +621,7 @@ const Analytics: React.FC = () => {
                                                                 <stop offset="100%" stopColor="#6c5ce7" stopOpacity={0} />
                                                             </linearGradient>
                                                         </defs>
-                                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                                                        <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} />
                                                         <XAxis dataKey="label" stroke="#64748b" fontSize={11} />
                                                         <YAxis stroke="#64748b" fontSize={11} tickFormatter={(v: number) => formatCurrency(v)} />
                                                         <Tooltip content={<CustomTooltip />} />

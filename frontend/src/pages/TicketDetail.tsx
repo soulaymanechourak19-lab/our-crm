@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { ticketService, Ticket, TicketComment, Agent } from '../services/ticketService';
 import { useAuth } from '../context/AuthContext';
+import { Circle, CheckCircle, TicketIcon, User, Wrench, MessageCircle, ClipboardList, Lock, RadioIcon, Calendar, Tag, RefreshCw, Edit3, Trash2 } from 'lucide-react';
 
-const statusConfig: Record<string, { label: string; color: string; bg: string; icon: string }> = {
-    open:        { label: 'Ouvert',    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)',  icon: '🔵' },
-    in_progress: { label: 'En cours',  color: '#f59e0b', bg: 'rgba(245,158,11,0.15)',  icon: '🟡' },
-    resolved:    { label: 'Résolu',    color: '#10b981', bg: 'rgba(16,185,129,0.15)',   icon: '🟢' },
-    closed:      { label: 'Fermé',     color: '#6b7280', bg: 'rgba(107,114,128,0.15)', icon: '⚫' },
+const statusConfig: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
+    open:        { label: 'Ouvert',    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)',  icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
+    in_progress: { label: 'En cours',  color: '#f59e0b', bg: 'rgba(245,158,11,0.15)',  icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
+    resolved:    { label: 'Résolu',    color: '#10b981', bg: 'rgba(16,185,129,0.15)',   icon: <CheckCircle fill="currentColor" size={10} strokeWidth={0} /> },
+    closed:      { label: 'Fermé',     color: '#6b7280', bg: 'rgba(107,114,128,0.15)', icon: <Circle fill="currentColor" size={10} strokeWidth={0} /> },
 };
 
 const priorityConfig: Record<string, { label: string; color: string; bg: string }> = {
@@ -122,24 +123,24 @@ const TicketDetail: React.FC = () => {
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                                 <span className="text-xs font-mono text-[var(--text-muted)]">{ticket.ticket_number}</span>
-                                <span className="px-2.5 py-1 text-xs font-semibold rounded-full" style={{ color: s.color, background: s.bg }}>
+                                <span className="px-2.5 py-1 text-xs font-semibold rounded-full flex items-center gap-1" style={{ color: s.color, background: s.bg }}>
                                     {s.icon} {s.label}
                                 </span>
                                 <span className="px-2.5 py-1 text-xs font-semibold rounded-full" style={{ color: p.color, background: p.bg }}>
                                     {p.label}
                                 </span>
                                 {ticket.source && (
-                                    <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-purple-500/15 text-purple-400">
-                                        📡 {ticket.source}
+                                    <span className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-purple-500/15 text-purple-400 flex items-center gap-1">
+                                        <RadioIcon size={12} /> {ticket.source}
                                     </span>
                                 )}
                             </div>
                             <h1 className="text-xl font-bold text-[var(--text-primary)]">{ticket.title}</h1>
                             <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-[var(--text-secondary)]">
-                                {ticket.customer && <span>👤 Client: <strong>{ticket.customer.name}</strong></span>}
-                                {ticket.assigned_agent && <span>🛠️ Agent: <strong>{ticket.assigned_agent.name}</strong></span>}
-                                <span>📅 {new Date(ticket.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                                {ticket.category && <span>🏷️ {ticket.category}</span>}
+                                {ticket.customer && <span className="flex items-center gap-1"><User size={12} /> Client: <strong>{ticket.customer.name}</strong></span>}
+                                {ticket.assigned_agent && <span className="flex items-center gap-1"><Wrench size={12} /> Agent: <strong>{ticket.assigned_agent.name}</strong></span>}
+                                <span className="flex items-center gap-1"><Calendar size={12} /> {new Date(ticket.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                                {ticket.category && <span className="flex items-center gap-1"><Tag size={12} /> {ticket.category}</span>}
                             </div>
                         </div>
 
@@ -194,14 +195,14 @@ const TicketDetail: React.FC = () => {
             {/* Tabs */}
             <div className="flex space-x-1 mb-6 p-1 rounded-xl w-fit" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
                 <button onClick={() => setActiveTab('comments')}
-                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'comments' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 ${activeTab === 'comments' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                     style={activeTab === 'comments' ? { background: 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.2))' } : {}}>
-                    💬 Commentaires ({ticket.comments?.length || 0})
+                    <MessageCircle size={16} /> Commentaires ({ticket.comments?.length || 0})
                 </button>
                 <button onClick={() => setActiveTab('history')}
-                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'history' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
+                    className={`px-5 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 ${activeTab === 'history' ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}
                     style={activeTab === 'history' ? { background: 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.2))' } : {}}>
-                    📋 Historique ({ticket.history?.length || 0})
+                    <ClipboardList size={16} /> Historique ({ticket.history?.length || 0})
                 </button>
             </div>
 
@@ -224,8 +225,8 @@ const TicketDetail: React.FC = () => {
                                                 {comment.user?.name || 'Système'}
                                             </span>
                                             {comment.is_internal && (
-                                                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-amber-500/20 text-amber-400">
-                                                    🔒 Interne
+                                                <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-amber-500/20 text-amber-400 flex items-center gap-1">
+                                                    <Lock size={10} /> Interne
                                                 </span>
                                             )}
                                         </div>
@@ -235,7 +236,7 @@ const TicketDetail: React.FC = () => {
                                             </span>
                                             {user && (comment.user_id === user.id || user.role === 'admin') && (
                                                 <button onClick={() => handleDeleteComment(comment.id)}
-                                                    className="text-xs text-red-400 hover:text-red-300 transition-colors">🗑️</button>
+                                                    className="text-xs text-red-400 hover:text-red-300 transition-colors"><Trash2 size={14} /></button>
                                             )}
                                         </div>
                                     </div>
@@ -245,7 +246,7 @@ const TicketDetail: React.FC = () => {
                         </div>
                     ) : (
                         <div className="text-center py-8 text-[var(--text-muted)] mb-6">
-                            <div className="text-3xl mb-2">💬</div>
+                            <div className="mb-2 flex justify-center"><MessageCircle size={32} /></div>
                             <p className="text-sm">Aucun commentaire pour le moment</p>
                         </div>
                     )}
@@ -261,15 +262,15 @@ const TicketDetail: React.FC = () => {
                         />
                         <div className="flex justify-between items-center mt-3">
                             {canManage && (
-                                <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={isInternal}
-                                        onChange={(e) => setIsInternal(e.target.checked)}
-                                        className="rounded"
-                                    />
-                                    🔒 Commentaire interne (non visible par le client)
-                                </label>
+                                    <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={isInternal}
+                                            onChange={(e) => setIsInternal(e.target.checked)}
+                                            className="rounded"
+                                        />
+                                        <Lock size={14} /> Commentaire interne (non visible par le client)
+                                    </label>
                             )}
                             <button type="submit" disabled={submittingComment || !newComment.trim()}
                                 className="px-5 py-2 text-sm font-semibold text-white rounded-xl transition-all hover:shadow-lg disabled:opacity-50 ml-auto"
@@ -288,8 +289,8 @@ const TicketDetail: React.FC = () => {
                         <div className="space-y-3">
                             {ticket.history.map((entry: any) => (
                                 <div key={entry.id} className="flex items-start gap-3 p-3 rounded-xl" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)' }}>
-                                    <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-sm flex-shrink-0">
-                                        {entry.field === 'status' ? '🔄' : entry.field === 'assigned_to' ? '👤' : '📝'}
+                                    <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-sm flex-shrink-0 text-indigo-400">
+                                        {entry.field === 'status' ? <RefreshCw size={14} /> : entry.field === 'assigned_to' ? <User size={14} /> : <Edit3 size={14} />}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm text-[var(--text-primary)]">
@@ -307,7 +308,7 @@ const TicketDetail: React.FC = () => {
                         </div>
                     ) : (
                         <div className="text-center py-8 text-[var(--text-muted)]">
-                            <div className="text-3xl mb-2">📋</div>
+                            <div className="mb-2 flex justify-center"><ClipboardList size={32} /></div>
                             <p className="text-sm">Aucun changement enregistré</p>
                         </div>
                     )}

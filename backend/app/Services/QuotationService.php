@@ -88,10 +88,41 @@ class QuotationService
                 return ['success' => false, 'message' => 'No customer linked to this quotation'];
             }
 
-            // Create transactions for each quotation item
-            $transactions = [];
+            // Check stock availability for ALL items before committing
+            $stockErrors = [];
             foreach ($quotation->items as $item) {
                 if ($item->product_id) {
+                    $product = \Modules\Sales\Entities\Product::find($item->product_id);
+                    if ($product && !$product->hasEnoughStock($item->quantity)) {
+                        $stockErrors[] = "Insufficient stock for '{$product->name}': available {$product->stock}, requested {$item->quantity}.";
+                    }
+                }
+            }
+
+            if (!empty($stockErrors)) {
+                return [
+                    'success' => false,
+                    'message' => 'Cannot convert quotation due to insufficient stock.',
+                    'stock_errors' => $stockErrors,
+                ];
+            }
+
+            // Create transactions for each quotation item
+            $transactions = [];
+            $stockWarnings = [];
+            foreach ($quotation->items as $item) {
+                if ($item->product_id) {
+                    $product = \Modules\Sales\Entities\Product::find($item->product_id);
+
+                    // Decrease stock
+                    if ($product) {
+                        $product->decreaseStock($item->quantity);
+
+                        if ($product->isLowStock()) {
+                            $stockWarnings[] = "Warning: '{$product->name}' stock is low ({$product->stock} remaining).";
+                        }
+                    }
+
                     $transactions[] = Transaction::create([
                         'client_id' => $customer->id,
                         'product_id' => $item->product_id,
@@ -105,12 +136,18 @@ class QuotationService
 
             $quotation->update(['status' => 'converted']);
 
-            return [
+            $result = [
                 'success' => true,
                 'customer' => $customer,
                 'transactions' => $transactions,
                 'message' => 'Quotation converted successfully',
             ];
+
+            if (!empty($stockWarnings)) {
+                $result['stock_warnings'] = $stockWarnings;
+            }
+
+            return $result;
         });
     }
 

@@ -49,7 +49,8 @@ class LeadController extends Controller
             });
         }
 
-        return $query->orderBy('created_at', 'desc')->paginate(15);
+        $perPage = $request->input('per_page', 15);
+        return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function store(Request $request)
@@ -63,9 +64,12 @@ class LeadController extends Controller
         $validated = $request->validate([
             'company_name' => 'required|string|max:255',
             'contact_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:50',
+            'email' => 'required|email:rfc|max:255|unique:leads,email',
+            'phone' => ['nullable', 'regex:/^0[5-7]\d{8}$/'],
             'source' => 'nullable|string|in:website,referral,event,manual,nearby',
+        ], [
+            'phone.regex' => 'Phone number must be 10 digits in Moroccan format (e.g., 0612345678).',
+            'email.unique' => 'A lead with this email already exists.',
         ]);
 
         $lead = Lead::create([
@@ -108,9 +112,12 @@ class LeadController extends Controller
         $validated = $request->validate([
             'company_name' => 'required|string|max:255',
             'contact_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:50',
+            'email' => 'required|email:rfc|max:255|unique:leads,email,' . $lead->id,
+            'phone' => ['nullable', 'regex:/^0[5-7]\d{8}$/'],
             'source' => 'nullable|string|in:website,referral,event,manual,nearby',
+        ], [
+            'phone.regex' => 'Phone number must be 10 digits in Moroccan format (e.g., 0612345678).',
+            'email.unique' => 'A lead with this email already exists.',
         ]);
 
         $lead->update($validated);
@@ -150,6 +157,12 @@ class LeadController extends Controller
         $validated = $request->validate([
             'status' => 'required|in:new,contacted,qualified,converted,hot,expired',
         ]);
+
+        if (!$lead->canTransitionTo($validated['status'])) {
+            return response()->json([
+                'message' => "Cannot transition from '{$lead->status}' to '{$validated['status']}'. Invalid status progression."
+            ], 422);
+        }
 
         $lead->update(['status' => $validated['status']]);
 

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -24,6 +25,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'phone',
+        'address',
+        'city',
+        'profile_picture',
     ];
 
     // Role constants
@@ -42,6 +47,11 @@ class User extends Authenticatable
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     */
+    protected $appends = ['profile_picture_url'];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -52,6 +62,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'role' => 'string',
         ];
+    }
+
+    /**
+     * Get the full URL for the profile picture.
+     */
+    public function getProfilePictureUrlAttribute(): ?string
+    {
+        if (!$this->profile_picture) {
+            return null;
+        }
+
+        return asset('storage/' . $this->profile_picture);
     }
 
     /**
@@ -86,3 +108,4 @@ class User extends Authenticatable
         return $this->hasMany(\Modules\Ticketing\Entities\Ticket::class, 'assigned_to');
     }
 }
+

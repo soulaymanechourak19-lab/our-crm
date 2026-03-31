@@ -97,6 +97,24 @@ class Lead extends Model
         return in_array($this->status, ['qualified', 'hot']);
     }
 
+    /**
+     * Check if the lead can transition to a new status.
+     * Enforces forward-only state machine.
+     */
+    public function canTransitionTo(string $newStatus): bool
+    {
+        $allowed = [
+            'new'       => ['contacted'],
+            'contacted' => ['qualified', 'hot'],
+            'qualified' => ['converted', 'hot'],
+            'hot'       => ['qualified', 'converted'],
+            'converted' => [],
+            'expired'   => [],
+        ];
+
+        return in_array($newStatus, $allowed[$this->status] ?? []);
+    }
+
     public function daysUntilExpiration(): ?int
     {
         if (!$this->expires_at) return null;

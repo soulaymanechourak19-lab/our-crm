@@ -4,6 +4,7 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import { Product, ProductFormData, createProduct, updateProduct } from '../../services/products';
 import { useToast } from '../common/Toast';
+import { useNotification } from '../../context/NotificationContext';
 
 interface ProductFormProps {
     isOpen: boolean;
@@ -23,6 +24,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ isOpen, onClose, product, onS
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
     const { showToast } = useToast();
+    const { addNotification } = useNotification();
 
     useEffect(() => {
         if (product) {
@@ -66,6 +68,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ isOpen, onClose, product, onS
             } else {
                 await createProduct(formData);
                 showToast('Product created successfully', 'success');
+                addNotification('success', 'New Product Added', `${formData.name} has been created.`);
             }
             onSuccess();
             onClose();

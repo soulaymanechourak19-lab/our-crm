@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { motion, Variants } from 'framer-motion';
+import { MessageCircle } from 'lucide-react';
 import ThemeToggleBtn from '../components/common/ThemeToggleBtn';
 import LanguageSwitcher from '../components/common/LanguageSwitcher';
 import './LandingPage.css';
@@ -64,7 +65,7 @@ const LandingPage: React.FC = () => {
           <li><a href="#about" onClick={() => setMenuOpen(false)}>{t('landing.nav.about')}</a></li>
           <li><a href="#features" onClick={() => setMenuOpen(false)}>{t('landing.nav.features')}</a></li>
           <li><a href="#implementation" onClick={() => setMenuOpen(false)}>{t('landing.nav.implementation')}</a></li>
-          <li><a href="#/support" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>💬 Support</a></li>
+          <li><a href="#/support" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><MessageCircle size={16} /> Support</a></li>
           <li><a href="#contact" onClick={() => setMenuOpen(false)}>{t('landing.nav.contact')}</a></li>
         </ul>
 

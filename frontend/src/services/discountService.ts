@@ -11,6 +11,10 @@ export interface Discount {
   max_uses?: number;
   used_count: number;
   is_active: boolean;
+  product_id?: number;
+  customer_id?: number;
+  product?: { id: number; name: string; price: number; category?: string };
+  customer?: { id: number; name: string; email: string; loyalty_score: number };
   created_at: string;
 }
 
@@ -22,6 +26,13 @@ export interface CustomerDiscount {
   order_id?: number;
   discount?: Discount;
   created_at: string;
+}
+
+export interface LoyaltySuggestion {
+  customer_id: number;
+  loyalty_score: number;
+  tier: 'Bronze' | 'Silver' | 'Gold';
+  suggested_percent: number;
 }
 
 export const discountService = {
@@ -52,6 +63,11 @@ export const discountService = {
 
   async getCustomerDiscounts(customerId: number) {
     const response = await api.get(`/customers/${customerId}/discounts`);
+    return response.data;
+  },
+
+  async getLoyaltySuggestion(customerId: number): Promise<LoyaltySuggestion> {
+    const response = await api.post('/discounts/loyalty-suggestion', { customer_id: customerId });
     return response.data;
   }
 };

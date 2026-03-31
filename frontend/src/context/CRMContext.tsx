@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import api from '../services/api';
 import { quotationService, Quotation } from '../services/quotationService';
 import { discountService, Discount } from '../services/discountService';
+import { useNotification } from './NotificationContext';
 
 // Types
 export interface User {
@@ -71,7 +72,7 @@ interface CRMContextType {
     leads: Lead[];
     leadsPagination: PaginationMeta;
     leadsLoading: boolean;
-    fetchLeads: (page?: number, filters?: { status?: string; search?: string }) => Promise<void>;
+    fetchLeads: (page?: number, filters?: { status?: string; search?: string; per_page?: number }) => Promise<void>;
     addLead: (lead: Partial<Lead>) => Promise<boolean>;
     updateLead: (id: number, lead: Partial<Lead>) => Promise<boolean>;
     updateLeadStatus: (id: number, status: string) => Promise<boolean>;
@@ -134,6 +135,8 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const [discountsPagination, setDiscountsPagination] = useState<PaginationMeta>(defaultPagination);
     const [discountsLoading, setDiscountsLoading] = useState(false);
 
+    const { addNotification } = useNotification();
+
     const clearError = () => setError(null);
 
     const showToast = useCallback((message: string, type: 'success' | 'error') => {
@@ -143,13 +146,14 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // ─── Leads ───────────────────────────────────────────────────────
 
-    const fetchLeads = useCallback(async (page = 1, filters: { status?: string; search?: string } = {}) => {
+    const fetchLeads = useCallback(async (page = 1, filters: { status?: string; search?: string; per_page?: number } = {}) => {
         setLeadsLoading(true);
         setError(null);
         const params = new URLSearchParams();
         params.set('page', String(page));
         if (filters.status) params.set('status', filters.status);
         if (filters.search) params.set('search', filters.search);
+        if (filters.per_page) params.set('per_page', String(filters.per_page));
 
         try {
             const { data } = await api.get(`/leads?${params.toString()}`);
@@ -169,8 +173,9 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const addLead = async (lead: Partial<Lead>) => {
         try {
-            await api.post('/leads', lead);
+            const { data } = await api.post('/leads', lead);
             showToast('Lead created successfully', 'success');
+            addNotification('success', 'New Lead Added', `${lead.company_name || 'A new lead'} has been created.`);
             await fetchLeads();
             return true;
         } catch (err: any) {
@@ -195,6 +200,11 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         try {
             await api.put(`/leads/${id}/status`, { status });
             showToast('Lead status updated', 'success');
+            
+            // Find the lead to get its name for the notification
+            const lead = leads.find(l => l.id === id);
+            addNotification('info', 'Lead Status Changed', `${lead?.company_name || 'Lead'} is now ${status}.`);
+            
             await fetchLeads(leadsPagination.current_page);
             return true;
         } catch (err: any) {
@@ -219,6 +229,7 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         try {
             await api.post(`/leads/${id}/convert`);
             showToast('Lead converted to customer!', 'success');
+            addNotification('success', 'Lead Converted', `Successfully converted lead to customer.`);
             await fetchLeads(leadsPagination.current_page);
             return true;
         } catch (err: any) {
@@ -258,6 +269,7 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         try {
             await api.post('/customers', customer);
             showToast('Customer created successfully', 'success');
+            addNotification('success', 'New Customer', `${customer.name || 'A new customer'} has been added.`);
             await fetchCustomers();
             return true;
         } catch (err: any) {

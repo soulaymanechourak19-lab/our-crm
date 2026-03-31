@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
+import { Icons } from '../components/common/Icons';
 
 interface Intent {
     id: number;
@@ -201,8 +202,8 @@ const ChatbotTraining: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-3">
                     <button onClick={seedData} disabled={seeding}
-                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:bg-[var(--border-subtle)] transition disabled:opacity-50">
-                        {seeding ? 'Seeding...' : '🌱 Seed Data'}
+                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-subtle)] hover:bg-[var(--border-subtle)] transition disabled:opacity-50 flex items-center gap-1">
+                        {seeding ? 'Seeding...' : <><Icons.Leaf size={14} /> Seed Data</>}
                     </button>
                     <button onClick={trainModel} disabled={training}
                         className="px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95 transition disabled:opacity-50 flex items-center gap-2">
@@ -217,8 +218,8 @@ const ChatbotTraining: React.FC = () => {
             <div className="glass-card p-4 flex flex-wrap gap-6 text-sm">
                 <div>
                     <span className="text-[var(--text-secondary)]">Status:</span>{' '}
-                    <span className={modelInfo?.status === 'trained' ? 'text-emerald-400 font-bold' : 'text-amber-400'}>
-                        {modelInfo?.status === 'trained' ? '🟢 Trained' : '🟡 Not trained'}
+                    <span className={modelInfo?.status === 'trained' ? 'text-emerald-400 font-bold inline-flex items-center gap-1.5' : 'text-amber-400 inline-flex items-center gap-1.5'}>
+                        {modelInfo?.status === 'trained' ? <><Icons.Circle size={10} fill="currentColor" strokeWidth={0} /> Trained</> : <><Icons.Circle size={10} fill="currentColor" strokeWidth={0} /> Not trained</>}
                     </span>
                 </div>
                 {modelInfo?.num_intents && <div><span className="text-[var(--text-secondary)]">Intents:</span> <span className="text-[var(--text-primary)] font-bold">{modelInfo.num_intents}</span></div>}
@@ -317,7 +318,7 @@ const ChatbotTraining: React.FC = () => {
                                     </motion.div>
                                 ))}
                             </AnimatePresence>
-                            {intents.length === 0 && <p className="text-sm text-[var(--text-muted)] text-center py-8">No intents yet. Click "🌱 Seed Data" to get started!</p>}
+                            {intents.length === 0 && <p className="text-sm text-[var(--text-muted)] text-center py-8">No intents yet. Click "<Icons.Leaf size={14} className="inline -mt-1" /> Seed Data" to get started!</p>}
                         </div>
                     </div>
 
@@ -398,7 +399,7 @@ const ChatbotTraining: React.FC = () => {
                 >
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-base font-bold text-[var(--text-primary)]">Prediction Logs ({logs.length})</h2>
-                        <button onClick={loadLogs} className="text-xs text-indigo-400 hover:text-indigo-300">🔄 Refresh</button>
+                        <button onClick={loadLogs} className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300"><Icons.RefreshCw size={14} /> Refresh</button>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">

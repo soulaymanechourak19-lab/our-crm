@@ -1,4 +1,5 @@
 import React from 'react';
+import { Frown, Meh, Smile, Star } from 'lucide-react';
 
 interface SentimentDisplayProps {
     sentiment: 'negative' | 'neutral' | 'positive';
@@ -12,12 +13,12 @@ interface SentimentDisplayProps {
  */
 const SentimentDisplay: React.FC<SentimentDisplayProps> = ({ sentiment, stars, confidence, text }) => {
     const config = {
-        negative: { color: '#ef4444', bg: 'rgba(239,68,68,0.12)', emoji: '😞', label: 'Negative' },
-        neutral: { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', emoji: '😐', label: 'Neutral' },
-        positive: { color: '#10b981', bg: 'rgba(16,185,129,0.12)', emoji: '😊', label: 'Positive' },
+        negative: { color: '#ef4444', bg: 'rgba(239,68,68,0.12)', icon: <Frown size={20} strokeWidth={2.5} />, label: 'Negative' },
+        neutral: { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', icon: <Meh size={20} strokeWidth={2.5} />, label: 'Neutral' },
+        positive: { color: '#10b981', bg: 'rgba(16,185,129,0.12)', icon: <Smile size={20} strokeWidth={2.5} />, label: 'Positive' },
     };
 
-    const { color, bg, emoji, label } = config[sentiment] || config.neutral;
+    const { color, bg, icon, label } = config[sentiment] || config.neutral;
 
     return (
         <div style={{
@@ -26,12 +27,12 @@ const SentimentDisplay: React.FC<SentimentDisplayProps> = ({ sentiment, stars, c
         }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '20px' }}>{emoji}</span>
+                    <span style={{ display: 'flex', color }}>{icon}</span>
                     <span style={{ fontWeight: 600, color, fontSize: '14px' }}>{label}</span>
                 </div>
                 <div style={{ display: 'flex', gap: '2px' }}>
                     {[1, 2, 3, 4, 5].map((s) => (
-                        <span key={s} style={{ fontSize: '14px', opacity: s <= stars ? 1 : 0.2 }}>⭐</span>
+                        <Star key={s} size={14} fill={s <= stars ? '#fbbf24' : 'transparent'} stroke={s <= stars ? '#fbbf24' : '#d1d5db'} strokeWidth={2} />
                     ))}
                 </div>
             </div>

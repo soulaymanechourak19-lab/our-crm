@@ -35,11 +35,11 @@ const getPaginationGroup = (current: number, last: number) => {
 const Quotations: React.FC = () => {
     const { formatCurrency } = useCurrency();
     const {
-        quotations: crmQuotations, quotationsPagination, quotationsLoading,
+        quotations, quotationsPagination, quotationsLoading,
         fetchQuotations, currentUser
     } = useCRM();
 
-    const [quotations, setQuotations] = useState<Quotation[]>([]);
+
     const [showForm, setShowForm] = useState(false);
     const [editingQuotation, setEditingQuotation] = useState<Quotation | null>(null);
     const [search, setSearch] = useState('');

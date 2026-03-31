@@ -28,14 +28,25 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|email:rfc',
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0.01',
             'discount_code' => 'nullable|string',
+        ], [
+            'price.min' => 'Price must be greater than zero.',
+            'quantity.min' => 'Quantity must be at least 1.',
         ]);
 
-        return DB::transaction(function () use ($validated) {
+        // Check stock availability before proceeding
+        $product = \Modules\Sales\Entities\Product::findOrFail($validated['product_id']);
+        if (!$product->hasEnoughStock($validated['quantity'])) {
+            return response()->json([
+                'message' => "Insufficient stock. Only {$product->stock} units available for '{$product->name}'."
+            ], 422);
+        }
+
+        return DB::transaction(function () use ($validated, $product) {
             $email = $validated['email'];
             $customer = Customer::where('email', $email)->first();
             $lead = null;
@@ -65,9 +76,6 @@ class TransactionController extends Controller
                         \Log::warning("Could not send welcome discount email: {$e->getMessage()}");
                     }
                 } else if ($lead) {
-                    // Lead exists but not qualified/hot, treat as new customer anyway, or convert them.
-                    // Business rule says: "If lead doesn't exist, create customer directly"
-                    // If lead exists but not qualified, let's just create customer and convert lead
                     $customer = Customer::create([
                         'name' => $lead->contact_name,
                         'email' => $lead->email,
@@ -77,7 +85,7 @@ class TransactionController extends Controller
                     ]);
                     $lead->update(['status' => 'converted']);
                 } else {
-                    // Create customer directly from email (using first part of email as name)
+                    // Create customer directly from email
                     $customer = Customer::create([
                         'name' => explode('@', $email)[0],
                         'email' => $email,
@@ -89,7 +97,7 @@ class TransactionController extends Controller
             // Handle applied discount code for THIS purchase
             $discountId = null;
             $discountAmount = 0;
-            $totalPrice = tap($validated['quantity'] * $validated['price'], function($val) { return $val; }); // Base price
+            $totalPrice = $validated['quantity'] * $validated['price'];
 
             if (!empty($validated['discount_code'])) {
                 $discountCheck = $this->discountService->validateDiscount($validated['discount_code']);
@@ -101,6 +109,9 @@ class TransactionController extends Controller
                     return response()->json(['message' => $discountCheck['message']], 400);
                 }
             }
+
+            // Decrease stock
+            $product->decreaseStock($validated['quantity']);
 
             // Create the transaction
             $transaction = Transaction::create([
@@ -114,12 +125,20 @@ class TransactionController extends Controller
                 'converted_from_lead_id' => $lead ? $lead->id : null,
             ]);
 
-            return response()->json([
+            $response = [
                 'message' => 'Transaction created successfully',
                 'transaction' => $transaction,
                 'customer' => $customer,
                 'lead_converted' => $lead ? true : false,
-            ], 201);
+            ];
+
+            // Add stock warning if low
+            if ($product->isLowStock()) {
+                $response['stock_warning'] = true;
+                $response['stock_message'] = "Warning: '{$product->name}' stock is low ({$product->stock} remaining).";
+            }
+
+            return response()->json($response, 201);
         });
     }
 }

@@ -1,7 +1,8 @@
 import React from 'react';
-import { NavLink, NavLinkProps } from 'react-router-dom';
+import { NavLink, NavLinkProps, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 interface SidebarProps {
     isCollapsed: boolean;
@@ -28,6 +29,13 @@ const navItemVariants = {
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, isMobileOpen, onMobileClose }) => {
     const { t } = useTranslation();
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/login');
+    };
 
     const navItems: { path: string; label: string; icon: React.ReactNode }[] = [
         { path: '/dashboard', label: t('sidebar.dashboard'), icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg> },
@@ -105,14 +113,32 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, isMobileOpen, 
                     ))}
                 </motion.nav>
 
-                {/* Collapse Toggle (desktop) */}
-                <div className="hidden lg:block px-3 py-2 border-t border-dark-700/50">
+                {/* Bottom Actions */}
+                <div className="px-3 py-2 border-t border-dark-700/50 space-y-1">
                     <button
-                        onClick={onToggle}
-                        className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-dark-400 hover:text-white hover:bg-dark-800 rounded-xl transition-all text-sm font-medium"
+                        onClick={handleLogout}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 text-red-400/80 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all text-sm font-medium ${isCollapsed ? 'justify-center' : ''}`}
+                        title="Sign Out"
                     >
-                        {isCollapsed ? '→' : '← Collapse'}
+                        <span className="text-lg flex-shrink-0 flex items-center justify-center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                        </span>
+                        {!isCollapsed && <span>{t('sidebar.logout', 'Sign Out')}</span>}
                     </button>
+
+                    {/* Collapse Toggle (desktop) */}
+                    <div className="hidden lg:block pt-1 mt-1 border-t border-dark-700/50">
+                        <button
+                            onClick={onToggle}
+                            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-dark-400 hover:text-white hover:bg-dark-800 rounded-xl transition-all text-sm font-medium"
+                        >
+                            {isCollapsed ? '→' : '← Collapse'}
+                        </button>
+                    </div>
                 </div>
             </aside>
         </>

@@ -28,11 +28,36 @@
 [data-theme='light'] .db-root {
   --db-bg: var(--bg-primary);
   --db-card: #ffffff;
-  --db-card-border: rgba(0, 0, 0, 0.06);
+  --db-card-border: rgba(0, 0, 0, 0.08);
   --db-card-hover: #f8fafc;
   --db-text: #1e293b;
-  --db-text-secondary: #64748b;
+  --db-text-secondary: #475569;
   --db-text-muted: #94a3b8;
+}
+
+[data-theme='light'] .db-date-badge {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .db-gauge-track {
+  stroke: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .db-progress-track {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .db-big-stat-bar-track {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .db-activity-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .db-stat-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* ── Animations ───────────────────────────────────────── */
@@ -162,6 +187,7 @@
 .db-stat-icon.magenta  { background: rgba(232, 67, 147, 0.15); color: var(--db-magenta); }
 .db-stat-icon.cyan     { background: rgba(0, 206, 201, 0.15); color: var(--db-cyan); }
 .db-stat-icon.amber    { background: rgba(253, 203, 110, 0.15); color: var(--db-amber); }
+.db-stat-icon.green    { background: rgba(0, 184, 148, 0.15); color: var(--db-lime); }
 .db-stat-icon.red      { background: rgba(255, 118, 117, 0.15); color: var(--db-red); }
 
 .db-stat-info {

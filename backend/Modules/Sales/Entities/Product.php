@@ -36,6 +36,21 @@ class Product extends Model
     }
 
     /**
+     * Boot the model — enforce business rules on save.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($product) {
+            // Stock cannot go negative
+            if ($product->stock < 0) {
+                throw new \RuntimeException("Stock cannot be negative for product '{$product->name}'. Attempted value: {$product->stock}");
+            }
+        });
+    }
+
+    /**
      * Check if the product is in stock.
      */
     public function isInStock(): bool
@@ -44,11 +59,31 @@ class Product extends Model
     }
 
     /**
+     * Check if there is enough stock for a given quantity.
+     */
+    public function hasEnoughStock(int $quantity): bool
+    {
+        return $this->stock >= $quantity;
+    }
+
+    /**
+     * Check if the product stock is critically low (< 5 units).
+     */
+    public function isLowStock(): bool
+    {
+        return $this->stock < 5;
+    }
+
+    /**
      * Decrease stock by given quantity.
+     * Throws exception if insufficient stock.
      */
     public function decreaseStock(int $quantity): void
     {
-        $this->stock = max(0, $this->stock - $quantity);
+        if (!$this->hasEnoughStock($quantity)) {
+            throw new \RuntimeException("Insufficient stock. Available: {$this->stock}, Requested: {$quantity}");
+        }
+        $this->stock -= $quantity;
         $this->save();
     }
 

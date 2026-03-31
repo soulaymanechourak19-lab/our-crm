@@ -122,13 +122,15 @@ class QuotationController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'tax_rate' => 'nullable|numeric|min:0|max:100',
-            'valid_until' => 'nullable|date',
+            'valid_until' => 'nullable|date|after_or_equal:today',
             'items' => 'required|array|min:1',
             'items.*.id' => 'nullable|exists:quotation_items,id',
             'items.*.product_id' => 'nullable|exists:products,id',
             'items.*.description' => 'required|string|max:255',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.unit_price' => 'required|numeric|min:0',
+        ], [
+            'valid_until.after_or_equal' => 'Validity date cannot be in the past.',
         ]);
 
         return DB::transaction(function () use ($validated, $quotation) {
@@ -204,11 +206,21 @@ class QuotationController extends Controller
     public function updateStatus(Request $request, Quotation $quotation)
     {
         $validated = $request->validate([
-            'status' => 'required|in:accepted,rejected',
+            'status' => 'required|in:viewed,accepted,rejected',
         ]);
 
-        if ($validated['status'] === 'accepted' && !$quotation->canBeAccepted()) {
-            return response()->json(['message' => 'Quotation cannot be accepted'], 400);
+        // Enforce status workflow transitions
+        if (!$quotation->canTransitionTo($validated['status'])) {
+            return response()->json([
+                'message' => "Cannot transition from '{$quotation->status}' to '{$validated['status']}'. Invalid status progression."
+            ], 422);
+        }
+
+        // Check if quotation has expired
+        if ($validated['status'] === 'accepted' && $quotation->valid_until && $quotation->valid_until->isPast()) {
+            return response()->json([
+                'message' => 'Cannot accept an expired quotation. The validity date has passed.'
+            ], 422);
         }
 
         $quotation->update(['status' => $validated['status']]);

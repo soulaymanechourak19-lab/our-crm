@@ -8,6 +8,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 import { ThemeProvider } from './context/ThemeContext';
 import { CurrencyProvider } from './context/CurrencyContext';
+import { NotificationProvider } from './context/NotificationContext';
 import LoadingScreen from './components/common/LoadingScreen';
 import PageTransition from './components/common/PageTransition';
 import './App.css';
@@ -31,11 +32,11 @@ const Settings = lazy(() => import('./pages/Settings'));
 const Logs = lazy(() => import('./pages/Logs'));
 const Tasks = lazy(() => import('./pages/Tasks'));
 const Analytics = lazy(() => import('./pages/Analytics'));
-const EmailTemplates = lazy(() => import('./pages/EmailTemplates'));
 const TicketsList = lazy(() => import('./pages/TicketsList'));
 const TicketDetail = lazy(() => import('./pages/TicketDetail'));
 const SAVDashboard = lazy(() => import('./pages/SAVDashboard'));
 const SupportChat = lazy(() => import('./pages/SupportChat'));
+const Notifications = lazy(() => import('./pages/Notifications'));
 
 // ── Lazy-loaded routes (code splitting — smaller initial bundle) ──
 
@@ -95,6 +96,18 @@ const AnimatedRoutes = () => {
               <PageTransition>
                 <Layout titleKey="pages.profile.title" subtitleKey="pages.profile.subtitle">
                   <Profile />
+                </Layout>
+              </PageTransition>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <PrivateRoute>
+              <PageTransition>
+                <Layout title="Notifications" subtitle="View all your notifications">
+                  <Notifications />
                 </Layout>
               </PageTransition>
             </PrivateRoute>
@@ -179,7 +192,7 @@ const AnimatedRoutes = () => {
         <Route
           path="/discounts"
           element={
-            <PrivateRoute adminOnly>
+            <PrivateRoute>
               <PageTransition>
                 <Layout titleKey="Discounts" subtitleKey="Manage promotional discount codes">
                   <Discounts />
@@ -278,19 +291,6 @@ const AnimatedRoutes = () => {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/email-templates"
-          element={
-            <PrivateRoute>
-              <PageTransition>
-                <Layout title="Email Templates" subtitle="Create and manage email templates">
-                  <EmailTemplates />
-                </Layout>
-              </PageTransition>
-            </PrivateRoute>
-          }
-        />
-
         {/* Default redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -302,17 +302,19 @@ const App: React.FC = () => {
   return (
     <HashRouter>
       <AuthProvider>
-        <CRMProvider>
-          <CurrencyProvider>
-            <ThemeProvider>
-              <ToastProvider>
-                <Suspense fallback={<LoadingScreen />}>
-                  <AnimatedRoutes />
-                </Suspense>
-              </ToastProvider>
-            </ThemeProvider>
-          </CurrencyProvider>
-        </CRMProvider>
+        <NotificationProvider>
+          <CRMProvider>
+            <CurrencyProvider>
+              <ThemeProvider>
+                <ToastProvider>
+                  <Suspense fallback={<LoadingScreen />}>
+                    <AnimatedRoutes />
+                  </Suspense>
+                </ToastProvider>
+              </ThemeProvider>
+            </CurrencyProvider>
+          </CRMProvider>
+        </NotificationProvider>
       </AuthProvider>
     </HashRouter>
   );

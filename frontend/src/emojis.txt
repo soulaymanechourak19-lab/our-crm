@@ -1,0 +1,81 @@
+components\common\LanguageSwitcher.tsx:5: { code: 'en', label: 'English',  flag: '🇬🇧' },
+components\common\LanguageSwitcher.tsx:6: { code: 'fr', label: 'Français', flag: '🇫🇷' },
+components\common\LanguageSwitcher.tsx:8: { code: 'de', label: 'Deutsch',  flag: '🇩🇪' },
+components\ml\MLBadges.tsx:27: if (loading) return <span style={{ color: '#9ca3af', fontSize: '12px' }}>⏳</span>;
+components\ml\MLBadges.tsx:74: if (loading) return <span style={{ color: '#9ca3af', fontSize: '12px' }}>⏳</span>;
+components\ml\MLBadges.tsx:122: if (loading) return <span style={{ color: '#9ca3af', fontSize: '12px' }}>⏳</span>;
+components\ml\MLDashboard.tsx:170: <>⏳ Training models...</>
+components\ml\SentimentDisplay.tsx:15: negative: { color: '#ef4444', bg: 'rgba(239,68,68,0.12)', emoji: '😞', label: 'Negative' },
+components\ml\SentimentDisplay.tsx:17: positive: { color: '#10b981', bg: 'rgba(16,185,129,0.12)', emoji: '😊', label: 'Positive' },
+components\ml\SentimentDisplay.tsx:34: <span key={s} style={{ fontSize: '14px', opacity: s <= stars ? 1 : 0.2 }}>⭐</span>
+components\quotes\QuotationFormModal.tsx:300: {isSending ? 'Sending...' : '📨 Mark as Sent'}
+pages\ChatbotTraining.tsx:205: {seeding ? 'Seeding...' : '🌱 Seed Data'}
+pages\ChatbotTraining.tsx:221: {modelInfo?.status === 'trained' ? '🟢 Trained' : '🟡 Not trained'}
+pages\ChatbotTraining.tsx:320: {intents.length === 0 && <p className="text-sm text-[var(--text-muted)] text-center py-8">No intents yet. Click "🌱 Seed Data" to get started!</p>}
+pages\ChatbotTraining.tsx:401: <button onClick={loadLogs} className="text-xs text-indigo-400 hover:text-indigo-300">🔄 Refresh</button>
+pages\CustomerDetail.tsx:253: 🎫 Tickets
+pages\CustomerDetail.tsx:518: <h2 className="text-lg font-bold text-[var(--text-primary)]">🎫 Support Tickets</h2>
+pages\CustomerDetail.tsx:527: <div className="text-4xl mb-3">🎫</div>
+pages\LandingPage.tsx:67: <li><a href="#/support" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>💬 Support</a></li>
+pages\SAVDashboard.tsx:40: { label: 'Total Tickets',   value: stats.total,       icon: '🎫', color: '#6366f1', gradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
+pages\SAVDashboard.tsx:42: { label: 'En cours',        value: stats.in_progress, icon: '🟡', color: '#f59e0b', gradient: 'linear-gradient(135deg, #f59e0b, #d97706)' },
+pages\SAVDashboard.tsx:44: { label: 'Fermés',          value: stats.closed,      icon: '⚫', color: '#6b7280', gradient: 'linear-gradient(135deg, #6b7280, #4b5563)' },
+pages\SAVDashboard.tsx:45: { label: 'Cette semaine',   value: stats.recent_count, icon: '📅', color: '#8b5cf6', gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' },
+pages\SAVDashboard.tsx:53: <h1 className="text-2xl font-bold text-[var(--text-primary)]">📊 Dashboard SAV</h1>
+pages\SAVDashboard.tsx:101: <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">🎯 Répartition par priorité</h2>
+pages\SAVDashboard.tsx:104: { key: 'critical', label: 'Critique', color: '#ef4444', icon: '🔴' },
+pages\SAVDashboard.tsx:129: <h2 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">👥 Tickets ouverts par agent</h2>
+pages\SupportChat.tsx:50: <h4>✅ Ticket Created Successfully!</h4>
+pages\SupportChat.tsx:60: { icon: '📦', text: 'Where is my order?' },
+pages\SupportChat.tsx:62: { icon: '🔐', text: "I can't access my account" },
+pages\SupportChat.tsx:64: { icon: '💬', text: 'Talk to an agent' },
+pages\SupportChat.tsx:82: answer: "📦 **Order & Delivery Information**\n\nHere's what you need to know:\n\n• **Standard delivery**: 3-5 business days\n• **Express delivery**: 1-2 business days\n• **Track your order**: Check your confirmation email for a tracking link\n• **International**: 7-14 business days depending on destination\n\n💡 If your order is more than **7 days late**, I'd recommend creating a support ticket so our logistics team can investigate right away!\n\nWould you like to **create a ticket**, or do you have another question?",
+pages\SupportChat.tsx:89: answer: "🔄 **Returns & Refund Policy**\n\nWe want you to be completely satisfied!\n\n• **Return window**: 30 days from delivery date\n• **Condition**: Items must be unused, in original packaging\n• **How to return**:\n  1. Keep your order number ready\n  2. Say **\"create a ticket\"** and I'll start the process\n  3. Our team will send you a prepaid return label\n• **Refund timeline**: 5-10 business days after we receive the item\n• **Exchanges**: Free of charge for the same product in a different size/color\n\nWould you like me to **start a return** for you?",
+pages\SupportChat.tsx:96: answer: "🔐 **Account Access Help**\n\n**Forgot your password?**\n1. Go to the login page\n2. Click **\"Forgot Password\"**\n3. Enter your email address\n4. Check your inbox (and spam folder!) for a reset link\n5. The link expires in 60 minutes\n\n**Account locked?**\nAfter 5 failed attempts, accounts are temporarily locked for **30 minutes** for security.\n\n**Email not recognized?**\nYou may have registered with a different email. Try your work or personal email.\n\n**Still stuck?** I can create a priority support ticket, and our team will help you regain access within **a few hours**! 🔑",
+pages\SupportChat.tsx:103: answer: "🛠️ **I'm really sorry to hear about that!**\n\nProduct issues are our **top priority**, and I want to make sure this gets resolved quickly for you.\n\nHere's what I recommend:\n\n1. **If purchased within 30 days** → We'll send you a replacement right away\n2. **If under warranty** → Free repair or replacement\n3. **If you need urgent help** → Our technical team can troubleshoot with you\n\nLet me create a **support ticket** so our team can help you personally. 🎫\n\nPlease click **\"Create a ticket\"** below, or just share your **email** and I'll set everything up!",
+pages\SupportChat.tsx:110: answer: "💰 **Pricing & Promotions**\n\n• **Product prices** are listed on each product page\n• **Bulk discounts**: Available for orders of **10+ items** (up to 25% off!)\n• **Seasonal promotions**: Announced on our homepage and via email newsletter\n• **Loyalty rewards**: Earn points with every purchase for future discounts\n• **Custom quotes**: Available for enterprise & business needs\n\n💡 **Pro tip**: Subscribe to our newsletter for exclusive deals!\n\nNeed a **personalized quote** for a large order? I can create a ticket for our sales team! 🎫",
+pages\SupportChat.tsx:117: answer: "📞 **Contact & Support Hours**\n\n• **Live Chat** (this chatbot): **24/7** — I never sleep! 🤖\n• **Support team**: Monday–Friday, **9AM – 6PM** (CET)\n• **Email**: support@ourcrm.com\n• **Response time**: Within **24 hours** for normal requests, **4 hours** for urgent ones\n• **Weekend emergencies**: Create a ticket marked as urgent, and our on-call team will be notified\n\nI'm always here to help! What else can I do for you? 😊",
+pages\SupportChat.tsx:124: answer: "🛡️ **Warranty Coverage**\n\n• **Standard warranty**: **1 year** from purchase date\n• **Extended warranty**: Available at checkout (+1 or +2 years)\n• **What's covered**:\n  ✅ Manufacturing defects\n  ✅ Hardware failures\n  ✅ Battery issues\n• **What's NOT covered**:\n  ❌ Physical damage (drops, spills)\n  ❌ Unauthorized modifications\n  ❌ Normal wear and tear\n\n**File a warranty claim?** Just say \"create a ticket\" and provide your order number. We'll handle the rest! 🎫",
+pages\SupportChat.tsx:131: answer: "💳 **Payment & Billing**\n\n**Accepted methods:**\n• Visa, Mastercard, American Express\n• PayPal, Apple Pay, Google Pay\n• Bank Transfer (for orders over $100)\n\n**Invoices**: Automatically sent to your email after purchase\n\n**Billing issues?**\n• **Double charged?** Usually an authorization hold — it clears within 48h\n• **Wrong amount?** Let's create a ticket and our billing team will investigate\n• **Payment plans**: Available for orders over **$500**\n\nNeed help with a billing issue? I'll create a priority ticket! 🎫",
+pages\SupportChat.tsx:138: answer: "🔔 **Subscription & Cancellation**\n\n**Cancel a subscription:**\n1. Log into your account\n2. Go to **Settings → Subscriptions**\n3. Click **\"Cancel\"** on the relevant plan\n4. You'll keep access until the end of your billing period\n\n**Important:**\n• No cancellation fees\n• Data is retained for 30 days after cancellation\n• You can reactivate anytime\n\n**Having trouble?** I can create a ticket and our team will handle the cancellation for you! 🎫",
+pages\SupportChat.tsx:145: answer: "🔧 **Technical Troubleshooting**\n\nLet's try fixing this!\n\n**Quick fixes to try:**\n1. 🔄 **Refresh** the page (Ctrl+F5 or Cmd+Shift+R)\n2. 🗑️ **Clear your browser cache** and cookies\n3. 🌐 Try a **different browser** (Chrome, Firefox, Edge)\n4. 📱 If on mobile, try **updating the app**\n5. 🔌 Check your **internet connection**\n\n**Still not working?** No worries — let me create a technical support ticket with details about your issue. Our engineers are really fast at resolving these! ⚡",
+pages\SupportChat.tsx:152: answer: "🚚 **Shipping Costs**\n\n• **Free shipping**: On all orders over **$50**! 🎉\n• **Standard** (3-5 days): $4.99\n• **Express** (1-2 days): $12.99\n• **International**: Starting at $14.99\n\n💡 **Pro tip**: Add a small item to reach the $50 threshold for free shipping!\n\nAnything else I can help with?",
+pages\SupportChat.tsx:180: answer: "I understand you'd like more personalized help! 🎫\n\nI'll create a support ticket for you right away. Our team is really responsive — most tickets are answered within **a few hours**.\n\nPlease provide your **email address** so we can track your request and get back to you.",
+pages\SupportChat.tsx:190: answer: "Hello! 👋 Welcome to **OurCRM Support**!\n\nI'm your virtual assistant and I'm here to help. I can answer questions about:\n\n• 📦 **Orders & Deliveries** — tracking, shipping times\n• 🔄 **Returns & Refunds** — 30-day returns, exchanges\n• 🔐 **Account Access** — password reset, login issues\n• 🛠️ **Product Issues** — defective, damaged items\n• 💰 **Pricing & Billing** — discounts, payment methods\n• 🛡️ **Warranty** — coverage, claims\n• 🔧 **Technical Issues** — app bugs, errors\n\nJust **describe your issue** or pick one of the quick options below! 👇",
+pages\SupportChat.tsx:200: answer: "You're very welcome! 😊 I'm glad I could help!\n\nIs there anything else I can assist you with? I'm here anytime you need me! 🌟",
+pages\SupportChat.tsx:210: answer: "Goodbye! 👋 It was great chatting with you!\n\nRemember, I'm available **24/7** right here whenever you need help. Have a wonderful day! 🌟",
+pages\SupportChat.tsx:231: answer: "Hmm, I'm not quite sure I understood that. 🤔\n\nCould you try rephrasing? Here are some things I can help with:\n\n• **\"Where is my order?\"** — delivery tracking & shipping info\n• **\"I want to return an item\"** — returns & refund policy\n• **\"I can't log in\"** — account access help\n• **\"My product is broken\"** — product issues & warranty\n• **\"How much does shipping cost?\"** — pricing info\n• **\"Talk to an agent\"** — get human support\n\nOr just describe your issue in simple words! 😊",
+pages\SupportChat.tsx:237: answer: "I'm still having trouble understanding. 😅 Let me try to help differently!\n\n**Try using simple keywords** like:\n• \"order\" or \"delivery\"\n• \"return\" or \"refund\"\n• \"password\" or \"login\"\n• \"broken\" or \"defective\"\n\nOr if you'd prefer, say **\"create a ticket\"** and I'll connect you with a real support agent who can help with anything! 🙏",
+pages\SupportChat.tsx:242: answer: "I'm sorry I haven't been able to help with your specific question. 😔\n\nLet me connect you with a **real support agent** who can definitely help! I'll create a ticket for you right away.\n\nPlease provide your **email address** and I'll set everything up. Our team typically responds within **a few hours**! 🎫",
+pages\SupportChat.tsx:274: text: "Hello! 👋 Welcome to **OurCRM Support**!\n\nI'm your virtual assistant and I'm here to help. You can ask me about:\n\n• 📦 Orders & Deliveries\n• 🔄 Returns & Refunds\n• 🔐 Account Access\n• 🛠️ Product Issues\n• 💰 Pricing & Billing\n• 🛡️ Warranty & Guarantees\n\nHow can I help you today? 😊",
+pages\SupportChat.tsx:386: text: `🎫 **Great news!** Your support ticket has been created!\n\nTicket **#${data.ticket_number}** has been assigned to **${data.agent}** with **${data.priority}** priority.\n\nYou'll receive updates at **${emailForm.email}**.\n\nOur team will get back to you as soon as possible! 🙏\n\nIs there anything else I can help you with? 😊`,
+pages\SupportChat.tsx:395: text: "Sorry, I wasn't able to create the ticket right now. 😔\n\nPlease try again, or email us directly at **support@ourcrm.com** — our team will respond within 24 hours! 📧",
+pages\SupportChat.tsx:403: text: "I'm having trouble connecting to our ticket system. 😔\n\nDon't worry! You can reach us directly at **support@ourcrm.com** — just include your issue details and we'll get back to you within 24 hours. 📧\n\nI apologize for the inconvenience! 🙏",
+pages\SupportChat.tsx:451: {msg.sender === 'bot' ? <BotIcon /> : '👤'}
+pages\SupportChat.tsx:482: const icon = c.includes('order') ? '📦' : c.includes('return') ? '🔄' : c.includes('account') || c.includes('login') ? '🔐' : c.includes('broken') || c.includes('product') || c.includes('Product') ? '🛠️' : c.includes('agent') || c.includes('ticket') || c.includes('Ticket') || c.includes('Create') ? '🎫' : c.includes('warranty') || c.includes('Warranty') ? '🛡️' : c.includes('another') ? '💬' : c.includes('thanks') || c.includes("That's all") ? '👋' : c.includes('Try') ? '🔄' : '💡';
+pages\SupportChat.tsx:513: <h3>🎫 Create Support Ticket</h3>
+pages\SupportChat.tsx:556: {submittingTicket ? 'Creating...' : '🎫 Create Ticket'}
+pages\TicketDetail.tsx:6: open:        { label: 'Ouvert',    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)',  icon: '🔵' },
+pages\TicketDetail.tsx:8: resolved:    { label: 'Résolu',    color: '#10b981', bg: 'rgba(16,185,129,0.15)',   icon: '🟢' },
+pages\TicketDetail.tsx:133: 📡 {ticket.source}
+pages\TicketDetail.tsx:139: {ticket.customer && <span>👤 Client: <strong>{ticket.customer.name}</strong></span>}
+pages\TicketDetail.tsx:141: <span>📅 {new Date(ticket.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+pages\TicketDetail.tsx:199: 💬 Commentaires ({ticket.comments?.length || 0})
+pages\TicketDetail.tsx:204: 📋 Historique ({ticket.history?.length || 0})
+pages\TicketDetail.tsx:228: 🔒 Interne
+pages\TicketDetail.tsx:248: <div className="text-3xl mb-2">💬</div>
+pages\TicketDetail.tsx:271: 🔒 Commentaire interne (non visible par le client)
+pages\TicketDetail.tsx:292: {entry.field === 'status' ? '🔄' : entry.field === 'assigned_to' ? '👤' : '📝'}
+pages\TicketDetail.tsx:310: <div className="text-3xl mb-2">📋</div>
+pages\TicketsList.tsx:6: open:        { label: 'Ouvert',    color: '#3b82f6', bg: 'rgba(59,130,246,0.15)',  icon: '🔵' },
+pages\TicketsList.tsx:8: resolved:    { label: 'Résolu',    color: '#10b981', bg: 'rgba(16,185,129,0.15)',   icon: '🟢' },
+pages\TicketsList.tsx:16: critical: { label: 'Critique', color: '#ef4444', bg: 'rgba(239,68,68,0.15)',   icon: '🔴' },
+pages\TicketsList.tsx:90: <h1 className="text-2xl font-bold text-[var(--text-primary)]">🎫 Tickets Support</h1>
+pages\TicketsList.tsx:108: placeholder="🔍 Rechercher par titre, numéro..."
+pages\TicketsList.tsx:120: <option value="open">🔵 Ouvert</option>
+pages\TicketsList.tsx:121: <option value="in_progress">🟡 En cours</option>
+pages\TicketsList.tsx:123: <option value="closed">⚫ Fermé</option>
+pages\TicketsList.tsx:134: <option value="critical">🔴 Critique</option>
+pages\TicketsList.tsx:156: <div className="text-5xl mb-4">🎫</div>
+pages\TicketsList.tsx:194: <span className="hidden sm:block">👤 {ticket.customer.name}</span>
+pages\TicketsList.tsx:232: <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">🎫 Nouveau Ticket</h2>

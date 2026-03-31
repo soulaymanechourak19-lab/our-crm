@@ -20,11 +20,11 @@ class DiscountController extends Controller
     }
 
     /**
-     * List all discounts (admin).
+     * List all discounts.
      */
     public function index(Request $request)
     {
-        $query = Discount::query();
+        $query = Discount::with(['product', 'customer']);
 
         if ($request->has('active')) {
             $query->where('is_active', $request->boolean('active'));
@@ -42,27 +42,48 @@ class DiscountController extends Controller
     }
 
     /**
-     * Create a new discount (admin).
+     * Create a new discount.
      */
     public function store(Request $request)
     {
-        $user = Auth::user() ?? User::first();
-        if ($user->role !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Forbidden - Admin only'], 403);
-        }
-
         $validated = $request->validate([
             'code' => 'required|string|max:50|unique:discounts,code',
             'type' => 'required|in:percentage,fixed',
-            'value' => 'required|numeric|min:0',
+            'value' => 'required|numeric|min:0' . ($request->type === 'percentage' ? '|max:100' : ''),
             'description' => 'nullable|string|max:255',
-            'starts_at' => 'nullable|date',
-            'expires_at' => 'nullable|date|after:starts_at',
+            'starts_at' => 'nullable|date|after_or_equal:today',
+            'expires_at' => 'nullable|date|after_or_equal:today|after:starts_at',
             'max_uses' => 'nullable|integer|min:1',
             'is_active' => 'boolean',
+            'product_id' => 'nullable|integer|exists:products,id',
+            'customer_id' => 'nullable|integer|exists:customers,id',
+        ], [
+            'value.max' => 'Discount percentage cannot exceed 100%.',
+            'starts_at.after_or_equal' => 'Start date cannot be in the past.',
+            'expires_at.after_or_equal' => 'End date cannot be in the past.',
+            'expires_at.after' => 'End date must be after the start date.',
         ]);
 
+        // For fixed discounts, validate that value doesn't exceed product price
+        if ($request->type === 'fixed' && $request->product_id) {
+            $product = \Modules\Sales\Entities\Product::find($request->product_id);
+            if ($product && $request->value > $product->price) {
+                return response()->json([
+                    'message' => 'Fixed discount value cannot exceed the product price (' . $product->price . ').'
+                ], 422);
+            }
+        }
+
         $discount = Discount::create($validated);
+        $discount->load(['product', 'customer']);
+
+        // If customer is set, also link via customer_discounts pivot
+        if ($discount->customer_id) {
+            CustomerDiscount::updateOrCreate(
+                ['customer_id' => $discount->customer_id, 'discount_id' => $discount->id],
+                []
+            );
+        }
 
         return response()->json($discount, 201);
     }
@@ -72,46 +93,55 @@ class DiscountController extends Controller
      */
     public function show(Discount $discount)
     {
-        $discount->load('customerDiscounts');
+        $discount->load(['customerDiscounts', 'product', 'customer']);
         return response()->json($discount);
     }
 
     /**
-     * Update a discount (admin).
+     * Update a discount.
      */
     public function update(Request $request, Discount $discount)
     {
-        $user = Auth::user() ?? User::first();
-        if ($user->role !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Forbidden - Admin only'], 403);
-        }
-
         $validated = $request->validate([
             'code' => 'sometimes|string|max:50|unique:discounts,code,' . $discount->id,
             'type' => 'sometimes|in:percentage,fixed',
-            'value' => 'sometimes|numeric|min:0',
+            'value' => 'sometimes|numeric|min:0' . (($request->type ?? $discount->type) === 'percentage' ? '|max:100' : ''),
             'description' => 'nullable|string|max:255',
-            'starts_at' => 'nullable|date',
-            'expires_at' => 'nullable|date',
+            'starts_at' => 'nullable|date|after_or_equal:today',
+            'expires_at' => 'nullable|date|after_or_equal:today|after:starts_at',
             'max_uses' => 'nullable|integer|min:1',
             'is_active' => 'boolean',
+            'product_id' => 'nullable|integer|exists:products,id',
+            'customer_id' => 'nullable|integer|exists:customers,id',
+        ], [
+            'value.max' => 'Discount percentage cannot exceed 100%.',
+            'starts_at.after_or_equal' => 'Start date cannot be in the past.',
+            'expires_at.after_or_equal' => 'End date cannot be in the past.',
         ]);
 
+        // For fixed discounts, validate that value doesn't exceed product price
+        $type = $request->type ?? $discount->type;
+        $productId = $request->product_id ?? $discount->product_id;
+        if ($type === 'fixed' && $productId && isset($validated['value'])) {
+            $product = \Modules\Sales\Entities\Product::find($productId);
+            if ($product && $validated['value'] > $product->price) {
+                return response()->json([
+                    'message' => 'Fixed discount value cannot exceed the product price (' . $product->price . ').'
+                ], 422);
+            }
+        }
+
         $discount->update($validated);
+        $discount->load(['product', 'customer']);
 
         return response()->json($discount);
     }
 
     /**
-     * Delete a discount (admin).
+     * Delete a discount.
      */
     public function destroy(Discount $discount)
     {
-        $user = Auth::user() ?? User::first();
-        if ($user->role !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Forbidden - Admin only'], 403);
-        }
-
         $discount->delete();
         return response()->json(['message' => 'Discount deleted successfully']);
     }
@@ -140,4 +170,45 @@ class DiscountController extends Controller
 
         return response()->json($discounts);
     }
+
+    /**
+     * Search customers for the discount picker (no role filtering).
+     */
+    public function searchCustomers(Request $request)
+    {
+        $query = Customer::query();
+
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->select('id', 'name', 'email', 'loyalty_score')
+            ->orderBy('name')
+            ->limit(20)
+            ->get();
+    }
+
+    /**
+     * Return suggested discount percentage based on customer loyalty tier.
+     */
+    public function loyaltySuggestion(Request $request)
+    {
+        $request->validate(['customer_id' => 'required|integer|exists:customers,id']);
+
+        $customer = Customer::findOrFail($request->customer_id);
+        $tier = $customer->getLoyaltyTier();
+        $suggestedPercent = Discount::loyaltyDiscountPercent($tier);
+
+        return response()->json([
+            'customer_id' => $customer->id,
+            'loyalty_score' => $customer->loyalty_score,
+            'tier' => $tier,
+            'suggested_percent' => $suggestedPercent,
+        ]);
+    }
 }
+

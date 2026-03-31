@@ -90,6 +90,25 @@ class Quotation extends Model
         return $this->status === 'accepted';
     }
 
+    /**
+     * Check if the quotation can transition to a new status.
+     * Enforces the workflow: draft → sent → viewed → accepted → converted
+     * Rejected is allowed from sent or viewed.
+     */
+    public function canTransitionTo(string $newStatus): bool
+    {
+        $allowed = [
+            'draft'    => ['sent'],
+            'sent'     => ['viewed', 'accepted', 'rejected'],
+            'viewed'   => ['accepted', 'rejected'],
+            'accepted' => ['converted'],
+            'converted' => [],
+            'rejected' => [],
+        ];
+
+        return in_array($newStatus, $allowed[$this->status] ?? []);
+    }
+
     // ── Totals calculation ───────────────────────────────────────────
 
     public function recalculateTotals(): void

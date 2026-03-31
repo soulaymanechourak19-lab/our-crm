@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import NotificationCenter from './common/NotificationCenter';
+import GlobalSearch from './common/GlobalSearch';
 
 interface LayoutProps {
     children: ReactNode;
@@ -211,7 +212,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle, titleKey, su
         navItems.push({ to: '/sav-dashboard', active: isActive('/sav-dashboard'), icon: icons.performance, label: t('sidebar.savDashboard', 'SAV Dashboard'), accentColor: '#00b894' });
     }
     if (user.role === 'admin' || user.role === 'agent_sav') {
-        navItems.push({ to: '/chatbot', active: isActive('/chatbot'), icon: icons.ai, label: t('sidebar.aiAssistant'), accentColor: '#a29bfe', badge: t('sidebar.new') });
+        navItems.push({ to: '/chatbot', active: isActive('/chatbot'), icon: icons.ai, label: t('sidebar.aiAssistant'), accentColor: '#a29bfe' });
     }
     navItems.push({ to: '/tasks', active: isActive('/tasks'), icon: icons.tasks, label: t('sidebar.tasks', 'Tasks'), accentColor: '#e17055' });
     if (user.role === 'admin' || user.role === 'agent_commercial') {
@@ -223,9 +224,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle, titleKey, su
         settingsItems.push({ to: '/admin/users', active: isActive('/admin/users'), icon: icons.users, label: t('sidebar.users'), accentColor: '#74b9ff' });
     }
     settingsItems.push({ to: '/profile', active: isActive('/profile'), icon: icons.profile, label: t('sidebar.profile'), accentColor: '#e17055' });
-    if (user.role === 'admin') {
-        settingsItems.push({ to: '/email-templates', active: isActive('/email-templates'), icon: icons.email, label: t('sidebar.emailTemplates', 'Email Templates'), accentColor: '#e84393' });
-    }
+
 
     return (
         <div className="dashboard-layout">
@@ -270,15 +269,27 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle, titleKey, su
                         marginBottom: '12px', marginLeft: '4px', marginRight: '4px',
                     }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <div style={{
-                                width: '40px', height: '40px', borderRadius: '12px',
-                                background: 'linear-gradient(135deg, #6c5ce7, #e84393)',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                color: '#fff', fontWeight: 700, fontSize: '1.05rem',
-                                boxShadow: '0 2px 10px rgba(108, 92, 231, 0.3)',
-                            }}>
-                                {user.name.charAt(0).toUpperCase()}
-                            </div>
+                            {user.profile_picture_url ? (
+                                <img
+                                    src={user.profile_picture_url}
+                                    alt={user.name}
+                                    style={{
+                                        width: '40px', height: '40px', borderRadius: '12px',
+                                        objectFit: 'cover',
+                                        boxShadow: '0 2px 10px rgba(108, 92, 231, 0.3)',
+                                    }}
+                                />
+                            ) : (
+                                <div style={{
+                                    width: '40px', height: '40px', borderRadius: '12px',
+                                    background: 'linear-gradient(135deg, #6c5ce7, #e84393)',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: '#fff', fontWeight: 700, fontSize: '1.05rem',
+                                    boxShadow: '0 2px 10px rgba(108, 92, 231, 0.3)',
+                                }}>
+                                    {user.name.charAt(0).toUpperCase()}
+                                </div>
+                            )}
                             <div style={{ flex: 1, overflow: 'hidden' }}>
                                 <p style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.name}</p>
                                 <p style={{ margin: 0, fontSize: '0.62rem', color: '#a29bfe', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' }}>{roleLabel}</p>
@@ -310,19 +321,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, subtitle, titleKey, su
                         {(subtitleKey || subtitle) && <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 500, marginTop: '2px' }}>{subtitleKey ? t(subtitleKey) : subtitle}</p>}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{
-                            display: 'flex', alignItems: 'center', gap: '8px',
-                            padding: '8px 14px', borderRadius: '10px',
-                            background: 'var(--bg-primary)',
-                            border: '1px solid var(--border-subtle)',
-                            color: 'var(--text-secondary)',
-                        }}>
-                            {icons.search}
-                            <input type="text" placeholder="Search..." style={{
-                                background: 'transparent', border: 'none', outline: 'none',
-                                color: 'var(--text-primary)', fontSize: '0.82rem', width: '140px', fontFamily: 'inherit',
-                            }} />
-                        </div>
+                        <GlobalSearch />
                         <NotificationCenter />
                     </div>
                 </header>

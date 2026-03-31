@@ -102,7 +102,7 @@ const Logs: React.FC = () => {
                 </select>
                 <select value={filters.entity_type} onChange={e => { setFilters(f => ({ ...f, entity_type: e.target.value })); setPage(1); }} style={inputStyle}>
                     <option value="">All Entities</option>
-                    {['Lead', 'Customer', 'Task', 'User', 'Quotation', 'Discount', 'EmailTemplate'].map(e => (
+                    {['Lead', 'Customer', 'Task', 'User', 'Quotation', 'Discount'].map(e => (
                         <option key={e} value={e}>{e}</option>
                     ))}
                 </select>

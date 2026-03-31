@@ -1,5 +1,5 @@
 import React, { useState, FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -113,9 +113,7 @@ const Login: React.FC = () => {
                         </button>
                     </form>
 
-                    <p className="auth-footer-v2">
-                        {t('login.noAccount')} <Link to="/register">{t('login.createOne')}</Link>
-                    </p>
+
                 </motion.div>
             </div>
         </div>
