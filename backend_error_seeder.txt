@@ -1,0 +1,43 @@
+﻿backend-1  | ΓÅ│ Waiting for MySQL to be ready...
+backend-1  | Γ£à MySQL is ready.
+backend-1  | ≡ƒöº Running migrations...
+backend-1  | 
+backend-1  |    INFO  Preparing database.  
+backend-1  | 
+backend-1  |   Creating migration table ........................................... 1s DONE
+backend-1  | 
+backend-1  |    INFO  Running migrations.  
+backend-1  | 
+backend-1  |   0001_01_01_000001_create_cache_table ......................... 508.36ms DONE
+backend-1  |   0001_01_01_000002_create_jobs_table .......................... 590.98ms DONE
+backend-1  |   2026_02_15_190329_create_personal_access_tokens_table ........ 511.36ms DONE
+backend-1  | 
+backend-1  | ≡ƒî▒ Running seeders (idempotent)...
+backend-1  | 
+backend-1  |    INFO  Seeding database.  
+backend-1  | 
+backend-1  | 
+backend-1  |    Illuminate\Database\QueryException 
+backend-1  | 
+backend-1  |   SQLSTATE[42S02]: Base table or view not found: 1146 Table 'crm_db.users' doesn't exist (Connection: mysql, SQL: select * from `users` where (`email` = admin@example.com) and `users`.`deleted_at` is null limit 1)
+backend-1  | 
+backend-1  |   at vendor/laravel/framework/src/Illuminate/Database/Connection.php:825
+backend-1  |     821Γûò                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+backend-1  |     822Γûò                 );
+backend-1  |     823Γûò             }
+backend-1  |     824Γûò 
+backend-1  |   Γ₧£ 825Γûò             throw new QueryException(
+backend-1  |     826Γûò                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+backend-1  |     827Γûò             );
+backend-1  |     828Γûò         }
+backend-1  |     829Γûò     }
+backend-1  | 
+backend-1  |       [2m+16 vendor frames [22m
+backend-1  | 
+backend-1  |   17  database/seeders/DatabaseSeeder.php:19
+backend-1  |       Illuminate\Database\Eloquent\Model::__callStatic("firstOrCreate")
+backend-1  |       [2m+23 vendor frames [22m
+backend-1  | 
+backend-1  |   41  artisan:16
+backend-1  |       Illuminate\Foundation\Application::handleCommand(Object(Symfony\Component\Console\Input\ArgvInput))
+backend-1  | 

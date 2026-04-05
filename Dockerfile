@@ -28,7 +28,7 @@ RUN { \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Fix Apache document root
+# Fix Apache document root to point to public folder
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 # ── Build-time dependency install (layer cached unless composer files change) ──
@@ -37,7 +37,7 @@ WORKDIR /var/www/html
 # Copy only composer files first (for better Docker layer caching)
 COPY backend/composer.json backend/composer.lock ./
 
-# Install PHP dependencies at build time (no devtools in prod)
+# Install PHP dependencies at build time
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
 # Copy the rest of the backend application code
